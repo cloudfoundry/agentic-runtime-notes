@@ -14,4 +14,4 @@
 - [ ] Sources are linked.
 - [ ] It's on-topic for agentic workloads on Cloud Foundry and not a duplicate of an
       existing note.
-- [ ] My commits are signed off (`git commit -s`) per the DCO.
+- [ ] I've signed the Cloud Foundry CLA (the EasyCLA bot prompts you on your first PR).

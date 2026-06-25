@@ -17,10 +17,10 @@ For the why and the bigger picture, read [`IDEATION.md`](./IDEATION.md).
 3. **Fill it in.** Keep it short and sourced. See
    [`research/cf-runtime-gaps.md`](./research/cf-runtime-gaps.md) for a complete example and
    [`research/README.md`](./research/README.md) for the frontmatter schema.
-4. **Commit with a DCO sign-off:**
+4. **Commit your note:**
    ```bash
    git add research/my-topic.md
-   git commit -s -m "Add research note: my topic"
+   git commit -m "Add research note: my topic"
    ```
 5. **Open a pull request.** A CI check validates your note's frontmatter and structure. A
    working-group tech lead will give it a quick look and merge.
@@ -50,16 +50,13 @@ Research notes are low-risk, so we optimize for throughput:
   a duplicate.
 - Substantive review of *ideas* happens at the workshop, not as a merge gate.
 
-## Developer Certificate of Origin (DCO)
+## Contributor License Agreement (CLA)
 
-All commits must be signed off, certifying you wrote the contribution or otherwise have the
-right to submit it under the repository's license. Add `-s` to your commit:
-
-```bash
-git commit -s -m "Add research note: my topic"
-```
-
-This appends a `Signed-off-by:` line. See [developercertificate.org](https://developercertificate.org/).
+All committers to a Cloud Foundry Foundation project must sign a Contributor License
+Agreement. You don't need to do anything up front: the **EasyCLA** bot comments on your
+first pull request with a link to sign (individual or corporate). Once it's signed, the
+CLA check goes green and your PR can be merged. You can also
+[sign in to EasyCLA](https://corporate.v1.easycla.lfx.linuxfoundation.org/) ahead of time.
 
 ## Code of conduct
 

@@ -43,6 +43,7 @@ for a complete example.
 
 ## License
 
-Apache 2.0 — see [`LICENSE`](./LICENSE). Contributions require a
-[Developer Certificate of Origin](https://developercertificate.org/) sign-off
-(`git commit -s`).
+Apache 2.0 — see [`LICENSE`](./LICENSE). By contributing you agree to the Cloud Foundry
+[Contributor License Agreement](https://github.com/cloudfoundry/community/blob/main/CONTRIBUTING.md).
+You don't need to do anything up front — the [EasyCLA](https://corporate.v1.easycla.lfx.linuxfoundation.org/)
+bot prompts you to sign on your first pull request.
