@@ -11,8 +11,7 @@ would pre-impose the very themes we want to let emerge.
 ## Adding a note
 
 Copy [`TEMPLATE.md`](./TEMPLATE.md), rename it to a kebab-case topic (`my-topic.md`), and
-fill it in. See [`cf-runtime-gaps.md`](./cf-runtime-gaps.md) for a complete example, and
-[`../CONTRIBUTING.md`](../CONTRIBUTING.md) for the full workflow.
+fill it in. See [`../CONTRIBUTING.md`](../CONTRIBUTING.md) for the full workflow.
 
 ## Frontmatter schema
 
@@ -20,11 +19,11 @@ Each note begins with a YAML frontmatter block:
 
 ```yaml
 ---
-title: Cloud Foundry gaps for AI agents
-author: Ruben Koster (@rkoster)
+title: How LangGraph models multi-agent orchestration
+author: Jane Doe (@janedoe)
 date: 2026-06-25
-tags: [ecosystem-survey, autoscaling, identity]
-cf_areas: [diego, capi, uaa, loggregator]
+tags: [orchestration, inter-agent-comms, ecosystem-survey]
+cf_areas: [diego, capi]
 status: draft
 sources:
   - https://example.com/source-one
@@ -56,8 +55,10 @@ Two to four sentences capturing the essence.
 
 ## CF relevance
 
-How this maps to Cloud Foundry primitives or gaps — including "it doesn't map cleanly, and
-here's why."
+A short, light-touch note on why this might matter for Cloud Foundry. A loose or
+speculative connection is fine — including "not sure how this maps yet." Synthesizing the
+research into concrete Cloud Foundry gaps is the workshop's job, not something each note
+has to settle.
 
 ## Open questions
 

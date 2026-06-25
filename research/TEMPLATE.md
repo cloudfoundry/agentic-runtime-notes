@@ -26,7 +26,7 @@ sources:
 
 ## CF relevance
 
-<!-- How this maps to Cloud Foundry primitives or gaps. -->
+<!-- Briefly: why might this matter for Cloud Foundry? A loose or speculative link is fine. -->
 
 ## Open questions
 

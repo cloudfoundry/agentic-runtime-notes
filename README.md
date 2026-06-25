@@ -32,8 +32,9 @@ See [`IDEATION.md`](./IDEATION.md) for the full brief.
 ## How to contribute
 
 Read [`CONTRIBUTING.md`](./CONTRIBUTING.md), copy [`research/TEMPLATE.md`](./research/TEMPLATE.md),
-fill it in, and open a pull request. See [`research/cf-runtime-gaps.md`](./research/cf-runtime-gaps.md)
-for a complete example.
+fill it in, and open a pull request. In this phase we're especially interested in research
+that looks **outward** at the wider agentic ecosystem — see [`IDEATION.md`](./IDEATION.md)
+for scope.
 
 ## Community
 

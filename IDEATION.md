@@ -8,8 +8,9 @@
 The Agentic Runtime Working Group is new, and the design space — running AI agents and
 LLM-powered workloads as first-class citizens on Cloud Foundry — is broad and moving fast.
 Before committing to specific designs or RFCs, we want to map the landscape together:
-gather what the community already knows, surface prior art, and identify where Cloud
-Foundry's primitives help or fall short.
+gather what the community already knows and surface prior art from the wider ecosystem.
+With that map in hand, the workshop can then see where Cloud Foundry's primitives help or
+fall short.
 
 This repository is the home for that research. It is deliberately **lightweight and
 open**: the goal is breadth of input from anyone interested, not polished deliverables.
@@ -19,8 +20,9 @@ open**: the goal is breadth of input from anyone interested, not polished delive
 This research phase is step one of four:
 
 1. **Research (now, ~a few weeks).** Contributors submit short, sourced **research notes**
-   into [`research/`](./research) via pull requests. We want broad coverage of the agentic
-   ecosystem, relevant technologies, prior art, and Cloud Foundry gaps.
+   into [`research/`](./research) via pull requests. We want broad, *outward-looking*
+   coverage of the wider agentic ecosystem — relevant technologies, prior art, and how
+   others solve these problems. Where Cloud Foundry fits comes later.
 2. **Workshop.** The working group meets to read across the accumulated notes and cluster
    them into **themes**. Themes are *not* defined up front — they emerge from what people
    actually contribute.
@@ -34,27 +36,38 @@ will be added once the workshop has shaped it.
 
 ## What to contribute in Phase 1
 
+**Look outward.** Phase 1 is about understanding the wider agentic and AI ecosystem — not
+about cataloguing Cloud Foundry. Where Cloud Foundry's primitives help or fall short is
+something we want to *discover* at the workshop, drawn from this research, rather than
+assume up front.
+
 **In scope** — research notes that inform the design space, such as:
 
 - Analyses of agent frameworks, protocols, and platforms (how others solve a problem).
-- Prior art and standards (e.g. identity, sandboxing, observability conventions).
-- Cloud Foundry gaps and friction points for agentic workloads.
+- Prior art and standards — identity, sandboxing, observability, orchestration conventions.
+- How adjacent runtimes and platforms (Kubernetes, serverless, other PaaS) handle agentic
+  workloads.
 - Surveys of the surrounding ecosystem and where it's heading.
 
-**Out of scope for now** — finished solutions, designs, or RFCs. Those come in Phase 4,
-after the workshop. A note may *raise* questions and point at possible directions, but its
-job is to inform, not to settle on a final answer.
+**Out of scope for now:**
+
+- Finished solutions, designs, or RFCs — those come in Phase 4, after the workshop. A note
+  may *raise* questions and point at possible directions, but its job is to inform, not to
+  settle on a final answer.
+- Definitive Cloud Foundry gap lists. Identifying gaps is an **outcome** of this phase,
+  synthesized at the workshop from the body of research — not a starting point any one
+  contributor supplies.
 
 ## What makes a good research note
 
 - **Sourced.** Link to the primary material so others can dig in.
 - **Summarized.** A few sentences capturing the essence — assume the reader is busy.
-- **Connected to CF.** Say how it relates to Cloud Foundry primitives or gaps, even if the
-  connection is "this doesn't map cleanly, and here's why."
+- **Outward-looking, with a light CF lens.** The substance is the external research; add a
+  short note on why it might matter for Cloud Foundry. A loose or speculative connection is
+  fine — "not sure how this maps yet" is a perfectly good answer.
 - **Honest about open questions.** Unknowns are valuable signal for the workshop.
 
-Each note follows a small template — see [`research/TEMPLATE.md`](./research/TEMPLATE.md)
-and the worked example [`research/cf-runtime-gaps.md`](./research/cf-runtime-gaps.md).
+Each note follows a small template — see [`research/TEMPLATE.md`](./research/TEMPLATE.md).
 [`CONTRIBUTING.md`](./CONTRIBUTING.md) explains the mechanics.
 
 ## Tagging: how themes will emerge

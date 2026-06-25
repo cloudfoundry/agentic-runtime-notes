@@ -14,8 +14,8 @@ For the why and the bigger picture, read [`IDEATION.md`](./IDEATION.md).
    ```bash
    cp research/TEMPLATE.md research/my-topic.md
    ```
-3. **Fill it in.** Keep it short and sourced. See
-   [`research/cf-runtime-gaps.md`](./research/cf-runtime-gaps.md) for a complete example and
+3. **Fill it in.** Keep it short, sourced, and outward-looking (see
+   [`IDEATION.md`](./IDEATION.md) for what Phase 1 is after). See
    [`research/README.md`](./research/README.md) for the frontmatter schema.
 4. **Commit your note:**
    ```bash
