@@ -12,6 +12,4 @@
 - [ ] It has the four sections: Summary, Key findings, CF relevance, Open questions.
 - [ ] I added relevant `tags` (see the suggested vocabulary in `IDEATION.md`).
 - [ ] Sources are linked.
-- [ ] It's on-topic for agentic workloads on Cloud Foundry and not a duplicate of an
-      existing note.
-- [ ] I've signed the Cloud Foundry CLA (the EasyCLA bot prompts you on your first PR).
+- [ ] It's on-topic for agentic workloads on Cloud Foundry 
