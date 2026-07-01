@@ -13,6 +13,9 @@ would pre-impose the very themes we want to let emerge.
 Copy [`TEMPLATE.md`](./TEMPLATE.md), rename it to a kebab-case topic (`my-topic.md`), and
 fill it in. See [`../CONTRIBUTING.md`](../CONTRIBUTING.md) for the full workflow.
 
+Not ready for a sourced write-up? Drop a spark in [`../ideas/`](../ideas) instead — it can
+graduate into a research note later.
+
 ## Frontmatter schema
 
 Each note begins with a YAML frontmatter block:

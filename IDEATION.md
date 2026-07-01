@@ -19,10 +19,12 @@ open**: the goal is breadth of input from anyone interested, not polished delive
 
 This research phase is step one of four:
 
-1. **Research (now, ~a few weeks).** Contributors submit short, sourced **research notes**
-   into [`research/`](./research) via pull requests. We want broad, *outward-looking*
-   coverage of the wider agentic ecosystem — relevant technologies, prior art, and how
-   others solve these problems. Where Cloud Foundry fits comes later.
+1. **Capture & research (now, ~a few weeks).** Contributors open pull requests with either
+   a quick **idea** in [`ideas/`](./ideas) — a spark, question, or pointer, at a low bar —
+   or a short, sourced **research note** in [`research/`](./research). We want broad,
+   *outward-looking* coverage of the wider agentic ecosystem — relevant technologies, prior
+   art, and how others solve these problems. Where Cloud Foundry fits comes later, and ideas
+   can graduate into research notes as they firm up.
 2. **Workshop.** The working group meets to read across the accumulated notes and cluster
    them into **themes**. Themes are *not* defined up front — they emerge from what people
    actually contribute.
@@ -40,6 +42,11 @@ will be added once the workshop has shaped it.
 about cataloguing Cloud Foundry. Where Cloud Foundry's primitives help or fall short is
 something we want to *discover* at the workshop, drawn from this research, rather than
 assume up front.
+
+**Two ways in.** Not everything needs to be a polished note. If you have a spark but no
+time to write it up, drop it in [`ideas/`](./ideas) — we'd rather capture it than turn it
+away for not being a full research note. A sourced, structured write-up belongs in
+[`research/`](./research). The scope below applies to both.
 
 **In scope** — research notes that inform the design space, such as:
 
@@ -101,7 +108,7 @@ window to run a few weeks.
 ## How to participate
 
 1. Read [`CONTRIBUTING.md`](./CONTRIBUTING.md).
-2. Add a note using the template and open a PR.
+2. Add an idea or a research note using the matching template, and open a PR.
 3. Join the conversation in [#ai-wg](https://cloudfoundry.slack.com/archives/C0B214KJ1HA).
 
 ## Feedback on this process

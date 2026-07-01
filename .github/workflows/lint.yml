@@ -1,15 +1,17 @@
-name: Validate research notes
+name: Validate notes and ideas
 
 on:
   pull_request:
     paths:
       - "research/**"
+      - "ideas/**"
       - ".github/scripts/validate_notes.py"
       - ".github/workflows/lint.yml"
   push:
     branches: [main]
     paths:
       - "research/**"
+      - "ideas/**"
       - ".github/scripts/validate_notes.py"
       - ".github/workflows/lint.yml"
 
@@ -28,5 +30,5 @@ jobs:
       - name: Install dependencies
         run: pip install "pyyaml>=6"
 
-      - name: Validate research notes
+      - name: Validate notes and ideas
         run: python .github/scripts/validate_notes.py

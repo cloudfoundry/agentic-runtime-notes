@@ -1,12 +1,23 @@
 # Contributing
 
 Thanks for helping shape the future of agentic workloads on Cloud Foundry. During the
-current **research phase**, contributions take the form of **research notes** added to
-[`research/`](./research) via pull requests.
+current **research phase** there are two ways to contribute, both via pull request:
+
+- A quick **idea** in [`ideas/`](./ideas) — low bar, no sourcing required. A place for
+  sparks, so nothing gets turned away for not yet being a full research note.
+- A sourced **research note** in [`research/`](./research) — structured and cited.
+
+Ideas can graduate into research notes; link the two when they do.
 
 For the why and the bigger picture, read [`IDEATION.md`](./IDEATION.md).
 
-## Quick start
+## Adding an idea
+
+Copy [`ideas/TEMPLATE.md`](./ideas/TEMPLATE.md) to `ideas/my-idea.md`, jot down the spark,
+and open a PR. The only hard rules are a kebab-case filename and a title — everything else
+is optional. See [`ideas/README.md`](./ideas/README.md).
+
+## Adding a research note
 
 1. **Fork** this repository (or, if you're a working-group member with write access, create
    a branch).
@@ -45,10 +56,11 @@ suggested (non-binding) vocabulary in
 
 Research notes are low-risk, so we optimize for throughput:
 
-- CI validates frontmatter, filename, and required sections.
-- Any working-group **tech lead** can merge once CI passes and the note is on-topic and not
-  a duplicate.
-- Substantive review of *ideas* happens at the workshop, not as a merge gate.
+- For research notes, CI validates frontmatter, filename, and required sections. For
+  [`ideas/`](./ideas) it only checks the filename and that a title is present.
+- Any working-group **tech lead** can merge once CI passes and the contribution is on-topic.
+- Substantive debate about the *merits* of a contribution happens at the workshop, not as a
+  merge gate.
 
 ## Contributor License Agreement (CLA)
 

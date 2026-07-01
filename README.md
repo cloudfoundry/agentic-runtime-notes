@@ -15,15 +15,19 @@ same platform-native primitives developers and operators rely on today.
 ## What this repo is for
 
 This repo bootstraps a **crowd-sourced, distributed research phase**. Anyone interested in
-the future of agentic workloads on Cloud Foundry is invited to contribute **research
-notes** as pull requests. The accumulated notes become the raw material for a
-working-group workshop that identifies themes and spins up focused proof-of-concept and
-RFC work.
+the future of agentic workloads on Cloud Foundry is invited to contribute — either a quick
+**idea** in [`ideas/`](./ideas) or a sourced **research note** in [`research/`](./research),
+both as pull requests. The accumulated material becomes the raw input for a working-group
+workshop that identifies themes and spins up focused proof-of-concept and RFC work.
 
 ## The roadmap
 
-1. **Research (now)** — contributors submit research notes via PRs into [`research/`](./research).
-2. **Workshop** — the working group clusters the notes into emergent themes.
+Contributions flow along a simple pipeline — raw **ideas** grow into sourced **research**,
+which later feeds **proposals**:
+
+1. **Capture & research (now)** — drop a spark in [`ideas/`](./ideas) or a sourced note in
+   [`research/`](./research), via PRs.
+2. **Workshop** — the working group clusters the material into emergent themes.
 3. **Match** — members align their interests to themes.
 4. **POC / RFC** — per-theme tracks produce proofs-of-concept and Cloud Foundry RFCs.
 
@@ -31,10 +35,16 @@ See [`IDEATION.md`](./IDEATION.md) for the full brief.
 
 ## How to contribute
 
-Read [`CONTRIBUTING.md`](./CONTRIBUTING.md), copy [`research/TEMPLATE.md`](./research/TEMPLATE.md),
-fill it in, and open a pull request. In this phase we're especially interested in research
-that looks **outward** at the wider agentic ecosystem — see [`IDEATION.md`](./IDEATION.md)
-for scope.
+Two ways in, both via pull request:
+
+- **Have a quick idea?** Drop a short note in [`ideas/`](./ideas) — low bar, no sourcing
+  required. We'd rather capture it than turn it away for not being a full research note.
+- **Ready to write it up?** Copy [`research/TEMPLATE.md`](./research/TEMPLATE.md), fill it
+  in, and add it to [`research/`](./research).
+
+Read [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the workflow. In this phase we're especially
+interested in research that looks **outward** at the wider agentic ecosystem — see
+[`IDEATION.md`](./IDEATION.md) for scope.
 
 ## Community
 
