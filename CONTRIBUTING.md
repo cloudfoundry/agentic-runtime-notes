@@ -7,7 +7,9 @@ current **research phase** there are two ways to contribute, both via pull reque
   sparks, so nothing gets turned away for not yet being a full research note.
 - A sourced **research note** in [`research/`](./research) — structured and cited.
 
-Ideas can graduate into research notes; link the two when they do.
+Ideas and research link together: an idea points to the research that backs it, and one
+research note can back several ideas. An idea with enough research behind it can later become
+a proposal.
 
 For the why and the bigger picture, read [`IDEATION.md`](./IDEATION.md).
 

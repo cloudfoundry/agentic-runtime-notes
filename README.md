@@ -22,8 +22,9 @@ workshop that identifies themes and spins up focused proof-of-concept and RFC wo
 
 ## The roadmap
 
-Contributions flow along a simple pipeline — raw **ideas** grow into sourced **research**,
-which later feeds **proposals**:
+Contributions come in two linked lanes — raw **ideas** and the sourced **research** that
+backs them. Research is reusable, so one note can support several ideas, and an idea with
+enough research behind it can grow into a **proposal** later on:
 
 1. **Capture & research (now)** — drop a spark in [`ideas/`](./ideas) or a sourced note in
    [`research/`](./research), via PRs.

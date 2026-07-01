@@ -23,8 +23,9 @@ This research phase is step one of four:
    a quick **idea** in [`ideas/`](./ideas) — a spark, question, or pointer, at a low bar —
    or a short, sourced **research note** in [`research/`](./research). We want broad,
    *outward-looking* coverage of the wider agentic ecosystem — relevant technologies, prior
-   art, and how others solve these problems. Where Cloud Foundry fits comes later, and ideas
-   can graduate into research notes as they firm up.
+   art, and how others solve these problems. Where Cloud Foundry fits comes later. Ideas and
+   research link together — one research note can back several ideas — and an idea with enough
+   research behind it can grow into a proposal.
 2. **Workshop.** The working group meets to read across the accumulated notes and cluster
    them into **themes**. Themes are *not* defined up front — they emerge from what people
    actually contribute.
