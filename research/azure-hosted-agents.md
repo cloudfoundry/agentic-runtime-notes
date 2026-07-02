@@ -25,7 +25,7 @@ arbitrary-payload Invocations protocol.
 - **Packaging**: Agents are container images pushed to ACR; the platform pulls, provisions
   compute, assigns identity, and exposes an endpoint.
 - **Identity**: Each agent deployment gets a dedicated Microsoft Entra ID created
-  automatically. On-behalf-of (OBO) user identity available via M365 channels.
+  automatically. Agent identity is scoped per deployment, not per session.
 - **Protocols**: Responses (OpenAI-compatible, platform-managed conversation history),
   Invocations (arbitrary JSON, long-running async), and A2A for agent-to-agent delegation.
 - **Observability**: Built-in Application Insights; protocol libraries emit OTel traces by
