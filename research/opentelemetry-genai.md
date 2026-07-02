@@ -6,13 +6,13 @@ tags: [observability-governance, ecosystem-survey]
 cf_areas: [loggregator]
 status: draft
 sources:
-  - https://opentelemetry.io/docs/specs/semconv/gen-ai/
+  - https://github.com/open-telemetry/semantic-conventions-genai
 ---
 
 ## Summary
 
 OpenTelemetry defines semantic conventions for generative AI operations (currently in
-Development status) covering all four OTel signals. The conventions standardize span
+Development status) covering spans, metrics, and events. The conventions standardize span
 attributes for LLM model calls, agent framework operations (planning, tool selection),
 structured request/response events, and GenAI-specific metrics such as token usage and
 operation duration.
@@ -26,7 +26,7 @@ operation duration.
 - **Events**: Request/response payloads and tool call inputs/results as structured OTel
   events.
 - **GenAI metrics**: `gen_ai.client.token.usage`, `gen_ai.client.operation.duration`,
-  `gen_ai.client.response.status`.
+  `gen_ai.client.operation.time_to_first_chunk`.
 - **MCP integration**: Semantic conventions also defined for Model Context Protocol
   operations.
 - **Vendor coverage**: Conventions cover OpenAI, Anthropic, Azure AI Inference, and AWS
