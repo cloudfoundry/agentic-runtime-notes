@@ -12,11 +12,13 @@ sources:
 
 ## Summary
 
-KEDA (Kubernetes Event-Driven Autoscaling) is a CNCF graduated project that adds
-event-driven and queue-depth-based autoscaling to Kubernetes, including true scale-to-zero
-and scale-from-zero. It sits alongside the Kubernetes HPA, extending it with external
-metric sources rather than replacing it. KEDA is the de facto standard for event-driven
-scaling on Kubernetes and ships 70+ scalers for common messaging and queuing systems.
+KEDA (Kubernetes Event-Driven Autoscaling) is a [CNCF graduated project](https://www.cncf.io/projects/keda/)
+that adds event-driven and queue-depth-based autoscaling to Kubernetes, including true
+scale-to-zero and scale-from-zero. It sits alongside the [Kubernetes HPA](https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/),
+extending it with external metric sources rather than replacing it. KEDA is the de facto
+standard for event-driven scaling on Kubernetes and ships [70+ scalers](https://keda.sh/docs/latest/scalers/)
+([source](https://github.com/kedacore/keda/tree/main/pkg/scalers)) for common messaging
+and queuing systems.
 
 ## Key findings
 
