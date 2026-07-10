@@ -37,3 +37,7 @@ recover compute from idle sandboxes without discarding their work.
 
 - [research/k8s-agent-sandbox.md](../research/k8s-agent-sandbox.md) — K8s-native sandbox
   control plane with warm pools and PVC-backed persistence; gVisor pod snapshots on GKE.
+- [research/anthropic-managed-agents.md](../research/anthropic-managed-agents.md) —
+  Anthropic's brain/hands/session decomposition: the "hands" are on-demand sandboxes
+  provisioned per tool call (`provision({resources}) → execute(name, input) → string`);
+  the session is an external durable event log separate from the harness and sandboxes.
