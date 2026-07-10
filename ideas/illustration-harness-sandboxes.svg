@@ -1,0 +1,236 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" font-family="Inter, -apple-system, sans-serif">
+  <!-- Background -->
+  <rect width="1000" height="680" fill="#f8fafc"/>
+
+  <!-- ==================== LEFT GROUP (centered on session box) ==================== -->
+  <!-- Session box: y=80 to y=650, center=365. Group: LLM(70)+gap(70)+App(150)=290, centered at 365 -->
+
+  <!-- ==================== LLM PROVIDER (service binding) ==================== -->
+  <g>
+    <!-- Outer box -->
+    <rect x="195" y="220" width="140" height="70" rx="8" fill="#8b5cf6" opacity="0.1" stroke="#6d28d9" stroke-width="1.5"/>
+    <!-- Inner panel -->
+    <rect x="205" y="230" width="120" height="50" rx="5" fill="#ffffff" stroke="#e9d5ff" stroke-width="1"/>
+    <text x="265" y="250" text-anchor="middle" fill="#6d28d9" font-size="10" font-weight="600">LLM Provider</text>
+    <text x="265" y="264" text-anchor="middle" fill="#8b5cf6" font-size="8">(service binding)</text>
+    <text x="265" y="276" text-anchor="middle" fill="#6d28d9" font-size="8" font-family="JetBrains Mono, monospace">gemini-3.5-flash</text>
+  </g>
+
+  <!-- Arrow: App to LLM (request + context) -->
+  <path d="M 245 358 L 245 292" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+  <polygon points="242,292 245,285 248,292" fill="#7c3aed"/>
+  <text x="235" y="325" fill="#7c3aed" font-size="8" text-anchor="end">prompt +</text>
+  <text x="235" y="335" fill="#7c3aed" font-size="8" text-anchor="end">context</text>
+
+  <!-- Arrow: LLM to App (tool call response) -->
+  <path d="M 285 292 L 285 358" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+  <polygon points="282,358 285,365 288,358" fill="#7c3aed"/>
+  <text x="295" y="325" fill="#7c3aed" font-size="8">tool call</text>
+  <text x="295" y="335" fill="#7c3aed" font-size="8">response</text>
+
+  <!-- ==================== APP ==================== -->
+  <g>
+    <!-- Container outline -->
+    <rect x="170" y="360" width="190" height="150" rx="10" fill="#3b82f6" opacity="0.12" stroke="#2563eb" stroke-width="1.5"/>
+    <!-- Inner panel -->
+    <rect x="182" y="372" width="166" height="126" rx="6" fill="#ffffff" stroke="#bfdbfe" stroke-width="1"/>
+    <!-- Status badge -->
+    <circle cx="190" cy="380" r="4" fill="#3b82f6"/>
+    <text x="199" y="384" fill="#1e40af" font-size="8" font-weight="600">RUNNING</text>
+    <!-- App label -->
+    <text x="265" y="405" text-anchor="middle" fill="#1e40af" font-size="12" font-weight="600">APP</text>
+    <!-- Context assembly -->
+    <rect x="194" y="415" width="142" height="28" rx="5" fill="#dbeafe"/>
+    <text x="265" y="433" text-anchor="middle" fill="#1e40af" font-size="9" font-weight="500">user request + app context</text>
+    <!-- Tool call handling -->
+    <rect x="194" y="451" width="142" height="28" rx="5" fill="#dbeafe"/>
+    <text x="265" y="469" text-anchor="middle" fill="#1e40af" font-size="9">execute(sandbox, input)</text>
+  </g>
+
+  <!-- ==================== USER ==================== -->
+  <g>
+    <!-- User icon (centered on App) -->
+    <circle cx="80" cy="435" r="16" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/>
+    <circle cx="80" cy="428" r="6" fill="#64748b"/>
+    <path d="M 68 444 C 68 436, 92 436, 92 444" fill="#64748b"/>
+    <text x="80" y="465" text-anchor="middle" fill="#374151" font-size="10" font-weight="500">User</text>
+    <!-- Arrow from user to app -->
+    <path d="M 100 435 L 163 435" fill="none" stroke="#374151" stroke-width="1.5"/>
+    <polygon points="163,431 170,435 163,439" fill="#374151"/>
+    <text x="132" y="426" text-anchor="middle" fill="#64748b" font-size="8">request</text>
+  </g>
+
+  <!-- ==================== Connection lines from app to sandboxes ==================== -->
+  <!-- To active sandbox 1 -->
+  <path d="M 360 400 C 410 400, 430 175, 467 175" fill="none" stroke="#3b82f6" stroke-width="2"/>
+  <polygon points="467,172 474,175 467,178" fill="#3b82f6"/>
+  <!-- To active sandbox 2 -->
+  <path d="M 360 425 C 420 425, 440 320, 467 320" fill="none" stroke="#3b82f6" stroke-width="2"/>
+  <polygon points="467,317 474,320 467,323" fill="#3b82f6"/>
+  <!-- To suspended sandbox -->
+  <path d="M 360 455 C 410 455, 440 455, 467 455" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <circle cx="467" cy="455" r="3" fill="#64748b"/>
+  <!-- To dehydrated -->
+  <path d="M 360 475 C 410 475, 440 580, 467 580" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,5"/>
+  <circle cx="467" cy="580" r="3" fill="#94a3b8"/>
+
+  <!-- Label on connection -->
+  <text x="413" y="332" fill="#3b82f6" font-size="8" font-weight="500">tool calls</text>
+
+  <!-- ==================== ACTIVE Sandbox 1 ==================== -->
+  <g>
+    <!-- Container outline -->
+    <rect x="475" y="110" width="250" height="130" rx="10" fill="#059669" opacity="0.12" stroke="#047857" stroke-width="1.5"/>
+    <!-- File panel -->
+    <rect x="487" y="120" width="186" height="100" rx="6" fill="#ffffff" stroke="#d1fae5" stroke-width="1"/>
+    <!-- Status badge -->
+    <circle cx="495" cy="128" r="4" fill="#10b981"/>
+    <text x="504" y="132" fill="#065f46" font-size="8" font-weight="600">RUNNING</text>
+    <!-- File header bar -->
+    <rect x="487" y="135" width="186" height="16" rx="0" fill="#f3f4f6"/>
+    <line x1="487" y1="151" x2="673" y2="151" stroke="#e5e7eb" stroke-width="1"/>
+    <text x="495" y="146" fill="#6b7280" font-size="8" font-family="JetBrains Mono, monospace" font-weight="600">./fetch_stats.py</text>
+    <!-- Code snippet -->
+    <text x="495" y="165" fill="#6b7280" font-size="9" font-family="JetBrains Mono, monospace">import requests</text>
+    <text x="495" y="179" fill="#6b7280" font-size="9" font-family="JetBrains Mono, monospace">data = fetch_api("/stats")</text>
+    <text x="495" y="193" fill="#6b7280" font-size="9" font-family="JetBrains Mono, monospace">result = analyze(data)</text>
+    <text x="495" y="207" fill="#6b7280" font-size="9" font-family="JetBrains Mono, monospace">return summary(result)</text>
+    <!-- Disk attached -->
+    <rect x="683" y="135" width="34" height="46" rx="4" fill="#ecfdf5" stroke="#047857" stroke-width="1"/>
+    <rect x="688" y="141" width="24" height="4" rx="1" fill="#a7f3d0"/>
+    <rect x="688" y="149" width="24" height="4" rx="1" fill="#a7f3d0"/>
+    <rect x="688" y="157" width="24" height="4" rx="1" fill="#a7f3d0"/>
+    <rect x="688" y="165" width="16" height="4" rx="1" fill="#a7f3d0"/>
+    <text x="700" y="178" text-anchor="middle" fill="#047857" font-size="7" font-weight="500">disk</text>
+    <!-- Label -->
+    <text x="600" y="233" text-anchor="middle" fill="#047857" font-size="10" font-weight="500">Sandbox A — data analysis</text>
+  </g>
+
+  <!-- ==================== ACTIVE Sandbox 2 ==================== -->
+  <g>
+    <!-- Container outline -->
+    <rect x="475" y="255" width="250" height="130" rx="10" fill="#059669" opacity="0.12" stroke="#047857" stroke-width="1.5"/>
+    <!-- File panel -->
+    <rect x="487" y="265" width="186" height="100" rx="6" fill="#ffffff" stroke="#d1fae5" stroke-width="1"/>
+    <!-- Status badge -->
+    <circle cx="495" cy="273" r="4" fill="#10b981"/>
+    <text x="504" y="277" fill="#065f46" font-size="8" font-weight="600">RUNNING</text>
+    <!-- File header bar -->
+    <rect x="487" y="280" width="186" height="16" rx="0" fill="#f3f4f6"/>
+    <line x1="487" y1="296" x2="673" y2="296" stroke="#e5e7eb" stroke-width="1"/>
+    <text x="495" y="291" fill="#6b7280" font-size="8" font-family="JetBrains Mono, monospace" font-weight="600">./scrape_prices.py</text>
+    <!-- Code snippet -->
+    <text x="495" y="310" fill="#6b7280" font-size="9" font-family="JetBrains Mono, monospace">from bs4 import BS</text>
+    <text x="495" y="324" fill="#6b7280" font-size="9" font-family="JetBrains Mono, monospace">page = scrape(url)</text>
+    <text x="495" y="338" fill="#6b7280" font-size="9" font-family="JetBrains Mono, monospace">items = extract(page)</text>
+    <text x="495" y="352" fill="#6b7280" font-size="9" font-family="JetBrains Mono, monospace">return json(items)</text>
+    <!-- Disk attached -->
+    <rect x="683" y="280" width="34" height="46" rx="4" fill="#ecfdf5" stroke="#047857" stroke-width="1"/>
+    <rect x="688" y="286" width="24" height="4" rx="1" fill="#a7f3d0"/>
+    <rect x="688" y="294" width="24" height="4" rx="1" fill="#a7f3d0"/>
+    <rect x="688" y="302" width="24" height="4" rx="1" fill="#a7f3d0"/>
+    <rect x="688" y="310" width="10" height="4" rx="1" fill="#a7f3d0"/>
+    <text x="700" y="323" text-anchor="middle" fill="#047857" font-size="7" font-weight="500">disk</text>
+    <!-- Label -->
+    <text x="600" y="378" text-anchor="middle" fill="#047857" font-size="10" font-weight="500">Sandbox B — web scraping</text>
+  </g>
+
+  <!-- ==================== SUSPENDED Sandbox ==================== -->
+  <g>
+    <!-- Container outline (dashed) -->
+    <rect x="475" y="400" width="250" height="110" rx="10" fill="#f59e0b" opacity="0.08" stroke="#b45309" stroke-width="1.5" stroke-dasharray="5,3"/>
+    <!-- File panel -->
+    <rect x="487" y="410" width="186" height="82" rx="6" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+    <!-- Status badge (pause icon) -->
+    <rect x="491" y="416" width="5" height="10" rx="1" fill="#d97706"/>
+    <rect x="499" y="416" width="5" height="10" rx="1" fill="#d97706"/>
+    <text x="510" y="425" fill="#92400e" font-size="8" font-weight="600">SUSPENDED</text>
+    <!-- File header bar -->
+    <rect x="487" y="430" width="186" height="16" rx="0" fill="#fef9c3" opacity="0.5"/>
+    <line x1="487" y1="446" x2="673" y2="446" stroke="#fde68a" stroke-width="1"/>
+    <text x="495" y="441" fill="#b45309" font-size="8" font-family="JetBrains Mono, monospace" font-weight="600">./enrich_profile.py</text>
+    <!-- Faded code -->
+    <text x="495" y="460" fill="#d1d5db" font-size="9" font-family="JetBrains Mono, monospace">user = lookup(email)</text>
+    <text x="495" y="474" fill="#d1d5db" font-size="9" font-family="JetBrains Mono, monospace">social = fetch_linkedin(user)</text>
+    <text x="495" y="488" fill="#d1d5db" font-size="9" font-family="JetBrains Mono, monospace">return merge(user, social)</text>
+    <!-- Disk attached (amber) -->
+    <rect x="683" y="430" width="34" height="46" rx="4" fill="#fef3c7" stroke="#b45309" stroke-width="1"/>
+    <rect x="688" y="436" width="24" height="4" rx="1" fill="#fcd34d"/>
+    <rect x="688" y="444" width="24" height="4" rx="1" fill="#fcd34d"/>
+    <rect x="688" y="452" width="24" height="4" rx="1" fill="#fcd34d"/>
+    <rect x="688" y="460" width="24" height="4" rx="1" fill="#fcd34d"/>
+    <text x="700" y="473" text-anchor="middle" fill="#b45309" font-size="7" font-weight="500">disk</text>
+    <!-- Label -->
+    <text x="600" y="503" text-anchor="middle" fill="#b45309" font-size="10" font-weight="500">Sandbox C — profile enrichment (paused)</text>
+  </g>
+
+  <!-- ==================== DEHYDRATED Sandbox ==================== -->
+  <g>
+    <!-- Container outline (dotted) -->
+    <rect x="475" y="525" width="250" height="110" rx="10" fill="#e2e8f0" opacity="0.25" stroke="#64748b" stroke-width="1.5" stroke-dasharray="2,4"/>
+    <!-- File panel -->
+    <rect x="487" y="535" width="186" height="82" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <!-- Status badge -->
+    <rect x="491" y="541" width="12" height="8" rx="2" fill="none" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2"/>
+    <text x="508" y="548" fill="#64748b" font-size="8" font-weight="600">DEHYDRATED</text>
+    <!-- File header bar -->
+    <rect x="487" y="553" width="186" height="16" rx="0" fill="#f1f5f9" opacity="0.5"/>
+    <line x1="487" y1="569" x2="673" y2="569" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="495" y="564" fill="#94a3b8" font-size="8" font-family="JetBrains Mono, monospace" font-weight="600">./generate_report.py</text>
+    <!-- Faded code -->
+    <text x="495" y="583" fill="#d1d5db" font-size="9" font-family="JetBrains Mono, monospace">tmpl = load("quarterly.md")</text>
+    <text x="495" y="597" fill="#d1d5db" font-size="9" font-family="JetBrains Mono, monospace">charts = render(metrics)</text>
+    <text x="495" y="611" fill="#d1d5db" font-size="9" font-family="JetBrains Mono, monospace">return format(tmpl, charts)</text>
+    <!-- Blob icon -->
+    <rect x="683" y="553" width="34" height="46" rx="4" fill="#f8fafc" stroke="#64748b" stroke-width="1" stroke-dasharray="2,3"/>
+    <rect x="688" y="559" width="24" height="4" rx="1" fill="#e2e8f0"/>
+    <rect x="688" y="567" width="24" height="4" rx="1" fill="#e2e8f0"/>
+    <rect x="688" y="575" width="24" height="4" rx="1" fill="#e2e8f0"/>
+    <rect x="688" y="583" width="24" height="4" rx="1" fill="#e2e8f0"/>
+    <text x="700" y="596" text-anchor="middle" fill="#64748b" font-size="7" font-weight="500">blob</text>
+    <!-- Label -->
+    <text x="600" y="628" text-anchor="middle" fill="#64748b" font-size="10" font-weight="500">Sandbox D — report gen (archived)</text>
+  </g>
+
+  <!-- ==================== SESSION BOUNDARY ==================== -->
+  <g>
+    <rect x="470" y="96" width="260" height="550" rx="14" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="8,4" opacity="0.6"/>
+    <text x="600" y="660" text-anchor="middle" fill="#94a3b8" font-size="9" font-style="italic">user session — sandboxes per conversation</text>
+  </g>
+
+  <!-- ==================== Legend ==================== -->
+  <g transform="translate(780, 110)">
+    <text x="0" y="0" fill="#374151" font-size="11" font-weight="600">Sandbox States</text>
+    <!-- Running -->
+    <circle cx="8" cy="22" r="5" fill="#10b981"/>
+    <text x="20" y="26" fill="#374151" font-size="10">Running (CPU + disk)</text>
+    <!-- Suspended -->
+    <rect x="3" y="40" width="5" height="8" rx="1" fill="#d97706"/>
+    <rect x="10" y="40" width="5" height="8" rx="1" fill="#d97706"/>
+    <text x="20" y="48" fill="#374151" font-size="10">Suspended (disk, no CPU)</text>
+    <!-- Dehydrated -->
+    <rect x="3" y="60" width="12" height="8" rx="2" fill="none" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2"/>
+    <text x="20" y="68" fill="#374151" font-size="10">Dehydrated (blob only)</text>
+
+    <!-- Disk symbol -->
+    <rect x="3" y="92" width="14" height="18" rx="2" fill="#ecfdf5" stroke="#047857" stroke-width="1"/>
+    <rect x="5" y="95" width="10" height="2" rx="1" fill="#a7f3d0"/>
+    <rect x="5" y="99" width="10" height="2" rx="1" fill="#a7f3d0"/>
+    <rect x="5" y="103" width="10" height="2" rx="1" fill="#a7f3d0"/>
+    <text x="22" y="105" fill="#374151" font-size="10">Attached volume</text>
+
+    <!-- Blob symbol -->
+    <rect x="3" y="118" width="14" height="18" rx="2" fill="#f8fafc" stroke="#64748b" stroke-width="1" stroke-dasharray="2,2"/>
+    <rect x="5" y="121" width="10" height="2" rx="1" fill="#e2e8f0"/>
+    <rect x="5" y="125" width="10" height="2" rx="1" fill="#e2e8f0"/>
+    <rect x="5" y="129" width="10" height="2" rx="1" fill="#e2e8f0"/>
+    <text x="22" y="131" fill="#374151" font-size="10">Blobstore snapshot</text>
+  </g>
+
+  <!-- Title -->
+  <text x="500" y="30" text-anchor="middle" fill="#1e293b" font-size="16" font-weight="700">App + LLM + Sandbox Architecture</text>
+  <text x="500" y="50" text-anchor="middle" fill="#64748b" font-size="11">User request triggers LLM call; LLM responds with tool calls dispatched to per-session sandboxes</text>
+
+  <!-- Author -->
+  <text x="980" y="672" text-anchor="end" fill="#94a3b8" font-size="9">Ruben Koster</text>
+</svg>
