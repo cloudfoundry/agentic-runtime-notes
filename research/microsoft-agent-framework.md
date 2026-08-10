@@ -10,6 +10,9 @@ sources:
   - https://github.com/microsoft/agent-framework-durable-extension
   - https://learn.microsoft.com/en-us/agent-framework/overview/agent-framework-overview
   - https://learn.microsoft.com/en-us/agent-framework/user-guide/workflows/overview
+  - https://github.com/microsoft/agent-framework/blob/main/dotnet/samples/02-agents/AgentProviders/dapr/Agent_With_Dapr/README.md
+  - https://docs.diagrid.io/develop/agents/microsoft/
+  - https://github.com/diagridio/dotnet-ai
 ---
 
 ## Summary
@@ -21,8 +24,12 @@ workflows. It is explicitly positioned as "the direct successor" to both
 [Semantic Kernel](https://github.com/microsoft/semantic-kernel) (enterprise-grade
 state/telemetry/type-safety), built by the same Microsoft teams. It bundles agents, an
 opinionated "harness" for long multi-step tasks, and explicit graph-based workflows with
-checkpointing, MCP tool integration, and A2A hosting support — but notably, its durable/stateful
-execution story runs on **Azure Durable Task Framework**, not Dapr.
+checkpointing, MCP tool integration, and A2A hosting support. Dapr integration turns out to be
+richer than it first appears: Microsoft's own sample uses Dapr only narrowly, as a pluggable
+inference-backend provider, while its first-party durable-workflow story runs on **Azure
+Durable Task Framework** — but a third-party library from **Diagrid** (Dapr's commercial
+steward) instead builds MAF agents *directly atop Dapr's own Durable Workflows*, pub/sub, and
+state store.
 
 ## Key findings
 
@@ -48,17 +55,42 @@ execution story runs on **Azure Durable Task Framework**, not Dapr.
   "self-hosted protocol helpers," and one-line-ish deployment to Foundry-hosted infrastructure
   (see `azure-hosted-agents.md` for the Foundry hosted-agent runtime model this integrates
   with, and `a2a-protocol.md` for the protocol itself).
-- **Durable execution is via Azure Durable Task Framework, not Dapr**: durability,
-  restartability, and long-running workflow state are delivered by a separate
+- **Dapr integration exists, but only as an inference-backend provider**: the
+  [`Agent_With_Dapr`](https://github.com/microsoft/agent-framework/blob/main/dotnet/samples/02-agents/AgentProviders/dapr/Agent_With_Dapr/README.md)
+  sample uses Dapr's **Conversation API** building block (`Dapr.AI.Microsoft.Extensions`,
+  `AddDaprChatClient`) to route an agent's LLM calls through the Dapr sidecar to a
+  `conversation.*` component (e.g. `conversation.ollama`) instead of calling a model
+  provider's SDK directly. This buys provider portability (swap the backing LLM by swapping
+  the Dapr component, not the app code) and built-in response caching (`cacheTTL` on the
+  component). It is listed as one of a dozen-plus interchangeable "AgentProviders" (alongside
+  OpenAI, Azure, Anthropic, Ollama, ONNX, GitHub Copilot, A2A, etc.) — i.e. Dapr is treated as
+  a model-backend abstraction, not as MAF's orchestration or state substrate.
+- **Durable *workflow* execution is via Azure Durable Task Framework, not Dapr**: separately
+  from the inference-provider integration above, durability, restartability, and long-running
+  workflow state for MAF's **Workflows** feature are delivered by a distinct
   [`agent-framework-durable-extension`](https://github.com/microsoft/agent-framework-durable-extension)
   repo, built on the **Durable Task Scheduler** (Azure Durable Functions' backing engine),
-  Azurite (Azure Storage emulator), and Redis — with Azure Functions as a hosting option.
-  Despite the assumption that Microsoft would lean on Dapr (its own CNCF sandbox project) for
-  this, no Dapr integration is mentioned anywhere in the MAF README, the durable extension
-  repo, or the Microsoft Learn overview/workflow docs as of this research. This makes MAF's
-  durability story architecturally distinct from **Dapr Agents** (see `dapr-agents.md`), which
-  is Dapr-native (uses Dapr Workflows/Actors/state stores directly) — MAF instead ties its
-  durability substrate to the Azure Durable Task ecosystem.
+  Azurite (Azure Storage emulator), and Redis — with Azure Functions as a hosting option. No
+  Dapr Workflows/Actors integration is mentioned for this layer in the MAF README, the durable
+  extension repo, or the Microsoft Learn overview/workflow docs as of this research. This makes
+  MAF's *workflow durability* story architecturally distinct from **Dapr Agents** (see
+  `dapr-agents.md`), which is Dapr-native end-to-end (uses Dapr Workflows/Actors/state stores
+  directly for both the agent loop and durability) — MAF only touches Dapr at the model-call
+  edge, and ties its actual durability substrate to the Azure Durable Task ecosystem instead.
+- **...unless you use Diagrid's Dapr-native durability layer for MAF**: Diagrid (the company
+  founded by Dapr's original creators, and its primary commercial steward) publishes
+  [`diagridio/dotnet-ai`](https://github.com/diagridio/dotnet-ai) (`Diagrid.AI.Microsoft.AgentFramework`
+  on NuGet) — "a library that facilitates building agents using Microsoft's Agent Framework
+  atop Dapr's Durable Workflows." This wraps MAF agent tasks in Dapr Workflows for automatic
+  retries/checkpointing/crash recovery, uses Dapr pub/sub to decouple multi-agent
+  communication, and uses a Dapr state store to persist chat memory across restarts — i.e. the
+  complete Dapr-native durability story (workflows + actors/state + pub/sub) that Microsoft's
+  own `agent-framework-durable-extension` does *not* provide. It reuses the same Conversation
+  API mechanism as Microsoft's own sample (`AddDaprConversationClient()` +
+  `conversationComponentName`), and per Diagrid's docs a conversation component is *required*,
+  not optional, for this integration. This is a **third-party, Dapr-ecosystem-provided**
+  durability path, not something shipped or endorsed in the core `microsoft/agent-framework`
+  repo itself.
 - **Observability built on OpenTelemetry**: "Built-in OpenTelemetry integration for
   distributed tracing, monitoring, and debugging" is listed as a first-class feature, with
   dedicated Python and .NET observability samples, though the README does not explicitly cite
@@ -75,27 +107,35 @@ execution story runs on **Azure Durable Task Framework**, not Dapr.
 ## CF relevance
 
 MAF is a strong signal of where enterprise agent frameworks are converging: agents, explicit
-workflow graphs, tool/MCP integration, and A2A as the default set of primitives. Its choice to
-build durability on Azure's own Durable Task substrate (rather than Dapr, a CNCF project
-Microsoft also stewards) is a useful data point when comparing execution-substrate options for
-CF — it suggests durable agent execution doesn't require Dapr specifically, just *some*
-workflow/checkpoint engine, which could be Diego-native, Temporal, Dapr, or otherwise. The
+workflow graphs, tool/MCP integration, and A2A as the default set of primitives. The three-way
+split between Microsoft's own durability path (Azure Durable Task Framework), Microsoft's own
+Dapr touchpoint (Conversation API only), and Diagrid's third-party Dapr-native durability layer
+(Dapr Workflows + pub/sub + state store) is a useful data point for CF: it shows a mature
+framework's durability substrate is *not* fixed to one vendor's stack — the ecosystem, not just
+the framework author, can supply the durability/state layer. That decoupling (agent framework
+vs. durability substrate vs. inference-backend abstraction, as three independently swappable
+concerns) may be a more useful design reference for CF than any single implementation. The
 declarative YAML agent definitions and Foundry one-line hosting also raise the recurring
-question from other notes: what would a CF-native "agent packaging" story (buildpack,
-manifest, or droplet analogue) look like for MAF-style agents.
+question from other notes: what would a CF-native "agent packaging" story (buildpack, manifest,
+or droplet analogue) look like for MAF-style agents.
 
 ## Open questions
 
 - Does MAF's OpenTelemetry instrumentation actually conform to the GenAI semantic
   conventions, or is it a custom schema (see `opentelemetry-genai.md`)?
-- Is the lack of Dapr integration a deliberate architectural choice (avoiding a dependency on
-  a separate runtime) or simply not-yet-built? Worth revisiting as the durable extension
-  matures.
+- Why does Microsoft's own first-party durability extension not use Dapr, when a third party
+  (Diagrid) has already built a working Dapr Workflows-based alternative? Is this organizational
+  (different teams, Azure-first bias) or a deliberate technical preference?
+- How mature/supported is Diagrid's `dotnet-ai` integration compared to Microsoft's own
+  `agent-framework-durable-extension` — is it production-grade, or a
+  demonstration/marketing vehicle for Dapr? Does an equivalent exist for MAF's Python binding,
+  or is this .NET-only?
 - How does MAF's A2A hosting story compare to Azure Foundry's native A2A support
   (`azure-hosted-agents.md`) — is A2A exposed identically regardless of hosting target?
 - If CF wanted to host MAF-based agents, would the Durable Task Scheduler dependency (Azure
-  Storage emulator/Azurite, Redis) need a CF-native substitute, or can it run against
-  self-hosted/OSS-compatible backends off Azure?
+  Storage emulator/Azurite, Redis) need a CF-native substitute — or could the Dapr-native path
+  (Diagrid's library) be used instead, making Dapr (already covered in `dapr.md`) sufficient
+  infrastructure for both the durability layer and the inference-backend abstraction?
 - How does the "Harness" (planning, context compaction, memory, tool approval) compare to
   similar batteries-included agent runtimes elsewhere in this research set — is this a
   reusable pattern platforms should expect to support generically?
