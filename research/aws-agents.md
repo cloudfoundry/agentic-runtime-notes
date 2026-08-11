@@ -33,7 +33,9 @@ managed-agent-hosting model already covered in `azure-hosted-agents.md` and
 Memory, Gateway, Identity, Observability, Policy, and more), with microVM-based per-session
 isolation as its core security primitive.
 
-## Key findings — Strands Agents
+## Key findings
+
+### Strands Agents
 
 - **License, governance, repo structure**: Apache-2.0, developed by AWS under the
   `strands-agents` GitHub org. The repo was renamed to a monorepo (`harness-sdk`) containing
@@ -84,7 +86,7 @@ isolation as its core security primitive.
   AgentCore, AWS Lambda, Fargate, App Runner, EKS, EC2, Docker, Kubernetes, and Terraform/Nx
   IaC — AgentCore is presented as one deployment option among several, not a required pairing.
 
-## Key findings — Amazon Bedrock AgentCore (managed runtime)
+### Amazon Bedrock AgentCore (managed runtime)
 
 - **Framework- and model-agnostic hosting platform**: "an agentic platform for building,
   deploying, and operating highly effective agents securely at scale using any framework and
