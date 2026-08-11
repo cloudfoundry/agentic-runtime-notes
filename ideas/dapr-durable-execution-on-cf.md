@@ -39,12 +39,13 @@ verification trustworthy by construction, rather than by operator diligence.
 |---|---|---|
 | **`dapr-sentry`** — CA issuing SPIFFE workload identities | **Yes** — the Diego instance identity CA, whose certs already encode app/space/org GUIDs | Bridge rather than run a second CA. Derive the Dapr workload identity from the cert CF already issues; no new root of trust, no new secret to rotate, no second CA to blast-radius. |
 | **`dapr-operator`** — watches Component CRDs, pushes component config to sidecars | **Yes** — CAPI plus the service-binding model is CF's config and credential distribution mechanism | Re-implement. A Dapr Component (a state store, a pub/sub broker) is conceptually a CF service binding: an operator-provisioned backing service, scoped to a space, surfaced to the app as config. `scopes:` on a Component is roughly "which apps is this bound to." |
-| **`dapr-sidecar-injector`** — Kubernetes mutating admission webhook | **Yes** — CF sidecars (manifest `sidecars:`, Diego process co-location) | Re-implement. CF has no admission-webhook concept and doesn't need one: it already knows how to run an extra process alongside an app in the same container/network namespace. |
+| **`dapr-sidecar-injector`** — Kubernetes mutating admission webhook | **Yes, and stronger** — Diego already injects a platform-owned process into every app container: the Envoy container proxy used for route integrity | Re-implement. CF has no admission-webhook concept and doesn't need one. Envoy is the precedent: Diego's rep/executor places it in the container, hands it the instance identity cert, and accounts for its memory — all without the developer declaring anything. `daprd` should follow that same path. |
 | **`dapr-placement-server`** — actor placement tables (Raft, consistent hashing, namespace-scoped since v1.14) | **Partially** — Diego BBS already tracks where every app instance runs; NATS already disseminates that to routers | **Genuinely open.** See the sibling idea [[dapr-aware-gorouter]] — the placement table and GoRouter's route table are arguably the same object, which may mean CF doesn't need a separate placement service at all. |
 | **`dapr-scheduler-server`** — durable jobs and actor reminders (etcd-backed) | **No** — `cf run-task` is one-shot; CF has no durable scheduler, no cron primitive, no reminder store | **Adopt upstream.** This is a real gap, and the least CF-specific component — it's a scheduling service with a storage backend, with little coupling to CF's identity or routing model. |
 
 The **workflow engine itself needs no mapping** — it runs *inside* daprd, layered on the actor
-runtime, so it arrives with the sidecar rather than as a control-plane component to host.
+runtime, so it arrives with the injected `daprd` process rather than as a control-plane
+component to host.
 
 The rough shape of the answer: CF re-implements or bridges the components where it already has
 a stronger, more CF-native primitive (identity, config distribution, process co-location),
@@ -71,44 +72,59 @@ RFC-0055 also explicitly reserves a `spiffe:` prefix in its route-policy source 
 (alongside `cf:app:`, `cf:space:`, `cf:org:`) for future identity types. That is a natural hook
 for expressing Dapr workload identities in route policies without inventing new syntax.
 
-## Two possible developer surfaces
+## Not a sidecar — a system-provided process, like Envoy
 
-**Option A — manifest flag, platform-injected sidecar.**
+The obvious move is to ship `daprd` as an app sidecar declared in the manifest. That is
+probably wrong, and CF already has a better precedent: **the Envoy container proxy used for
+route integrity.**
 
-```yaml
-applications:
-  - name: my-agent
-    dapr:
-      enabled: true
+Envoy runs in every Diego app container. The developer never declares it, never sees it in
+their manifest, and cannot misconfigure it. Diego's rep/executor places it in the container,
+hands it the instance identity certificate, wires its listeners, and accounts for its memory
+separately from the app's allocation (`proxy_memory_allocation_mb`). Whether it runs at all is
+an operator decision, not a developer one. From the app's perspective it simply *is* the
+network.
+
+`daprd` should arrive the same way:
+
+- **Platform-injected, not manifest-declared.** No `sidecars:` block, no opt-in ceremony, no
+  way for a developer to pin an outdated `daprd` or misconfigure its control-plane endpoints.
+  The app just finds a Dapr API on `localhost:3500`, the same way it finds Envoy already
+  fronting its port.
+- **It already has the right credential.** Envoy is handed the Diego instance identity cert
+  today, for exactly the mutual-TLS purpose Dapr needs. A platform-injected `daprd` inherits
+  the same credential from the same mechanism — which is what makes bridging `dapr-sentry`
+  (above) a config exercise rather than a new secret-distribution problem.
+- **Operator-controlled availability.** Like `enable_envoy_proxy`, whether Dapr is available is
+  a platform/BOSH-level decision, potentially scoped per org or space, rather than something
+  every app team turns on independently.
+- **Platform-owned lifecycle and patching.** CF upgrades `daprd` the way it upgrades Envoy —
+  as part of the platform, not as a dependency each developer must remember to bump. For a
+  component holding durable workflow state, that matters.
+
+This also removes the awkward question of what "Dapr mode" means in a CF manifest. There is no
+mode; there is a platform capability that is either present in the foundation or not.
+
+**What service bindings are still for.** The injection question ("is `daprd` running?") and the
+configuration question ("which state store, which pub/sub broker does it use?") are separate.
+Injection follows the Envoy model — platform-decided. Configuration is a natural fit for
+service bindings, because a Dapr Component *is* essentially a CF service binding: an
+operator-provisioned backing service, scoped to a space, surfaced to the workload as config.
+
+```
+cf bind-service my-agent workflow-state-store
 ```
 
-The platform runs `daprd` alongside the app process; the app talks to `localhost:3500`.
+So the likely shape is: the platform provides `daprd` unconditionally (Envoy model), and
+bindings determine which components it is configured with (service-broker model) — rather than
+the developer choosing whether Dapr exists at all.
 
-*For:* mirrors the annotation-driven model Dapr users already know, so existing Dapr apps and
-SDKs work unmodified; one flag turns on all building blocks at once; the sidecar can be kept
-patched by the platform rather than by each developer.
-*Against:* introduces a runtime concept ("Dapr mode") that doesn't map onto anything else in
-CF's manifest vocabulary; unclear how an operator restricts *which* building blocks are
-available, or meters their use.
+The open tradeoff is cost. Envoy is justified because *every* app benefits from route
+integrity. `daprd` is heavier and only durable-execution workloads need it, so running it in
+every container may not pay for itself. Options worth exploring: inject it only where a Dapr
+component is bound, only in spaces where an operator has enabled it, or accept the overhead in
+exchange for the uniformity that made the Envoy decision work.
 
-**Option B — service binding.**
-
-```
-cf bind-service my-agent dapr-workflow
-```
-
-*For:* fits CF's existing mental model exactly — durable execution becomes a bindable backing
-service like any database, with the marketplace, plan, and quota machinery that comes with it;
-operators get natural per-plan control over which capabilities a space can use; the
-service-binding model is already how CF injects config and credentials, which is exactly what a
-Dapr Component is.
-*Against:* one sidecar serving several bound Dapr capabilities makes the "one binding, one
-service instance" model a bit of a fiction; developers used to upstream Dapr would find the
-onboarding unfamiliar.
-
-These aren't mutually exclusive — a manifest flag could control *whether* the sidecar runs,
-while bindings control *which components* it's configured with. That combination is probably
-worth exploring over either in isolation.
 
 ## Three broader adoption strategies
 
@@ -157,6 +173,13 @@ under different names. Making that mapping explicit is useful even if CF never s
   something CF already runs?
 - How would a Dapr namespace derived from `<org-guid>/<space-guid>` interact with CF app
   restarts, re-pushes, and blue/green deploys — does actor identity survive them?
+- How exactly does Diego inject and configure the Envoy container proxy today (rep/executor
+  responsibilities, cert delivery, `proxy_memory_allocation_mb` accounting), and how much of
+  that path is reusable for a second platform-provided process rather than special-cased for
+  Envoy?
+- If `daprd` is injected everywhere like Envoy, what is the real per-container cost, and does
+  that force a narrower trigger — only where a Dapr component is bound, or only in
+  operator-enabled spaces?
 - What is the actual operational cost of a Raft placement cluster and an etcd-backed scheduler
   at CF foundation scale, and does that change the adopt-vs-reimplement calculus?
 
@@ -169,6 +192,7 @@ under different names. Making that mapping explicit is useful even if CF never s
   (alternative durable-execution and virtual-actor substrates worth comparing against).
 - [RFC-0055: Identity-Aware Routing for GoRouter](https://github.com/cloudfoundry/community/blob/main/toc/rfc/rfc-0055-identity-aware-routing-for-gorouter.md)
   and [RFC-0027: Generic Per-Route Features](https://github.com/cloudfoundry/community/blob/main/toc/rfc/rfc-0027-generic-per-route-features.md).
-- The sidecar assumed here is the same shape as the one in [[credential-less-agent-processes]]
-  and [[localhost-only-egress-for-agents]] — worth checking whether one sidecar should serve
-  all three concerns.
+- [[credential-less-agent-processes]] and [[localhost-only-egress-for-agents]] both assume a
+  `localhost` helper process in front of the app. The Envoy-style injection model argued for
+  above applies equally to those — worth checking whether one platform-provided process should
+  serve all three concerns, or whether they should stay separate.
