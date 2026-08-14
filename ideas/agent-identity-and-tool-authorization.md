@@ -30,7 +30,7 @@ Tools and MCP servers hosted on CF get default-deny route policies keyed on the 
 
 **Layer 2 :: the proposal: workload token exchange against UAA.**
 
-UAA gains the ability to accept a Diego instance identity cert as a client credential and mint a short-lived workload token carrying the app, space, and org GUIDs as claims. The mechanism is mTLS client authentication per RFC 8705 or token exchange per RFC 8693; UAA implements neither today (it ships `client_secret_basic`, `client_secret_post`, and `private_key_jwt`). Two things follow:
+UAA gains the ability to accept a Diego instance identity cert as a client credential and mint a short-lived workload token carrying the app, space, and org GUIDs as claims. The mechanism is mTLS client authentication per RFC 8705 or token exchange per RFC 8693; UAA implements neither today (it ships `client_secret_basic`, `client_secret_post`, and `private_key_jwt`), though draft POCs of this exchange now exist against UAA (see "Related"). Two things follow:
 
 - **CF-hosted MCP servers get most of an authorization server for free.**
   MCP's authorization framework is OAuth 2.1-based; a CF-hosted MCP server can trust UAA-issued workload tokens with no app-managed secrets on either side, and tool authorization becomes scope policy in an OAuth server the platform already runs, audited through events UAA already emits. The remaining delta (full OAuth 2.1 conformance, RFC 8707 resource indicators, client registration) is real but bounded (see "What to research next"). The bet worth naming: this assumes org-internal MCP servers become a real deployment shape on CF, rather than staying vendor-hosted with only the client on the platform.
@@ -94,9 +94,9 @@ pattern from the IETF's WIMSE (Workload Identity in Multi System Environments) w
 
 ## What to research next
 
-- UAA implements neither RFC 8705 mTLS client authentication nor RFC 8693 token exchange today. What is the implementation cost of adding either, and how do daily cert rotations interact with token and refresh-token lifetimes?
+- UAA implements neither RFC 8705 mTLS client authentication nor RFC 8693 token exchange today, but a draft POC of the RFC 8705 half exists: [uaa#3972](https://github.com/cloudfoundry/uaa/pull/3972) exchanges an instance identity cert for a UAA JWT carrying the app, space, and org GUIDs as claims. What is the implementation cost of landing it properly, and how do daily cert rotations interact with token and refresh-token lifetimes?
 - Map MCP's authorization requirements onto UAA concretely: full OAuth 2.1 conformance (UAA still ships the implicit and password grants OAuth 2.1 removes), RFC 8707 resource indicators, and Client ID Metadata Documents. How big is the delta for UAA to serve a CF-hosted MCP server out of the box?
-- Should workload tokens carry SPIFFE IDs? The namespace RFC-0055 names as future extensibility, and the WIMSE direction the AOAT draft builds on? Can an instance identity cert serve as the workload-identity substrate `research/open-agent-auth.md` asks about for SPIFFE SVIDs?
+- Should workload tokens carry SPIFFE IDs? The namespace RFC-0055 names as future extensibility, and the WIMSE direction the AOAT draft builds on? Can an instance identity cert serve as the workload-identity substrate `research/open-agent-auth.md` asks about for SPIFFE SVIDs? A draft POC probes this direction: [uaa#3968](https://github.com/cloudfoundry/uaa/pull/3968) adds a JWT-SVID signing endpoint to UAA that verifies an instance identity cert and mints a SPIFFE JWT-SVID from its org, space, and app OUs.
 - What is the minimum feature set for parity with AgentCore Identity and Agent Engine's principals, and which of their choices (Cedar policies, token vaults, per-session identities) are worth adopting versus avoiding?
 - Where should tool-side policy enforcement live on CF, given that UAA should stay a token issuer, e.g. should it be a library tools embed, an OPA sidecar pattern, or route-level enforcement extended with operation awareness?
 
@@ -104,6 +104,7 @@ pattern from the IETF's WIMSE (Workload Identity in Multi System Environments) w
 
 - [RFC-0055: Identity-Aware Routing for GoRouter](https://github.com/cloudfoundry/community/blob/main/toc/rfc/rfc-0055-identity-aware-routing-for-gorouter.md) is the inbound half this idea mirrors.
 - Sibling ideas: [[credential-less-agent-processes]] (the vault-and-sidecar pattern layer 2 gives a standard token to), [[localhost-only-egress-for-agents]] (the enforcement point for outbound calls), [[per-session-sandboxes]] (the per-session credential question above), and [[dapr-durable-execution-on-cf]] (the same instance-identity-cert insight, applied to Dapr's control plane).
+- UAA POC drafts: [uaa#3972](https://github.com/cloudfoundry/uaa/pull/3972) (RFC 8705 mutual-TLS client authentication for instance identity certs, the layer-2 exchange) and [uaa#3968](https://github.com/cloudfoundry/uaa/pull/3968) (a JWT-SVID signing endpoint, the SPIFFE direction from "What to research next").
 - Research notes: `research/open-agent-auth.md` (the AOAT delegation and consent model layer 3 follows), `research/mcp-protocol.md` (MCP's OAuth 2.1-based authorization framework), and `research/anthropic-managed-agents.md` (the credential-proxy finding the sidecar pattern descends from).
 - Managed-platform notes: `research/aws-agents.md`, `research/vertex-agent-engine.md`, and
   `research/azure-hosted-agents.md` (the identity pillar this idea answers).
