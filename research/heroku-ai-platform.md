@@ -12,6 +12,7 @@ sources:
   - https://www.heroku.com/blog/accelerating-ai-dev-new-models-performance-improvements-messages-api/
   - https://www.heroku.com/blog/code-execution-sandbox-for-agents-on-heroku/
   - https://www.heroku.com/ai/mcp-on-heroku/
+  - https://github.com/heroku/mcp-code-exec-python
 ---
 
 ## Summary
@@ -61,6 +62,19 @@ buildpack can consume via environment-variable config.
   server-side and only a summary re-enters the model's context, which Heroku cites as
   cutting token consumption ~37% on average (up to 98% in some cases). A `max_calls`
   runtime param bounds sandbox invocations per agent loop.
+- **Sandbox dependency resolution happens live, per call, with no offline path**: reading
+  the open-source `heroku/mcp-code-exec-python` implementation shows two separate layers.
+  The Python *interpreter* version is fixed at deploy time by the buildpack (a
+  `.python-version` file pins it into the slug every one-off dyno boots from). Requested
+  *libraries*, however, are resolved at request time: the `code_exec_python` tool accepts
+  an optional `packages` list, and on each call the server creates a throwaway venv inside
+  the dyno, runs `pip install <packages>` against the public PyPI index, executes the code,
+  then deletes the venv. The implementation's own docstring notes this "does NOT mean the
+  code is fully isolated or secure — it just means the package installations are isolated";
+  the dyno container boundary is what actually isolates execution. This design requires
+  live egress to a public package index at execution time, with no documented offline
+  buildpack/mirror path and no caching or version pinning across calls — every invocation
+  re-resolves and re-downloads from scratch.
 - **No durable-execution primitive found**: nothing in the surveyed material describes
   workflow-style checkpointing, replay, or resumable agent state across steps/restarts (the
   kind of thing Temporal/Restate provide). Sandboxes are stateless and ephemeral — state
@@ -101,10 +115,17 @@ The sandbox design is directly portable: Heroku's "reuse an existing ephemeral-c
 primitive for untrusted code execution" maps almost one-to-one onto CF's task model —
 Diego one-off tasks are CF's equivalent of one-off dynos, and a "code execution sandbox"
 add-on could plausibly be built as a broker that runs agent-submitted code as a short-lived
-Diego task rather than requiring a new isolation layer. Conversely, the absence of any
-durable-execution story on Heroku means CF gets no free lunch there either — a resumable,
-checkpointed agent-loop primitive (if the working group decides it's needed) would be new
-ground for both platforms, not something to crib from Heroku's design.
+Diego task rather than requiring a new isolation layer. However, Heroku's dependency
+resolution (live `pip install` per call against a public package index) assumes
+always-on internet egress from the sandbox — a pattern that doesn't fit enterprise CF
+deployments that typically run offline/mirrored buildpacks with no direct app egress. CF's
+existing staging/droplet split (resolve dependencies once at `cf push` time, run app
+instances from the resulting immutable droplet) is a different model that might be a
+better fit for offline environments, but would need its own design (see
+`ideas/staged-sandbox-environments.md`). Separately, the absence of any durable-execution
+story on Heroku means CF gets no free lunch there either — a resumable, checkpointed
+agent-loop primitive (if the working group decides it's needed) would be new ground for
+both platforms, not something to crib from Heroku's design.
 
 ## Open questions
 
@@ -123,6 +144,12 @@ ground for both platforms, not something to crib from Heroku's design.
   dispatches agent-submitted code to a short-lived Diego task, mirroring Heroku's
   one-off-dyno approach — or does untrusted-code execution need stronger isolation
   (gVisor/Kata, a dedicated runc profile) than a standard Diego cell provides?
+- Heroku resolves sandbox dependencies live per call against public PyPI, with no offline
+  or caching path. Could CF instead reuse its existing staging/droplet mechanism — resolve
+  a dependency manifest once into a cacheable droplet, then execute against an
+  already-staged environment — to support offline/mirrored-buildpack deployments and avoid
+  re-resolving dependencies on every sandbox invocation? (see
+  `ideas/staged-sandbox-environments.md`)
 - Neither Heroku nor (per the earlier Azure/other notes) most surveyed platforms offer true
   durable execution for agent loops. Is this a genuine gap the working group should design
   for, or is "persist state yourself in a bound service" (Heroku's implicit answer) good
