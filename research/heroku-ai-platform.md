@@ -2,14 +2,16 @@
 title: "Heroku AI — Managed Inference, Agents, and MCP on a Buildpack-Era PaaS"
 author: Ruben Koster (@rkoster)
 date: 2026-08-24
-tags: [runtime-lifecycle, inter-agent-comms, ecosystem-survey, observability-governance, identity]
-cf_areas: [buildpacks, capi]
+tags: [runtime-lifecycle, sandboxing-isolation, inter-agent-comms, ecosystem-survey, observability-governance, identity]
+cf_areas: [buildpacks, capi, diego]
 status: draft
 sources:
   - https://www.heroku.com/ai/
   - https://www.heroku.com/blog/heroku-ai-studio-workspace-for-smarter-faster-ai-apps/
   - https://devcenter.heroku.com/categories/ai-integrations
   - https://www.heroku.com/blog/accelerating-ai-dev-new-models-performance-improvements-messages-api/
+  - https://www.heroku.com/blog/code-execution-sandbox-for-agents-on-heroku/
+  - https://www.heroku.com/ai/mcp-on-heroku/
 ---
 
 ## Summary
@@ -45,9 +47,28 @@ buildpack can consume via environment-variable config.
   data-service instead of adding infrastructure surface area.
 - **AI Studio = interactive workspace bolted onto the add-on**: A hosted UI
   (`aistudio.heroku.com`) for live prompt/tool iteration against provisioned models,
-  reachable directly from the add-on. It's dev-tooling, not a runtime change — no isolated
-  execution sandbox described, unlike Azure Foundry's per-session VM model
-  (`azure-hosted-agents.md`).
+  reachable directly from the add-on. It's dev-tooling, not a runtime change.
+- **Sandboxing reuses an existing primitive — one-off dynos**: Heroku ships a "Code
+  Execution Sandbox for Agents" (launched alongside the inference add-on, May 2025) that
+  runs untrusted LLM-generated code inside **one-off dynos** — the decade-old mechanism
+  behind `heroku run` — spun up on demand and terminated after use. No new sandbox runtime
+  was built; isolation is achieved by reusing the ephemeral-container lifecycle Heroku
+  already had, so blast radius is bounded to one throwaway container per invocation.
+  Exposed two ways: as built-in tools (`code_exec_python/ruby/node/go`) in the Managed
+  Inference and Agents API (`v1/agents/heroku`), and as open-source MCP servers
+  (e.g. `heroku/mcp-code-exec-python`) any MCP client can attach to. This implements
+  Anthropic's "programmatic tool calling" pattern — the model writes code that loops/filters
+  server-side and only a summary re-enters the model's context, which Heroku cites as
+  cutting token consumption ~37% on average (up to 98% in some cases). A `max_calls`
+  runtime param bounds sandbox invocations per agent loop.
+- **No durable-execution primitive found**: nothing in the surveyed material describes
+  workflow-style checkpointing, replay, or resumable agent state across steps/restarts (the
+  kind of thing Temporal/Restate provide). Sandboxes are stateless and ephemeral — state
+  dies with the one-off dyno — and inference calls are plain stateless request/response.
+  Any multi-step agent loop that must survive beyond a single request/dyno is left to the
+  app developer to persist itself (e.g., in Postgres). This is a notable contrast with
+  Azure Foundry's per-session VM model, which offers a persistent filesystem and 30-day
+  resumable sessions (`azure-hosted-agents.md`).
 - **Fast-moving model catalog with lifecycle policy**: Regular catalog churn (Claude Opus
   4.5 / Sonnet 4.5 / Haiku 4.5, Amazon Nova 2, Kimi K2 Thinking, MiniMax M2, Qwen3) with
   published deprecation dates (e.g., Claude 3 family retiring Jan 30 2026) and a
@@ -76,6 +97,15 @@ agent-runtime abstraction. It also surfaces adjacent platform concerns CF doesn'
 address: model lifecycle/deprecation policy as a first-class platform signal, and
 prompt/tool-schema caching as a routing-layer optimization for agentic traffic patterns.
 
+The sandbox design is directly portable: Heroku's "reuse an existing ephemeral-compute
+primitive for untrusted code execution" maps almost one-to-one onto CF's task model —
+Diego one-off tasks are CF's equivalent of one-off dynos, and a "code execution sandbox"
+add-on could plausibly be built as a broker that runs agent-submitted code as a short-lived
+Diego task rather than requiring a new isolation layer. Conversely, the absence of any
+durable-execution story on Heroku means CF gets no free lunch there either — a resumable,
+checkpointed agent-loop primitive (if the working group decides it's needed) would be new
+ground for both platforms, not something to crib from Heroku's design.
+
 ## Open questions
 
 - Would an OSBAPI service broker exposing an OpenAI/Anthropic-compatible endpoint plus
@@ -89,3 +119,11 @@ prompt/tool-schema caching as a routing-layer optimization for agentic traffic p
   a similar baseline expectation for any AI-service broker admitted into the marketplace?
 - Does an MCP gateway belong at the platform layer (like Heroku's MCP Toolkits) or is it
   better left as an ordinary buildpack-deployed app, given CF's app-centric model?
+- Could a "code execution sandbox for agents" be implemented on CF today as a broker that
+  dispatches agent-submitted code to a short-lived Diego task, mirroring Heroku's
+  one-off-dyno approach — or does untrusted-code execution need stronger isolation
+  (gVisor/Kata, a dedicated runc profile) than a standard Diego cell provides?
+- Neither Heroku nor (per the earlier Azure/other notes) most surveyed platforms offer true
+  durable execution for agent loops. Is this a genuine gap the working group should design
+  for, or is "persist state yourself in a bound service" (Heroku's implicit answer) good
+  enough for CF's Phase 1 scope?
