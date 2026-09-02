@@ -1,4 +1,5 @@
 import pathlib
+import re
 import unittest
 from types import SimpleNamespace
 
@@ -344,8 +345,21 @@ A concise summary.
         self.assertIn("aria-pressed',String", html)
         self.assertIn("classList.toggle('related'", html)
         self.assertIn("classList.toggle('dimmed'", html)
-        self.assertNotIn("m.disabled", html)
         self.assertIn("--selected-accent", html)
+        marker_buttons = re.findall(r'<button class="marker [^"]+"[^>]*>', html)
+        self.assertTrue(marker_buttons)
+        for marker in marker_buttons:
+            self.assertNotIn(" disabled", marker)
+            self.assertNotIn('tabindex="-1"', marker)
+
+    def test_dimmed_markers_restore_visible_keyboard_focus(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+
+        self.assertRegex(
+            html,
+            r"\.marker\.dimmed:focus-visible\s*\{\s*opacity:1;"
+            r"\s*outline:3px solid #fff;\s*outline-offset:3px;\s*\}",
+        )
 
     def test_generated_html_shows_selected_primitive_relationship_in_note_detail(self):
         html = generate_html(load_notes(), load_plots(), load_primitives())
