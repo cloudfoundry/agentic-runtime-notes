@@ -80,10 +80,20 @@ A concise summary.
 
     def test_generated_html_contains_markers_dialog_and_source_links(self):
         html = generate_html(load_notes(), load_plots())
-        self.assertEqual(html.count('class="marker '), 41)
+        self.assertEqual(html.count('class="marker '), 41 * len(load_plots()))
         self.assertIn('<dialog id="detail">', html)
         self.assertIn("Read the full Markdown note on GitHub", html)
         self.assertIn("Initial working-group ratings", html)
+
+    def test_generated_html_contains_one_matrix_for_each_configured_plot(self):
+        html = generate_html(load_notes(), load_plots())
+        for plot in load_plots().values():
+            self.assertIn(plot["title"], html)
+        self.assertEqual(html.count('class="map"'), len(load_plots()))
+
+    def test_generated_html_has_one_dialog_close_button(self):
+        html = generate_html(load_notes(), load_plots())
+        self.assertEqual(html.count('class="close"'), 1)
 
 
 if __name__ == "__main__":

@@ -145,41 +145,43 @@ def note_payload(note: Note, plot: dict) -> dict:
 
 
 def generate_html(notes: list[Note], plots: dict) -> str:
-    plot_id, plot = next(iter(plots.items()))
-    payload = [note_payload(note, plot) for note in notes]
-    data = json.dumps(payload, ensure_ascii=True).replace("</", "<\\/")
-    title = html.escape(plot["title"])
-    x = plot["x"]
-    y = plot["y"]
-    markers = []
-    unplaced = []
-    for item in payload:
-        if item["position"]:
-            p = item["position"]
-            markers.append(
-                f'<button class="marker {item["kind"]}" style="left:{p["x"]}%;bottom:{p["y"]}%" data-id="{html.escape(item["id"])}" aria-label="{html.escape(item["title"])}"></button>'
-            )
-        else:
-            unplaced.append(f'<li><a href="{html.escape(item["url"])}">{html.escape(item["title"])}</a></li>')
+    plot_payloads = {plot_id: [note_payload(note, plot) for note in notes] for plot_id, plot in plots.items()}
+    data = json.dumps(plot_payloads, ensure_ascii=True).replace("</", "<\\/")
+    matrices = []
+    for plot_id, plot in plots.items():
+        payload = plot_payloads[plot_id]
+        markers = []
+        unplaced = []
+        for item in payload:
+            if item["position"]:
+                p = item["position"]
+                markers.append(
+                    f'<button class="marker {item["kind"]}" style="left:{p["x"]}%;bottom:{p["y"]}%" data-plot="{html.escape(plot_id)}" data-id="{html.escape(item["id"])}" aria-label="{html.escape(item["title"])}"></button>'
+                )
+            else:
+                unplaced.append(f'<li><a href="{html.escape(item["url"])}">{html.escape(item["title"])}</a></li>')
+        title = html.escape(plot["title"])
+        x = plot["x"]
+        y = plot["y"]
+        matrices.append(f'''<section class="matrix"><h2>{title}</h2><div class="map" aria-label="{title}">{''.join(markers)}<span class="axis-x">{html.escape(x["low"])} &lt; {html.escape(x["label"])} &gt; {html.escape(x["high"])}</span><span class="axis-y">{html.escape(y["low"])} &lt; {html.escape(y["label"])} &gt; {html.escape(y["high"])}</span></div><details class="unplaced"><summary>Unplaced notes ({len(unplaced)})</summary><ul>{''.join(unplaced) or '<li>All notes are placed.</li>'}</ul></details></section>''')
     return f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{title}</title><style>
 :root {{ color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; background:#101619; color:#e7f1ed; }}
 body {{ max-width:1200px; margin:0 auto; padding:36px 24px; }} h1 {{ font-size:clamp(2rem,5vw,4rem); margin:0 0 8px; }}
 .intro {{ color:#9eb4ac; max-width:760px; line-height:1.5; }} .map {{ position:relative; height:620px; margin:34px 42px 20px 90px; border-left:1px solid #668078; border-bottom:1px solid #668078; background:linear-gradient(90deg,transparent 49.9%,#243a35 50%,transparent 50.1%),linear-gradient(0deg,transparent 49.9%,#243a35 50%,transparent 50.1%); }}
-.axis-x,.axis-y {{ position:absolute; color:#9eb4ac; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; }} .axis-x {{ left:0; right:0; bottom:-34px; text-align:center; }} .axis-y {{ transform:rotate(-90deg); left:-78px; top:50%; }}
+.matrix {{ margin-top:48px; }} .axis-x,.axis-y {{ position:absolute; color:#9eb4ac; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; }} .axis-x {{ left:0; right:0; bottom:-34px; text-align:center; }} .axis-y {{ writing-mode:vertical-rl; transform:rotate(180deg) translateY(50%); left:-52px; top:50%; text-align:center; white-space:nowrap; }}
 .marker {{ position:absolute; transform:translate(-50%,50%); width:18px; height:18px; border:2px solid #d9fff0; cursor:pointer; }} .marker.research {{ border-radius:50%; background:#64c5a0; }} .marker.idea {{ transform:translate(-50%,50%) rotate(45deg); background:#e6a85b; }}
 .legend {{ display:flex; gap:22px; color:#b4c8c0; font-size:.9rem; }} .legend span::before {{ content:""; display:inline-block; width:11px; height:11px; margin-right:7px; background:#64c5a0; border-radius:50%; }} .legend .idea-key::before {{ background:#e6a85b; border-radius:0; transform:rotate(45deg); }}
 .unplaced {{ margin-top:56px; border-top:1px solid #304640; padding-top:18px; }} a {{ color:#8ee3bf; }} dialog {{ max-width:620px; width:calc(100% - 48px); color:#e7f1ed; background:#172320; border:1px solid #668078; border-radius:14px; padding:26px; }} dialog::backdrop {{ background:#020505bb; }} .close {{ float:right; background:none; color:inherit; border:0; font-size:1.5rem; cursor:pointer; }} .tag {{ color:#9eb4ac; margin-right:8px; }} .rating {{ border-top:1px solid #304640; padding:12px 0; }} .rating strong {{ color:#8ee3bf; }}
-@media(max-width:600px) {{ body {{ padding:24px 14px; }} .map {{ height:720px; margin-left:58px; }} .axis-y {{ left:-64px; }} }}
-</style></head><body><main><p class="intro">Agentic Runtime Working Group · provisional workshop view</p><h1>{title}</h1>
+@media(max-width:600px) {{ body {{ padding:24px 14px; }} .map {{ height:720px; margin-left:58px; }} .axis-y {{ left:-40px; }} }}
+</style></head><body><main><p class="intro">Agentic Runtime Working Group - provisional workshop view</p><h1>Research and Ideas Landscape</h1>
 <p class="intro">Initial working-group ratings, shown to seed discussion rather than establish a permanent taxonomy. Click a note for its summary, rating justifications, and source.</p>
-<div class="legend"><span>Research</span><span class="idea-key">Idea</span></div><section class="map" aria-label="{title}">{''.join(markers)}<span class="axis-x">{html.escape(x["low"])} ← {html.escape(x["label"])} → {html.escape(x["high"])}</span><span class="axis-y">{html.escape(y["low"])} ← {html.escape(y["label"])} → {html.escape(y["high"])}</span></section>
-<section class="unplaced"><h2>Unplaced notes</h2><ul>{''.join(unplaced) or '<li>All notes are placed.</li>'}</ul></section></main>
+<div class="legend"><span>Research</span><span class="idea-key">Idea</span></div>{''.join(matrices)}</main>
 <dialog id="detail"><button class="close" aria-label="Close">X</button><div id="content"></div></dialog>
-<script>const notes={data};const dialog=document.querySelector('#detail'),content=document.querySelector('#content');
-function show(note){{const tags=(note.tags||[]).map(t=>`<span class="tag">#${{t}}</span>`).join('');const ratings=Object.entries(note.ratings||{{}}).map(([name,r])=>`<div class="rating"><strong>${{name}}: ${{r.value}}/100</strong><br>${{r.note}}</div>`).join('');content.innerHTML=`<button class="close" aria-label="Close">X</button><p class="intro">${{note.kind}}</p><h2>${{note.title}}</h2><p>${{note.summary}}</p><p>${{tags}}</p>${{ratings}}<p><a href="${{note.url}}">Read the full Markdown note on GitHub</a></p>`;dialog.showModal();dialog.querySelectorAll('.close').forEach(b=>b.onclick=()=>dialog.close())}}
-document.querySelectorAll('.marker').forEach(m=>m.onclick=()=>show(notes.find(n=>n.id===m.dataset.id)));dialog.addEventListener('click',e=>{{if(e.target===dialog)dialog.close()}});</script></body></html>'''
+<script>const plots={data};const dialog=document.querySelector('#detail'),content=document.querySelector('#content');
+function show(note){{const tags=(note.tags||[]).map(t=>`<span class="tag">#${{t}}</span>`).join('');const ratings=Object.entries(note.ratings||{{}}).map(([name,r])=>`<div class="rating"><strong>${{name}}: ${{r.value}}/100</strong><br>${{r.note}}</div>`).join('');content.innerHTML=`<p class="intro">${{note.kind}}</p><h2>${{note.title}}</h2><p>${{note.summary}}</p><p>${{tags}}</p>${{ratings}}<p><a href="${{note.url}}">Read the full Markdown note on GitHub</a></p>`;dialog.showModal()}}
+document.querySelectorAll('.marker').forEach(m=>m.onclick=()=>show(plots[m.dataset.plot].find(n=>n.id===m.dataset.id)));dialog.addEventListener('click',e=>{{if(e.target===dialog)dialog.close()}});</script></body></html>'''
 
 
 def main() -> int:
