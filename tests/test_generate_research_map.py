@@ -322,6 +322,38 @@ A concise summary.
                 html,
             )
 
+    def test_generated_html_embeds_primitive_membership_once_and_stable_control_ids(self):
+        primitives = load_primitives()
+        html = generate_html(load_notes(), load_plots(), primitives)
+
+        self.assertEqual(html.count("const primitiveMemberships="), 1)
+        self.assertIn(
+            '"ideas/durable-tasks-for-cf.md": {"durable-addressable-execution": "core"}',
+            html,
+        )
+        for primitive in primitives:
+            self.assertIn(f'id="primitive-{primitive["id"]}"', html)
+
+    def test_generated_html_persistently_refreshes_marker_highlighting(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+
+        self.assertIn("let selectedPrimitive=null", html)
+        self.assertIn("function selectPrimitive", html)
+        self.assertIn("function clearPrimitiveSelection", html)
+        self.assertIn("function refreshMarkers", html)
+        self.assertIn("aria-pressed',String", html)
+        self.assertIn("classList.toggle('related'", html)
+        self.assertIn("classList.toggle('dimmed'", html)
+        self.assertNotIn("m.disabled", html)
+        self.assertIn("--selected-accent", html)
+
+    def test_generated_html_shows_selected_primitive_relationship_in_note_detail(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+
+        self.assertIn("function relationshipBadge", html)
+        self.assertIn('class="primitive-badge"', html)
+        self.assertIn("relationship==='core'?'Core':'Supporting'", html)
+
     def test_generated_html_has_one_dialog_close_button(self):
         html = generate_html(load_notes(), load_plots(), load_primitives())
         self.assertEqual(html.count('class="close"'), 1)
