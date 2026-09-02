@@ -115,6 +115,33 @@ A concise summary.
         self.assertIn('function showCluster', html)
         self.assertIn('picker-item', html)
 
+    def test_generated_html_wires_singletons_and_close_button(self):
+        html = generate_html(load_notes(), load_plots())
+        self.assertIn("show(plots[m.dataset.plot].find(n=>n.id===m.dataset.id))", html)
+        self.assertIn("document.querySelector('.close').onclick=()=>dialog.close()", html)
+
+    def test_generated_html_styles_note_lists_and_picker_items(self):
+        html = generate_html(load_notes(), load_plots())
+        self.assertIn(".unplaced li", html)
+        self.assertIn(".picker-item", html)
+        self.assertIn("font:inherit", html)
+
+    def test_unplaced_list_distinguishes_ideas_and_research(self):
+        notes = [next(note for note in load_notes() if note.kind == kind) for kind in ("research", "idea")]
+        notes[0].metadata["ratings"].pop("maturity")
+        notes[1].metadata["ratings"].pop("maturity")
+        html = generate_html(notes, load_plots())
+        self.assertIn('class="note-kind research"', html)
+        self.assertIn('class="note-kind idea"', html)
+        self.assertIn('class="note-type research"', html)
+        self.assertIn('class="note-type idea"', html)
+
+    def test_picker_items_distinguish_ideas_and_research(self):
+        html = generate_html(load_notes(), load_plots())
+        self.assertIn('class="picker-kind ${note.kind}"', html)
+        self.assertIn('.picker-kind.research', html)
+        self.assertIn('.picker-kind.idea', html)
+
 
 if __name__ == "__main__":
     unittest.main()
