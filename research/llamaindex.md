@@ -18,17 +18,17 @@ sources:
   - https://llamatrace.com/
 ratings:
   platform-impact:
-    value: 66
-    note: 'Initial review of LlamaIndex Workflows & AgentWorkflow — Event-Driven, Graph-Free Orchestration: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 52
+    note: 'CF can run LlamaIndex libraries, but it does not supply persistence for serializable Context state, workflow checkpoints, or the hosting layer left incomplete by the project deployment tooling.'
   maturity:
-    value: 76
-    note: 'Initial review of LlamaIndex Workflows & AgentWorkflow — Event-Driven, Graph-Free Orchestration: this score reflects the amount of established external practice visible in the note.'
+    value: 65
+    note: 'The core project has 51k-plus stars and established RAG adoption, while Workflows is newly extracted, llama_deploy is deprecated, llama-agents remains young, and the main deployment documentation is a stub.'
   novelty:
     value: 62
-    note: 'Initial review of LlamaIndex Workflows & AgentWorkflow — Event-Driven, Graph-Free Orchestration: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    note: 'Inferring and validating control flow from typed events between decorated steps is an uncommon orchestration design, though event-driven workflows, worker concurrency, handoffs, and checkpointing are established concepts.'
   actionability:
-    value: 58
-    note: 'Initial review of LlamaIndex Workflows & AgentWorkflow — Event-Driven, Graph-Free Orchestration: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 70
+    note: 'The note supports a focused buildpack trial plus a bindable Context/checkpoint store, with a direct comparison of inferred control-flow auditability against LangGraph-style explicit graphs.'
 
 ---
 

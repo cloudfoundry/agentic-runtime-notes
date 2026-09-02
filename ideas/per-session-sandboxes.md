@@ -5,17 +5,17 @@ date: 2026-07-02
 tags: [runtime-lifecycle, sandboxing-isolation]
 ratings:
   platform-impact:
-    value: 84
-    note: 'Initial review of Per-session sandboxes with lifecycle states: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 75
+    note: 'CF has no per-session sandbox resource that can release CPU while retaining disk or serialize state to blobstore, leaving only continuously running or state-losing processes.'
   maturity:
-    value: 38
-    note: 'Initial review of Per-session sandboxes with lifecycle states: this score reflects the amount of established external practice visible in the note.'
+    value: 50
+    note: 'Kubernetes Agent Sandbox demonstrates warm pools, PVC persistence, hibernation, and gVisor snapshots, but the agent-specific control plane and graduated lifecycle remain relatively early.'
   novelty:
-    value: 80
-    note: 'Initial review of Per-session sandboxes with lifecycle states: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 50
+    note: 'Session-scoped isolated compute combines known pooling, suspend/resume, persistent-volume, and blob-checkpoint patterns into a newer agent sandbox lifecycle.'
   actionability:
-    value: 76
-    note: 'Initial review of Per-session sandboxes with lifecycle states: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 50
+    note: 'The three lifecycle states and external K8s and Anthropic comparisons identify a direction, but snapshot mechanics, storage format, and available CF volume/blobstore primitives need scoping.'
 
 ---
 

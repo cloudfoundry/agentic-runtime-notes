@@ -9,17 +9,17 @@ sources:
   - https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/hosted-agents
 ratings:
   platform-impact:
-    value: 78
-    note: 'Initial review of Azure Foundry — Hosted Agents Model: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 82
+    note: 'CF can already deploy container images, but lacks Azure Foundry''s per-session VM sandboxes, persistent stateful resume, scale-to-zero session lifecycle, automatic per-deployment identity, and injected agent telemetry.'
   maturity:
-    value: 76
-    note: 'Initial review of Azure Foundry — Hosted Agents Model: this score reflects the amount of established external practice visible in the note.'
+    value: 74
+    note: 'The hosted service documents concrete quotas, a 15-minute idle timeout, 30-day session lifetime, Entra identity, persistent filesystems, and three protocols, though the note provides limited independent adoption history.'
   novelty:
-    value: 62
-    note: 'Initial review of Azure Foundry — Hosted Agents Model: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 61
+    note: 'Container packaging and dedicated identity are familiar PaaS features, while VM-isolated per-session scaling with persistent resume and managed conversation protocols is a newer agent-specific synthesis.'
   actionability:
-    value: 66
-    note: 'Initial review of Azure Foundry — Hosted Agents Model: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 75
+    note: 'A bounded CF spike can package one A2A agent, add OTel auto-instrumentation and identity bootstrap, and evaluate whether session persistence and isolation can be layered onto Diego processes.'
 
 ---
 

@@ -18,17 +18,17 @@ sources:
   - https://docs.langchain.com/langsmith/observability
 ratings:
   platform-impact:
-    value: 78
-    note: 'Initial review of LangGraph — Low-Level, Pregel-Style Agent Orchestration Runtime: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 58
+    note: 'CF can host LangGraph processes but does not provide its checkpoint store, cross-thread memory, durable pause/resume, or Agent Server packaging as platform services.'
   maturity:
-    value: 76
-    note: 'Initial review of LangGraph — Low-Level, Pregel-Style Agent Orchestration Runtime: this score reflects the amount of established external practice visible in the note.'
+    value: 78
+    note: 'LangGraph is a production-oriented LangChain runtime with persistence, interrupts, streaming, MCP integration, and commercial LangSmith deployment options, including a standalone Agent Server.'
   novelty:
-    value: 62
-    note: 'Initial review of LangGraph — Low-Level, Pregel-Style Agent Orchestration Runtime: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 55
+    note: 'Applying Pregel-style supersteps, reducer-governed shared state, and boundary checkpoints to agent graphs is a substantial adaptation of established graph-processing and workflow ideas.'
   actionability:
-    value: 66
-    note: 'Initial review of LangGraph — Low-Level, Pregel-Style Agent Orchestration Runtime: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 72
+    note: 'The standalone Agent Server provides a bounded buildpack trial using bound Postgres and Redis, with crash recovery testing for non-idempotent nodes and explicit checkpointer/store mapping questions.'
 
 ---
 

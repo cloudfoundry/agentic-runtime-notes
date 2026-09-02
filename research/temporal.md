@@ -18,17 +18,17 @@ sources:
   - https://temporal.io/cloud
 ratings:
   platform-impact:
-    value: 78
-    note: 'Initial review of Temporal — Durable Execution as a Standalone Service: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 72
+    note: 'CF can run stateless Temporal workers but has no durable-execution service providing event histories, deterministic replay, task queues, signals, queries, and resumable agent loops.'
   maturity:
-    value: 76
-    note: 'Initial review of Temporal — Durable Execution as a Standalone Service: this score reflects the amount of established external practice visible in the note.'
+    value: 92
+    note: 'Temporal is a production-proven successor to Cadence with 22k-plus stars, a managed cloud, multiple persistence backends, and official durable-agent integrations for OpenAI, ADK, and LangGraph.'
   novelty:
-    value: 62
-    note: 'Initial review of Temporal — Durable Execution as a Standalone Service: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 45
+    note: 'Append-only event history and deterministic replay are distinctive relative to checkpoint and actor models, but they are established durable-workflow techniques rather than new agent architecture.'
   actionability:
-    value: 66
-    note: 'Initial review of Temporal — Durable Execution as a Standalone Service: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 78
+    note: 'A bound Temporal service with CF workers can concretely test restart recovery, Continue-As-New, namespace isolation, and mTLS, although operating the clustered persistence tier remains a significant question.'
 
 ---
 

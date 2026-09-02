@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+from types import SimpleNamespace
 
 from scripts.generate_research_map import (
     derive_position,
@@ -12,12 +13,125 @@ from scripts.generate_research_map import (
     parse_note,
     validate_ratings,
 )
+from scripts.summarize_ratings import summarize_ratings, validate_summary
 
 
 PLOT = {"x": {"rating": "maturity"}, "y": {"rating": "platform-impact"}}
+REQUIRED_RATINGS = ("platform-impact", "maturity", "novelty", "actionability")
+
+
+def rating_notes(values):
+    return [
+        SimpleNamespace(metadata={"ratings": ratings})
+        for ratings in (
+            {
+                name: {"value": value, "note": "reason"}
+                for name, value in zip(REQUIRED_RATINGS, row)
+            }
+            for row in values
+        )
+    ]
 
 
 class ResearchMapTests(unittest.TestCase):
+    def test_summarize_ratings_reports_distribution_correlations_and_quadrants(self):
+        notes = rating_notes(
+            [
+                (10, 90, 10, 10),
+                (30, 70, 30, 70),
+                (50, 50, 50, 50),
+                (70, 30, 70, 30),
+                (90, 10, 90, 90),
+            ]
+        )
+
+        summary = summarize_ratings(notes)
+
+        self.assertEqual(
+            summary["ratings"]["platform-impact"],
+            {
+                "count": 5,
+                "minimum": 10,
+                "maximum": 90,
+                "median": 50,
+                "first_quartile": 30.0,
+                "third_quartile": 70.0,
+                "distinct": 5,
+                "duplicates": 0,
+            },
+        )
+        self.assertEqual(summary["correlations"]["platform-impact:maturity"], -1.0)
+        self.assertEqual(summary["correlations"]["platform-impact:novelty"], 1.0)
+        self.assertEqual(len(summary["correlations"]), 6)
+        self.assertEqual(
+            summary["matrices"]["platform-impact-maturity"],
+            {"low-low": 1, "low-high": 2, "high-low": 2, "high-high": 0},
+        )
+        self.assertEqual(len(summary["matrices"]), 6)
+
+    def test_summarize_ratings_reports_duplicate_count(self):
+        summary = summarize_ratings(
+            rating_notes([(10, 10, 10, 10), (10, 10, 10, 10), (20, 20, 20, 20)])
+        )
+
+        self.assertEqual(summary["ratings"]["maturity"]["duplicates"], 1)
+
+    def test_validate_summary_checks_all_missing_ratings_before_sparse_distribution(self):
+        notes = rating_notes([(50, 50, 50, 50)])
+        notes[0].metadata["ratings"].pop("novelty")
+
+        summary = summarize_ratings(notes)
+
+        with self.assertRaisesRegex(ValueError, "missing required rating.*novelty"):
+            validate_summary(summary)
+
+    def test_validate_summary_checks_all_malformed_ratings_before_sparse_distribution(self):
+        notes = rating_notes([(50, 50, 50, 50), (60, 60, 60, 60)])
+        notes[0].metadata["ratings"]["novelty"] = {}
+
+        summary = summarize_ratings(notes)
+
+        with self.assertRaisesRegex(ValueError, "missing required rating.*novelty"):
+            validate_summary(summary)
+
+    def test_validate_summary_rejects_missing_required_rating(self):
+        notes = rating_notes([(value, value, value, value) for value in (10, 30, 50, 70, 90)])
+        notes[0].metadata["ratings"].pop("novelty")
+        summary = summarize_ratings(notes)
+        with self.assertRaisesRegex(ValueError, "missing required rating.*novelty"):
+            validate_summary(summary)
+
+    def test_validate_summary_rejects_fewer_than_five_distinct_values(self):
+        summary = summarize_ratings(
+            rating_notes([(10, 10, 10, 10), (20, 20, 20, 20)] * 3)
+        )
+        with self.assertRaisesRegex(ValueError, "fewer than 5 distinct values"):
+            validate_summary(summary)
+
+    def test_validate_summary_rejects_values_strictly_on_one_side_of_midpoint(self):
+        for values, side in (
+            ((10, 20, 30, 40, 45), "below"),
+            ((55, 60, 70, 80, 90), "above"),
+        ):
+            with self.subTest(side=side):
+                summary = summarize_ratings(
+                    rating_notes([(value, value, value, value) for value in values])
+                )
+                with self.assertRaisesRegex(ValueError, f"strictly {side} 50"):
+                    validate_summary(summary)
+
+    def test_validate_summary_rejects_boundary_without_values_on_both_sides(self):
+        for values, side in (
+            ((10, 20, 30, 40, 50), "below"),
+            ((50, 60, 70, 80, 90), "above"),
+        ):
+            with self.subTest(side=side):
+                summary = summarize_ratings(
+                    rating_notes([(value, value, value, value) for value in values])
+                )
+                with self.assertRaisesRegex(ValueError, f"strictly {side} 50"):
+                    validate_summary(summary)
+
     def test_group_payload_combines_only_exact_positions(self):
         payload = [
             {"id": "a", "position": {"x": 50, "y": 40}},
@@ -83,10 +197,9 @@ A concise summary.
     def test_all_current_notes_have_initial_ratings_and_justifications(self):
         required = {"platform-impact", "maturity", "novelty", "actionability"}
         notes = load_notes()
-        self.assertEqual(len(notes), 41)
         for note in notes:
             ratings = note.metadata["ratings"]
-            self.assertTrue(required.issubset(ratings), note.path)
+            self.assertEqual(set(ratings), required, note.path)
             for name in required:
                 self.assertIsInstance(ratings[name]["value"], int)
                 self.assertIn(ratings[name]["value"], range(101))
@@ -97,7 +210,7 @@ A concise summary.
         self.assertGreater(html.count('class="marker '), 0)
         self.assertIn('<dialog id="detail">', html)
         self.assertIn("Read the full Markdown note on GitHub", html)
-        self.assertIn("Initial working-group ratings", html)
+        self.assertIn("Recalibrated working-group ratings", html)
 
     def test_generated_html_contains_one_matrix_for_each_configured_plot(self):
         html = generate_html(load_notes(), load_plots())

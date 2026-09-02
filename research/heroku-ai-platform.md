@@ -15,17 +15,17 @@ sources:
   - https://github.com/heroku/mcp-code-exec-python
 ratings:
   platform-impact:
-    value: 78
-    note: 'Initial review of Heroku AI — Managed Inference, Agents, and MCP on a Buildpack-Era PaaS: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 55
+    note: 'CF already has the app, buildpack, service-binding, Postgres, and one-off-task primitives Heroku reuses, but lacks its managed inference add-on, MCP gateway, model lifecycle policy, and agent-oriented routing optimizations.'
   maturity:
-    value: 76
-    note: 'Initial review of Heroku AI — Managed Inference, Agents, and MCP on a Buildpack-Era PaaS: this score reflects the amount of established external practice visible in the note.'
+    value: 72
+    note: 'Heroku operates inference, agents, MCP Toolkits, pgvector, and code execution as shipped services on its long-proven dyno platform, although the Anthropic-compatible endpoint remains preview and no durable execution is offered.'
   novelty:
-    value: 62
-    note: 'Initial review of Heroku AI — Managed Inference, Agents, and MCP on a Buildpack-Era PaaS: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 32
+    note: 'The design deliberately combines established PaaS patterns: add-on bindings, compatible HTTP APIs, Postgres vector search, and disposable one-off dynos rather than a new agent runtime architecture.'
   actionability:
-    value: 66
-    note: 'Initial review of Heroku AI — Managed Inference, Agents, and MCP on a Buildpack-Era PaaS: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 90
+    note: 'The note directly supports an OSBAPI prototype that binds OpenAI-compatible inference through VCAP_SERVICES and a sandbox experiment that maps code calls to short-lived Diego tasks with offline dependency staging.'
 
 ---
 

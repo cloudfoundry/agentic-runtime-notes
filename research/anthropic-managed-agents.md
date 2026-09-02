@@ -8,17 +8,17 @@ sources:
   - https://www.anthropic.com/engineering/managed-agents
 ratings:
   platform-impact:
-    value: 70
-    note: 'Initial review of Anthropic Managed Agents — Remote Hands Architecture: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 75
+    note: 'Stateless CF app processes map to the brain, but CF lacks on-demand sandbox hands, an external append-only agent session service, and credential proxies that keep secrets out of generated-code environments.'
   maturity:
-    value: 68
-    note: 'Initial review of Anthropic Managed Agents — Remote Hands Architecture: this score reflects the amount of established external practice visible in the note.'
+    value: 62
+    note: 'Anthropic reports operating the architecture and measured p50 TTFT improvements of about 60% and p95 improvements over 90%, but publishes neither a specification nor an open implementation for its session interface.'
   novelty:
-    value: 70
-    note: 'Initial review of Anthropic Managed Agents — Remote Hands Architecture: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 72
+    note: 'The independently scalable brain, replaceable hands, and external positional event log form an emerging decomposition, strengthened by vault-backed proxies that structurally exclude credentials from both harness and sandbox.'
   actionability:
-    value: 66
-    note: 'Initial review of Anthropic Managed Agents — Remote Hands Architecture: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 78
+    note: 'CF can prototype a stateless brain app against a durable event service and on-demand sandbox, then route one service credential through a proxy instead of injecting it into the sandbox.'
 
 ---
 

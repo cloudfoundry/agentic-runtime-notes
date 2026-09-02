@@ -22,17 +22,17 @@ sources:
   - https://github.com/managedcode/dotPilot
 ratings:
   platform-impact:
-    value: 78
-    note: "Initial review of Microsoft Orleans — the Virtual Actor Model Dapr's Actors Building Block Came From: its subject and tags indicate how broadly the capability could affect an agentic platform."
-  maturity:
-    value: 76
-    note: "Initial review of Microsoft Orleans — the Virtual Actor Model Dapr's Actors Building Block Came From: this score reflects the amount of established external practice visible in the note."
-  novelty:
     value: 62
-    note: "Initial review of Microsoft Orleans — the Virtual Actor Model Dapr's Actors Building Block Came From: this score reflects how distinct or emerging the approach appears in the current landscape."
+    note: 'CF lacks a virtual-actor runtime providing stable logical identities, transparent activation, a distributed directory, per-actor persistence, streams, and cross-actor transactions.'
+  maturity:
+    value: 92
+    note: 'Orleans is a long-running .NET Foundation project proven in Halo cloud services, remains active through v10.2.x, and offers mature clustering, persistence, streaming, transactions, and versioning.'
+  novelty:
+    value: 28
+    note: 'Orleans pioneered the virtual-actor model, but transparent activation and location, actor persistence, and single-threaded grains are now established architecture inherited by systems such as Dapr.'
   actionability:
-    value: 66
-    note: "Initial review of Microsoft Orleans — the Virtual Actor Model Dapr's Actors Building Block Came From: this score reflects how readily the material could guide a focused experiment or follow-up."
+    value: 52
+    note: 'The note suggests comparing grains with durable agent identities, but a CF experiment must first resolve .NET-only coupling, silo membership, storage bindings, and the absence of official agent-framework integration.'
 
 ---
 

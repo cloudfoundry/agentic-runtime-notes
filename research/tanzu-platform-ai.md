@@ -13,17 +13,17 @@ sources:
   - https://blogs.vmware.com/tanzu/scalable-agentic-applications-with-model-context-protocol-mcp/
 ratings:
   platform-impact:
-    value: 78
-    note: 'Initial review of VMware Tanzu Platform — GenAI Tile and Agent Foundations Built on Cloud Foundry: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 75
+    note: 'Commercial Tanzu adds model brokering, journaling, and agent-specific isolation around CF, demonstrating that the open-source platform lacks a substantial integrated AI and agent operations layer.'
   maturity:
-    value: 76
-    note: 'Initial review of VMware Tanzu Platform — GenAI Tile and Agent Foundations Built on Cloud Foundry: this score reflects the amount of established external practice visible in the note.'
-  novelty:
     value: 62
-    note: 'Initial review of VMware Tanzu Platform — GenAI Tile and Agent Foundations Built on Cloud Foundry: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    note: 'The BOSH-managed GenAI tile and broker build on production Tanzu and CF machinery, while Agent Foundations was only announced in April 2026 and has less demonstrated operational evidence.'
+  novelty:
+    value: 45
+    note: 'Model services through a tile and broker reuse established BOSH and service-binding patterns; agent journaling and secure-by-default isolation are newer additions but parallel other managed agent platforms.'
   actionability:
-    value: 66
-    note: 'Initial review of VMware Tanzu Platform — GenAI Tile and Agent Foundations Built on Cloud Foundry: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 88
+    note: 'Because the product is built on CF, the note directly supports separating reusable broker, binding, journaling, buildpack, secrets, and networking patterns from proprietary Agent Foundations components.'
 
 ---
 

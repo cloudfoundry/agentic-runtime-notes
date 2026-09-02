@@ -39,6 +39,9 @@ jobs:
       - name: Validate notes and ideas
         run: python .github/scripts/validate_notes.py
 
+      - name: Check rating distributions
+        run: python scripts/summarize_ratings.py --check
+
       - name: Test map generator
         run: python -m unittest discover -s tests
 

@@ -16,17 +16,17 @@ sources:
   - https://developers.cloudflare.com/durable-objects/
 ratings:
   platform-impact:
-    value: 78
-    note: 'Initial review of Cloudflare Agents SDK — Agents as Durable Objects (V8-Isolate Isolation): its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 88
+    note: 'CF has no equivalent to a cheap globally addressable compute unit that combines isolate execution, private colocated SQLite, hibernation-safe WebSockets, durable alarms, and automatic geographic placement.'
   maturity:
-    value: 76
-    note: 'Initial review of Cloudflare Agents SDK — Agents as Durable Objects (V8-Isolate Isolation): this score reflects the amount of established external practice visible in the note.'
+    value: 72
+    note: 'The SDK rests on production Durable Objects that scale to millions of instances and supplies state, scheduling, MCP, workflows, and tracing, but remains Cloudflare-controlled, rejects external contributions, and lightly documents A2A.'
   novelty:
-    value: 62
-    note: 'Initial review of Cloudflare Agents SDK — Agents as Durable Objects (V8-Isolate Isolation): this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 82
+    note: 'Making every agent a single-threaded V8 isolate with its own colocated SQLite database, durable alarms, transparent hibernation, and global identity departs sharply from container, microVM, and external-state agent runtimes.'
   actionability:
-    value: 66
-    note: 'Initial review of Cloudflare Agents SDK — Agents as Durable Objects (V8-Isolate Isolation): this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 68
+    note: 'The note defines a focused comparison of isolate trust, hibernation, and bindable per-agent state, but a CF prototype requires substantial design because Durable Objects'' routing and storage substrate is not portable.'
 
 ---
 

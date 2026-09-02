@@ -5,17 +5,17 @@ date: 2026-08-11
 tags: [runtime-lifecycle, orchestration, identity, inter-agent-comms]
 ratings:
   platform-impact:
-    value: 92
-    note: "Initial review of Dapr durable execution on CF, built on CF's own identity and config primitives: its subject and tags indicate how broadly the capability could affect an agentic platform."
+    value: 75
+    note: "CF has identity, bindings, process injection, and partial placement primitives, but it has no workflow engine, virtual actors, durable scheduler, timers, or reminders."
   maturity:
-    value: 38
-    note: "Initial review of Dapr durable execution on CF, built on CF's own identity and config primitives: this score reflects the amount of established external practice visible in the note."
+    value: 75
+    note: "Dapr is CNCF-graduated and provides production-capable polyglot workflow, actor, scheduling, identity, and sidecar APIs; Dapr Agents v1.0 is GA, though the proposed CF integration remains unimplemented."
   novelty:
-    value: 80
-    note: "Initial review of Dapr durable execution on CF, built on CF's own identity and config primitives: this score reflects how distinct or emerging the approach appears in the current landscape."
+    value: 50
+    note: "The design substantially adapts known Dapr sidecar and control-plane patterns by substituting Diego identity, service bindings, Envoy-style injection, and potentially GoRouter placement."
   actionability:
-    value: 76
-    note: "Initial review of Dapr durable execution on CF, built on CF's own identity and config primitives: this score reflects how readily the material could guide a focused experiment or follow-up."
+    value: 75
+    note: "The component-by-component mapping and three adoption strategies bound investigations into external-cert trust, scheduler storage, injection cost, and placement without requiring a full platform design first."
 
 ---
 

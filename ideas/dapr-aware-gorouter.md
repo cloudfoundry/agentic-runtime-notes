@@ -5,17 +5,17 @@ date: 2026-08-11
 tags: [inter-agent-comms, runtime-lifecycle, orchestration]
 ratings:
   platform-impact:
-    value: 92
-    note: 'Initial review of Dapr-aware GoRouter — routing to the instance where the work lives: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 50
+    note: 'GoRouter already has instance-addressed routing, endpoint metadata, and NATS updates, but it cannot resolve an actor ID to the instance that currently owns the work.'
   maturity:
-    value: 38
-    note: 'Initial review of Dapr-aware GoRouter — routing to the instance where the work lives: this score reflects the amount of established external practice visible in the note.'
+    value: 50
+    note: 'Dapr placement and CF routing are production-capable ingredients, but no implementation or operational evidence demonstrates actor-to-instance resolution through GoRouter or safe behavior during placement migration.'
   novelty:
-    value: 80
-    note: 'Initial review of Dapr-aware GoRouter — routing to the instance where the work lives: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 75
+    note: 'Making a PaaS edge router consume or replace a virtual-actor placement table is an emerging combination, especially with authenticated actor-addressed routing through RFC-0055.'
   actionability:
-    value: 76
-    note: 'Initial review of Dapr-aware GoRouter — routing to the instance where the work lives: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 75
+    note: 'The shallow design bounds an experiment to daprd placement lookup plus X-CF-APP-INSTANCE, with explicit checks for host-to-index mapping, header propagation, and migration correctness.'
 
 ---
 

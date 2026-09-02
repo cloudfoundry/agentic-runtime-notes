@@ -5,17 +5,17 @@ date: 2026-08-13
 tags: [runtime-lifecycle, sandboxing-isolation]
 ratings:
   platform-impact:
-    value: 84
-    note: 'Initial review of Agent Failure Checkpointing: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 75
+    note: 'CF restarts crashed apps but cannot restore agent memory, task outputs, queue position, or bound-service session state from a platform-managed checkpoint.'
   maturity:
-    value: 38
-    note: 'Initial review of Agent Failure Checkpointing: this score reflects the amount of established external practice visible in the note.'
+    value: 50
+    note: 'Framework checkpointers demonstrate credible persistence and resume mechanisms, but transparent platform restoration across agent memory, queues, outputs, and bound-service sessions has no implementation or operational evidence here.'
   novelty:
-    value: 80
-    note: 'Initial review of Agent Failure Checkpointing: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 25
+    note: 'The proposal adapts the established checkpoint/restart pattern to agent conversation state, tool outputs, and work queues rather than introducing a new durability architecture.'
   actionability:
-    value: 76
-    note: 'Initial review of Agent Failure Checkpointing: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 50
+    note: 'The manifest sketch and invoice recovery example define desired behavior, but checkpoint granularity, state boundaries, storage, and multi-tenant quotas still require substantial scoping.'
 
 ---
 

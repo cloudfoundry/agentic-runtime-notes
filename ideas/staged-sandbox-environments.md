@@ -5,17 +5,17 @@ date: 2026-08-24
 tags: [runtime-lifecycle, sandboxing-isolation, ecosystem-survey]
 ratings:
   platform-impact:
-    value: 84
-    note: 'Initial review of Split environment staging from workspace state for agent sandboxes: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 50
+    note: 'CF already stages Packages into Droplets and runs Tasks, but cross-app content-addressed Droplet reuse and mounting a separate mutable workspace Package are meaningful missing integrations.'
   maturity:
-    value: 46
-    note: 'Initial review of Split environment staging from workspace state for agent sandboxes: this score reflects the amount of established external practice visible in the note.'
+    value: 50
+    note: 'CF staging and Tasks prove several ingredients, but cross-app content-addressed Droplet reuse, separate mutable workspace mounting, and checkpointed diffs are an unimplemented composition without operational evidence.'
   novelty:
-    value: 72
-    note: 'Initial review of Split environment staging from workspace state for agent sandboxes: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 50
+    note: 'Separating a globally cached environment Droplet from a per-turn workspace Package is a substantial adaptation of CF staging and Nix-style substitution to generated agent code.'
   actionability:
-    value: 76
-    note: 'Initial review of Split environment staging from workspace state for agent sandboxes: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 75
+    note: 'Three concrete operations map to CAPI Build, Droplet, Package, resource-match, and Task resources, with focused questions around cross-tenant reuse and extra volume mounting.'
 
 ---
 

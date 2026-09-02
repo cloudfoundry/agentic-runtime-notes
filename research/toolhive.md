@@ -12,17 +12,17 @@ sources:
   - https://docs.stacklok.com/toolhive/concepts/auth-framework
 ratings:
   platform-impact:
-    value: 58
-    note: 'Initial review of ToolHive — Secure Runtime and Gateway for MCP Servers: its subject and tags indicate how broadly the capability could affect an agentic platform.'
-  maturity:
-    value: 76
-    note: 'Initial review of ToolHive — Secure Runtime and Gateway for MCP Servers: this score reflects the amount of established external practice visible in the note.'
-  novelty:
     value: 62
-    note: 'Initial review of ToolHive — Secure Runtime and Gateway for MCP Servers: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    note: 'Diego, UAA, and service brokers offer related primitives, but CF lacks an MCP-specific runtime and gateway combining per-server isolation, delegated credentials, Cedar authorization, registry governance, and audits.'
+  maturity:
+    value: 55
+    note: 'ToolHive ships a CLI, desktop UI, gateway, registry, and Kubernetes operator with OIDC, audit, OTel, and Prometheus support, but the note gives limited evidence of broad production adoption.'
+  novelty:
+    value: 55
+    note: 'Centralizing MCP OAuth complexity, backend credential separation, Cedar policy, and isolated server containers is a useful new package of established gateway, policy, and container techniques.'
   actionability:
-    value: 58
-    note: 'Initial review of ToolHive — Secure Runtime and Gateway for MCP Servers: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 70
+    note: 'A focused comparison can deploy one MCP server in Diego, front it with UAA and deny-by-default policy, and test whether a curated service marketplace can reproduce ToolHive registry governance.'
 
 ---
 

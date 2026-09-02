@@ -21,17 +21,17 @@ sources:
   - https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.html
 ratings:
   platform-impact:
-    value: 78
-    note: 'Initial review of AWS Strands Agents & Bedrock AgentCore — Framework and Managed Runtime: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 85
+    note: 'AgentCore exposes a broad CF gap spanning per-session microVMs, persistent resumable filesystems, agent identity, memory, MCP gateway and Cedar policy, registry, evaluations, and automated optimization.'
   maturity:
-    value: 76
-    note: 'Initial review of AWS Strands Agents & Bedrock AgentCore — Framework and Managed Runtime: this score reflects the amount of established external practice visible in the note.'
+    value: 78
+    note: 'AgentCore is a documented managed service with multiple compute modes and integrations, while Apache-licensed Strands has Python and TypeScript SDKs, about 6.9k stars, governance, releases, and many deployment targets.'
   novelty:
-    value: 62
-    note: 'Initial review of AWS Strands Agents & Bedrock AgentCore — Framework and Managed Runtime: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 58
+    note: 'MicroVM session isolation, gateways, Cedar policy, OTel, and agent loops are established ideas; their modular assembly into an observe-evaluate-optimize managed agent platform is a newer combination.'
   actionability:
-    value: 66
-    note: 'Initial review of AWS Strands Agents & Bedrock AgentCore — Framework and Managed Runtime: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 72
+    note: 'The framework-agnostic platform raises several large design choices, but Strands provides a concrete CF prototype target for MCP/A2A deployment and for testing gateway-enforced Cedar authorization on tool calls.'
 
 ---
 

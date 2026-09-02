@@ -20,17 +20,17 @@ sources:
   - https://docs.letta.com/agent-sdk/mcp
 ratings:
   platform-impact:
-    value: 78
-    note: 'Initial review of Letta (formerly MemGPT) — Durable, Memory-Centric Stateful Agents: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 65
+    note: 'CF can host the App Server and bind storage, but has no durable, addressable agent identity or managed evolving-memory service equivalent to Letta agents, shared blocks, and MemFS.'
   maturity:
-    value: 76
-    note: 'Initial review of Letta (formerly MemGPT) — Durable, Memory-Centric Stateful Agents: this score reflects the amount of established external practice visible in the note.'
+    value: 60
+    note: 'Letta has an Apache-licensed implementation, 24k-plus stars, extensive history, self-hosting, and a hosted service, but its classic memory API is legacy while the product pivots to Letta Code and MemFS.'
   novelty:
-    value: 62
-    note: 'Initial review of Letta (formerly MemGPT) — Durable, Memory-Centric Stateful Agents: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 78
+    note: 'The MemGPT model lets an LLM page and edit its own context like virtual memory, while durable addressable agents and git-backed MemFS make memory and identity primary runtime abstractions.'
   actionability:
-    value: 66
-    note: 'Initial review of Letta (formerly MemGPT) — Durable, Memory-Centric Stateful Agents: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 58
+    note: 'A MemFS-backed agent-state binding and App Server isolation trial are plausible, but the ongoing V1-to-MemFS pivot and unrestricted filesystem and shell access leave substantial scoping work.'
 
 ---
 

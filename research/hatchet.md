@@ -21,17 +21,17 @@ sources:
   - https://docs.hatchet.run/self-hosting
 ratings:
   platform-impact:
-    value: 78
-    note: 'Initial review of Hatchet — Postgres-Backed Durable Task Queue, Marketed for AI Agents: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 68
+    note: 'CF can host Hatchet workers and bind Postgres, but does not itself provide durable sleeps, event waits, replay, tenant-fair scheduling, rate limits, or centralized workflow observability.'
   maturity:
-    value: 76
-    note: 'Initial review of Hatchet — Postgres-Backed Durable Task Queue, Marketed for AI Agents: this score reflects the amount of established external practice visible in the note.'
+    value: 70
+    note: 'Hatchet has about 7.7k stars, four SDKs, self-hosted and managed offerings, named AI customers, and claimed high daily task volume, but comes from a small 2023 startup with limited enterprise history.'
   novelty:
-    value: 62
-    note: 'Initial review of Hatchet — Postgres-Backed Durable Task Queue, Marketed for AI Agents: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 43
+    note: 'Using Postgres alone for task history and observability is a useful simplification, while task queues, DAGs, durable waits, retries, rate limits, and worker slots are conventional orchestration mechanisms.'
   actionability:
-    value: 66
-    note: 'Initial review of Hatchet — Postgres-Backed Durable Task Queue, Marketed for AI Agents: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 84
+    note: 'CF can directly deploy Hatchet with a bound Postgres service, interrupt and resume a worker, and measure throughput and per-tenant fairness against the proposed durable-tasks-for-CF requirements.'
 
 ---
 

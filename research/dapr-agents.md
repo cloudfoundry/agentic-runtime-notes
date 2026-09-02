@@ -14,17 +14,17 @@ sources:
   - https://docs.dapr.io/developing-ai/dapr-agents/dapr-agents-integrations/
 ratings:
   platform-impact:
-    value: 78
-    note: 'Initial review of Dapr Agents — Durable Agent Framework on Dapr: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 70
+    note: 'CF lacks workflow-durable agent loops, virtual-actor scale-to-zero, an agent registry, and sidecar-discovered MCP tools, although service brokers and app routing provide partial state and messaging primitives.'
   maturity:
-    value: 76
-    note: 'Initial review of Dapr Agents — Durable Agent Framework on Dapr: this score reflects the amount of established external practice visible in the note.'
+    value: 64
+    note: 'Dapr Agents has reached v1.0 GA and builds on CNCF-graduated Dapr workflows and actors, but its own governance status is unclear and the note offers claims rather than broad production adoption evidence.'
   novelty:
-    value: 62
-    note: 'Initial review of Dapr Agents — Durable Agent Framework on Dapr: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 55
+    note: 'Running every LLM and tool call as a durable workflow activity combines established actors, workflows, pub/sub, and registries in an agent-specific way rather than introducing a wholly new substrate.'
   actionability:
-    value: 66
-    note: 'Initial review of Dapr Agents — Durable Agent Framework on Dapr: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 78
+    note: 'A focused CF experiment can run a Dapr sidecar with one DurableAgent, kill it mid-tool-call, verify workflow recovery, and measure actor resume and MCP discovery against CF instance lifecycle constraints.'
 
 ---
 

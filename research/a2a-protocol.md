@@ -10,17 +10,17 @@ sources:
   - https://github.com/a2aproject/A2A
 ratings:
   platform-impact:
-    value: 66
-    note: 'Initial review of Agent2Agent (A2A) Protocol — Agent-to-Agent Interoperability: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 55
+    note: 'CF already supplies HTTP routing and UAA trust primitives, but it lacks A2A Agent Card discovery and explicit handling for stateful, long-running delegated Tasks across org and space boundaries.'
   maturity:
-    value: 76
-    note: 'Initial review of Agent2Agent (A2A) Protocol — Agent-to-Agent Interoperability: this score reflects the amount of established external practice visible in the note.'
+    value: 68
+    note: 'A2A is a Linux Foundation open standard with authentication, authorization, streaming, async Tasks, and an extension mechanism, although the note does not present long-term operational evidence.'
   novelty:
-    value: 62
-    note: 'Initial review of Agent2Agent (A2A) Protocol — Agent-to-Agent Interoperability: this score reflects how distinct or emerging the approach appears in the current landscape.'
-  actionability:
     value: 58
-    note: 'Initial review of Agent2Agent (A2A) Protocol — Agent-to-Agent Interoperability: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    note: 'Agent Cards and stateful delegation standardize an emerging agent-to-agent layer, but reuse familiar decentralized HTTP discovery, capability metadata, and asynchronous task patterns.'
+  actionability:
+    value: 72
+    note: 'The note identifies a bounded CF investigation: expose Agent Cards through route metadata or a scoped registry, then test delegated Tasks and UAA authentication across spaces.'
 
 ---
 

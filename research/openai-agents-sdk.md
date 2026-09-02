@@ -21,17 +21,17 @@ sources:
   - https://github.com/openai/swarm
 ratings:
   platform-impact:
-    value: 66
-    note: 'Initial review of OpenAI Agents SDK — Minimal Primitives, Provider-Agnostic Agent Loop: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 48
+    note: 'CF readily hosts the library-only agent loop, while the meaningful gap is optional platform support for sessions, tracing, MCP connectivity, and external durable execution rather than a missing runtime requirement.'
   maturity:
-    value: 76
-    note: 'Initial review of OpenAI Agents SDK — Minimal Primitives, Provider-Agnostic Agent Loop: this score reflects the amount of established external practice visible in the note.'
+    value: 80
+    note: 'The MIT Python SDK is widely adopted, has a JavaScript counterpart and comprehensive tools, handoffs, guardrails, sessions, MCP, and tracing support, with Temporal and Dapr integrations for durability.'
   novelty:
-    value: 62
-    note: 'Initial review of OpenAI Agents SDK — Minimal Primitives, Provider-Agnostic Agent Loop: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 35
+    note: 'Its small set of agents, tools, handoffs, guardrails, sessions, and tracing intentionally favors conventional composable library primitives over a novel graph or hosting architecture.'
   actionability:
-    value: 58
-    note: 'Initial review of OpenAI Agents SDK — Minimal Primitives, Provider-Agnostic Agent Loop: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 65
+    note: 'The DaprSession bridge enables a focused CF session-store trial, but choosing whether CF should supply durability, tracing, or only ordinary bindings requires additional platform scoping.'
 
 ---
 

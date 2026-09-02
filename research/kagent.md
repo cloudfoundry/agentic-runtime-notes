@@ -11,17 +11,17 @@ sources:
   - https://kagent.dev/docs/kagent/concepts/agents
 ratings:
   platform-impact:
-    value: 78
-    note: 'Initial review of kagent — Kubernetes-Native Framework for Operations-Focused AI Agents: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+    value: 55
+    note: 'CF exposes operator data through cf, BOSH, Diego, logs, and metrics, but lacks a packaged operations agent with declarative definitions, shared tool servers, and bundled platform-management tools.'
   maturity:
-    value: 76
-    note: 'Initial review of kagent — Kubernetes-Native Framework for Operations-Focused AI Agents: this score reflects the amount of established external practice visible in the note.'
+    value: 52
+    note: 'kagent is a functioning CNCF project with Helm-managed CRDs and bundled Kubernetes, Istio, Argo, Prometheus, Grafana, and Cilium tools, while governance, roadmap, and human-approval maturity remain open questions.'
   novelty:
-    value: 62
-    note: 'Initial review of kagent — Kubernetes-Native Framework for Operations-Focused AI Agents: this score reflects how distinct or emerging the approach appears in the current landscape.'
+    value: 48
+    note: 'Its distinctive contribution is packaging an operations-focused agent and exposing agents through both A2A and MCP; CRD reconciliation, MCP tool servers, and agents-as-tools are adaptations of known patterns.'
   actionability:
-    value: 66
-    note: 'Initial review of kagent — Kubernetes-Native Framework for Operations-Focused AI Agents: this score reflects how readily the material could guide a focused experiment or follow-up.'
+    value: 58
+    note: 'The note identifies a CF operator-agent prototype using cf, BOSH, Diego, logs, and metrics, but first requires deciding whether to extend Kubernetes-bound kagent or build a CF-native equivalent.'
 
 ---
 
