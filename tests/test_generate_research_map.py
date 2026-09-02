@@ -1,3 +1,5 @@
+import html as html_lib
+import json
 import pathlib
 import re
 import unittest
@@ -46,6 +48,41 @@ def rating_notes(values):
             for row in values
         )
     ]
+
+
+def mixed_cluster_fixture():
+    paths = [pathlib.Path(f"research/cluster-{index}.md") for index in range(5)]
+    notes = [
+        SimpleNamespace(
+            path=path,
+            kind="research",
+            title=f"Cluster note {index}",
+            summary=f"Summary {index}",
+            metadata={
+                "ratings": {
+                    "maturity": {"value": 42, "note": "reason"},
+                    "platform-impact": {"value": 37, "note": "reason"},
+                }
+            },
+        )
+        for index, path in enumerate(paths)
+    ]
+    plot = {
+        "title": "Mixed cluster",
+        "x": {"rating": "maturity", "label": "Maturity", "low": "Low", "high": "High"},
+        "y": {
+            "rating": "platform-impact",
+            "label": "Platform impact",
+            "low": "Low",
+            "high": "High",
+        },
+    }
+    primitive = {
+        **PRIMITIVE,
+        "core": [paths[1].as_posix()],
+        "supporting": [paths[3].as_posix()],
+    }
+    return notes, {"mixed:plot": plot}, [primitive]
 
 
 class ResearchMapTests(unittest.TestCase):
@@ -377,6 +414,31 @@ A concise summary.
         self.assertIn('data-cluster=', html)
         self.assertIn('function showCluster', html)
         self.assertIn('picker-item', html)
+
+    def test_mixed_cluster_embeds_ordered_note_ids_and_updates_selected_count(self):
+        notes, plots, primitives = mixed_cluster_fixture()
+
+        html = generate_html(notes, plots, primitives)
+
+        marker = re.search(r'<button class="marker cluster"[^>]+>5</button>', html).group(0)
+        note_ids = [note.path.as_posix() for note in notes]
+        encoded_ids = html_lib.escape(json.dumps(note_ids), quote=True)
+        self.assertIn(f'data-note-ids="{encoded_ids}"', marker)
+        self.assertIn("const relatedCount=noteIds.filter", html)
+        self.assertIn("m.textContent=relatedCount?`${relatedCount}/${noteIds.length}`:String(noteIds.length)", html)
+        self.assertIn("m.classList.toggle('related',relatedCount>0)", html)
+        self.assertIn("m.classList.toggle('dimmed',Boolean(selectedPrimitive&&!relatedCount))", html)
+
+    def test_mixed_cluster_picker_sorts_a_copy_related_first_and_labels_relationships(self):
+        notes, plots, primitives = mixed_cluster_fixture()
+
+        html = generate_html(notes, plots, primitives)
+
+        self.assertIn("const ordered=selectedPrimitive?[...items.filter(isRelated),...items.filter(note=>!isRelated(note))]:[...items]", html)
+        self.assertIn("${relationshipBadge(note)}", html)
+        self.assertIn("const noteIds=JSON.parse(m.dataset.noteIds)", html)
+        self.assertIn("noteIds.map(id=>plots[m.dataset.plot].find(note=>note.id===id))", html)
+        self.assertNotIn("m.dataset.cluster.split", html)
 
     def test_generated_html_wires_singletons_and_close_button(self):
         html = generate_html(load_notes(), load_plots(), load_primitives())
