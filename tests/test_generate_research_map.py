@@ -3,14 +3,17 @@ import unittest
 from types import SimpleNamespace
 
 from scripts.generate_research_map import (
+    PRIMITIVES_PATH,
     derive_position,
     extract_summary,
     github_url,
     generate_html,
     group_payload,
+    load_primitives,
     load_plots,
     load_notes,
     parse_note,
+    validate_primitives,
     validate_ratings,
 )
 from scripts.summarize_ratings import summarize_ratings, validate_summary
@@ -18,6 +21,17 @@ from scripts.summarize_ratings import summarize_ratings, validate_summary
 
 PLOT = {"x": {"rating": "maturity"}, "y": {"rating": "platform-impact"}}
 REQUIRED_RATINGS = ("platform-impact", "maturity", "novelty", "actionability")
+PRIMITIVE = {
+    "id": "durable-addressable-execution",
+    "title": "Durable, Addressable Execution",
+    "proposition": "Keep execution durable while compute remains replaceable.",
+    "cf_gap": "CF tasks have no durable execution identity or suspend/resume lifecycle.",
+    "strategic_decision": "Decide whether CF should own durable execution lifecycle semantics.",
+    "poc": "Resume a checkpointed task on replacement compute.",
+    "rfc_scope": "Execution identity, lifecycle, events, timers, and retries.",
+    "core": ["ideas/durable-tasks-for-cf.md", "research/temporal.md"],
+    "supporting": ["research/dapr-agents.md"],
+}
 
 
 def rating_notes(values):
@@ -34,6 +48,55 @@ def rating_notes(values):
 
 
 class ResearchMapTests(unittest.TestCase):
+    def test_load_primitives_loads_the_three_approved_primitives(self):
+        primitives = load_primitives()
+
+        self.assertEqual(PRIMITIVES_PATH.name, "platform_primitives.yaml")
+        self.assertEqual(
+            [primitive["id"] for primitive in primitives],
+            [
+                "durable-addressable-execution",
+                "attested-workload-authority",
+                "session-scoped-isolated-execution",
+            ],
+        )
+
+    def test_validate_primitives_preserves_core_and_supporting_order(self):
+        primitive = {**PRIMITIVE, "core": ["b.md", "a.md"], "supporting": ["d.md", "c.md"]}
+
+        validated = validate_primitives([primitive], {"a.md", "b.md", "c.md", "d.md"})
+
+        self.assertEqual(validated[0]["core"], ["b.md", "a.md"])
+        self.assertEqual(validated[0]["supporting"], ["d.md", "c.md"])
+
+    def test_validate_primitives_rejects_non_list_configuration(self):
+        with self.assertRaisesRegex(ValueError, "non-empty list"):
+            validate_primitives({"primitives": [PRIMITIVE]}, set(PRIMITIVE["core"] + PRIMITIVE["supporting"]))
+
+    def test_validate_primitives_rejects_blank_required_fields(self):
+        for field in ("id", "title", "proposition", "cf_gap", "strategic_decision", "poc", "rfc_scope"):
+            with self.subTest(field=field):
+                primitive = {**PRIMITIVE, field: "  "}
+                with self.assertRaisesRegex(ValueError, f"non-empty '{field}'"):
+                    validate_primitives([primitive], set(PRIMITIVE["core"] + PRIMITIVE["supporting"]))
+
+    def test_validate_primitives_rejects_duplicate_ids(self):
+        with self.assertRaisesRegex(ValueError, "duplicate primitive id"):
+            validate_primitives([PRIMITIVE, dict(PRIMITIVE)], set(PRIMITIVE["core"] + PRIMITIVE["supporting"]))
+
+    def test_validate_primitives_rejects_empty_core_membership(self):
+        with self.assertRaisesRegex(ValueError, "non-empty core"):
+            validate_primitives([{**PRIMITIVE, "core": []}], set(PRIMITIVE["supporting"]))
+
+    def test_validate_primitives_rejects_duplicate_membership(self):
+        primitive = {**PRIMITIVE, "supporting": [PRIMITIVE["core"][0]]}
+        with self.assertRaisesRegex(ValueError, "duplicate note path"):
+            validate_primitives([primitive], set(PRIMITIVE["core"]))
+
+    def test_validate_primitives_rejects_unknown_note(self):
+        with self.assertRaisesRegex(ValueError, "unknown note path.*research/temporal.md"):
+            validate_primitives([PRIMITIVE], {"ideas/durable-tasks-for-cf.md", "research/dapr-agents.md"})
+
     def test_summarize_ratings_reports_distribution_correlations_and_quadrants(self):
         notes = rating_notes(
             [

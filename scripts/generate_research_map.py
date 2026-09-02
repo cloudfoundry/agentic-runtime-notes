@@ -15,6 +15,7 @@ import yaml
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PLOTS_PATH = ROOT / "scripts" / "research_map_plots.yaml"
+PRIMITIVES_PATH = ROOT / "scripts" / "platform_primitives.yaml"
 OUTPUT_PATH = ROOT / "generated" / "research-map.html"
 GITHUB_BASE = "https://github.com/cloudfoundry/agentic-runtime-notes/blob/main"
 FRONTMATTER_RE = re.compile(r"^---\n(.*?)\n---\n", re.DOTALL)
@@ -136,6 +137,57 @@ def load_plots() -> dict:
     for plot in plots.values():
         validate_plot(plot)
     return plots
+
+
+def validate_primitives(primitives: object, known_paths: set[str]) -> list[dict]:
+    if not isinstance(primitives, list) or not primitives:
+        raise ValueError("primitive configuration must be a non-empty list")
+
+    required_fields = (
+        "id",
+        "title",
+        "proposition",
+        "cf_gap",
+        "strategic_decision",
+        "poc",
+        "rfc_scope",
+    )
+    seen_ids = set()
+    for primitive in primitives:
+        if not isinstance(primitive, dict):
+            raise ValueError("each primitive must be a mapping")
+        for field in required_fields:
+            if not isinstance(primitive.get(field), str) or not primitive[field].strip():
+                raise ValueError(f"primitive requires a non-empty '{field}'")
+
+        primitive_id = primitive["id"]
+        if primitive_id in seen_ids:
+            raise ValueError(f"duplicate primitive id: {primitive_id}")
+        seen_ids.add(primitive_id)
+
+        core = primitive.get("core")
+        supporting = primitive.get("supporting")
+        if not isinstance(core, list) or not core:
+            raise ValueError(f"primitive '{primitive_id}' requires non-empty core membership")
+        if not isinstance(supporting, list):
+            raise ValueError(f"primitive '{primitive_id}' supporting membership must be a list")
+
+        memberships = core + supporting
+        if any(not isinstance(path, str) or not path.strip() for path in memberships):
+            raise ValueError(f"primitive '{primitive_id}' note paths must be non-empty strings")
+        if len(memberships) != len(set(memberships)):
+            raise ValueError(f"primitive '{primitive_id}' has a duplicate note path")
+        for path in memberships:
+            if path not in known_paths:
+                raise ValueError(f"primitive '{primitive_id}' references unknown note path: {path}")
+
+    return primitives
+
+
+def load_primitives() -> list[dict]:
+    primitives = yaml.safe_load(PRIMITIVES_PATH.read_text(encoding="utf-8"))
+    known_paths = {note.path.as_posix() for note in load_notes()}
+    return validate_primitives(primitives, known_paths)
 
 
 def note_payload(note: Note, plot: dict) -> dict:

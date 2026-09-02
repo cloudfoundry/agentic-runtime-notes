@@ -1,0 +1,66 @@
+- id: durable-addressable-execution
+  title: Durable, Addressable Execution
+  proposition: Keep logical execution durable and addressable while compute remains replaceable.
+  cf_gap: CF tasks are tied to one compute attempt and lack stable execution identity, checkpoints, suspend/resume, durable events, timers, and retry policy.
+  strategic_decision: Decide whether CF should provide a durable execution lifecycle that frameworks and bound state services can build on.
+  poc: Run a checkpointing task under a stable execution ID, suspend it after persisting state, then resume it on replacement compute through events, timers, and bounded retries.
+  rfc_scope: Define execution identity, lifecycle states, checkpoint handoff, event and timer delivery, retry semantics, observability, and the boundary between CF lifecycle ownership and bound state stores.
+  core:
+    - ideas/durable-tasks-for-cf.md
+    - ideas/dapr-durable-execution-on-cf.md
+    - ideas/agent-failure-checkpointing.md
+    - research/temporal.md
+    - research/dapr-agents.md
+    - research/cloudflare-agents.md
+  supporting:
+    - research/hatchet.md
+    - research/orleans.md
+    - research/langgraph.md
+    - research/dapr.md
+    - research/letta.md
+    - research/aws-agents.md
+    - research/azure-hosted-agents.md
+
+- id: attested-workload-authority
+  title: Attested Workload Authority and Mediated Tool Access
+  proposition: Exchange platform-attested workload identity for scoped authority while credentials and outbound tool access remain mediated by the platform.
+  cf_gap: CF issues workload identity certificates but does not exchange them for scoped tool authority, keep third-party credentials out of workloads, mediate off-platform access, or record delegation-aware audit events.
+  strategic_decision: Decide whether CF should become the portable trust and policy layer between agent workloads and the tools they invoke.
+  poc: Exchange a Diego instance identity certificate for a short-lived scoped token, invoke one allowed tool through a credential proxy and egress mediator, deny another, and emit attributable audit events.
+  rfc_scope: Define workload token exchange, authority and delegation claims, credential brokering, outbound mediation and policy enforcement, audit events, revocation, and integration boundaries for UAA, routing, and service brokers.
+  core:
+    - ideas/agent-identity-and-tool-authorization.md
+    - ideas/credential-less-agent-processes.md
+    - ideas/localhost-only-egress-for-agents.md
+    - research/open-agent-auth.md
+    - research/toolhive.md
+    - research/mcp-protocol.md
+  supporting:
+    - research/aws-agents.md
+    - research/vertex-agent-engine.md
+    - research/anthropic-managed-agents.md
+    - research/azure-hosted-agents.md
+    - research/cloudflare-agents.md
+    - research/opentelemetry-genai.md
+
+- id: session-scoped-isolated-execution
+  title: Session-Scoped Isolated Execution
+  proposition: Create resumable, session-scoped execution from reusable staged environments, mutable workspaces, selectable isolation, and controlled networking.
+  cf_gap: CF can stage apps and run ephemeral tasks but cannot cheaply compose a reusable environment with per-session workspace state, select stronger isolation, constrain session networking, or resume the session lifecycle.
+  strategic_decision: Decide whether CF should expose session execution as a composition of existing package, build, droplet, task, volume, networking, and isolation capabilities.
+  poc: Start two isolated sessions from one content-addressed staged environment, attach separate mutable workspaces, apply per-session egress policy, stop one session, and resume it on fresh compute.
+  rfc_scope: Define environment and workspace references, session identity and lifecycle, isolation classes, network policy, workspace persistence and cleanup, scheduling, quotas, and compatibility with existing CF staging and task APIs.
+  core:
+    - ideas/per-session-sandboxes.md
+    - ideas/staged-sandbox-environments.md
+    - ideas/stronger-workload-isolation-for-agents.md
+    - ideas/localhost-only-egress-for-agents.md
+    - research/k8s-agent-sandbox.md
+    - research/firecracker-microvm.md
+  supporting:
+    - research/heroku-ai-platform.md
+    - research/azure-hosted-agents.md
+    - research/anthropic-managed-agents.md
+    - research/aws-agents.md
+    - research/cloudflare-agents.md
+    - research/toolhive.md
