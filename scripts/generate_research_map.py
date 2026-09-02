@@ -99,6 +99,16 @@ def derive_position(ratings: dict, plot: dict) -> dict | None:
     return {"x": ratings[x_name]["value"], "y": ratings[y_name]["value"]}
 
 
+def group_payload(payload: list[dict]) -> dict[tuple[int, int], list[dict]]:
+    groups: dict[tuple[int, int], list[dict]] = {}
+    for item in payload:
+        position = item.get("position")
+        if position is not None:
+            key = (position["x"], position["y"])
+            groups.setdefault(key, []).append(item)
+    return groups
+
+
 def github_url(path: pathlib.Path) -> str:
     return f"{GITHUB_BASE}/{path.as_posix()}"
 
@@ -152,13 +162,20 @@ def generate_html(notes: list[Note], plots: dict) -> str:
         payload = plot_payloads[plot_id]
         markers = []
         unplaced = []
-        for item in payload:
-            if item["position"]:
-                p = item["position"]
+        for key, group in group_payload(payload).items():
+            p = group[0]["position"]
+            if len(group) == 1:
+                item = group[0]
                 markers.append(
                     f'<button class="marker {item["kind"]}" style="left:{p["x"]}%;bottom:{p["y"]}%" data-plot="{html.escape(plot_id)}" data-id="{html.escape(item["id"])}" aria-label="{html.escape(item["title"])}"></button>'
                 )
             else:
+                cluster_id = f"{plot_id}:{p['x']}:{p['y']}"
+                markers.append(
+                    f'<button class="marker cluster" style="left:{p["x"]}%;bottom:{p["y"]}%" data-plot="{html.escape(plot_id)}" data-cluster="{html.escape(cluster_id)}" aria-label="{len(group)} notes at this position">{len(group)}</button>'
+                )
+        for item in payload:
+            if item["position"] is None:
                 unplaced.append(f'<li><a href="{html.escape(item["url"])}">{html.escape(item["title"])}</a></li>')
         title = html.escape(plot["title"])
         x = plot["x"]
@@ -171,7 +188,7 @@ def generate_html(notes: list[Note], plots: dict) -> str:
 body {{ max-width:1200px; margin:0 auto; padding:36px 24px; }} h1 {{ font-size:clamp(2rem,5vw,4rem); margin:0 0 8px; }}
 .intro {{ color:#9eb4ac; max-width:760px; line-height:1.5; }} .map {{ position:relative; height:620px; margin:34px 42px 20px 90px; border-left:1px solid #668078; border-bottom:1px solid #668078; background:linear-gradient(90deg,transparent 49.9%,#243a35 50%,transparent 50.1%),linear-gradient(0deg,transparent 49.9%,#243a35 50%,transparent 50.1%); }}
 .matrix {{ margin-top:48px; }} .axis-x,.axis-y {{ position:absolute; color:#9eb4ac; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; }} .axis-x {{ left:0; right:0; bottom:-34px; text-align:center; }} .axis-y {{ writing-mode:vertical-rl; transform:rotate(180deg) translateY(50%); left:-52px; top:50%; text-align:center; white-space:nowrap; }}
-.marker {{ position:absolute; transform:translate(-50%,50%); width:18px; height:18px; border:2px solid #d9fff0; cursor:pointer; }} .marker.research {{ border-radius:50%; background:#64c5a0; }} .marker.idea {{ transform:translate(-50%,50%) rotate(45deg); background:#e6a85b; }}
+.marker {{ position:absolute; transform:translate(-50%,50%); width:18px; height:18px; border:2px solid #d9fff0; cursor:pointer; }} .marker.research {{ border-radius:50%; background:#64c5a0; }} .marker.idea {{ transform:translate(-50%,50%) rotate(45deg); background:#e6a85b; }} .marker.cluster {{ transform:translate(-50%,50%); width:30px; height:30px; border-radius:50%; background:#d9fff0; color:#10201b; font-weight:800; }}
 .legend {{ display:flex; gap:22px; color:#b4c8c0; font-size:.9rem; }} .legend span::before {{ content:""; display:inline-block; width:11px; height:11px; margin-right:7px; background:#64c5a0; border-radius:50%; }} .legend .idea-key::before {{ background:#e6a85b; border-radius:0; transform:rotate(45deg); }}
 .unplaced {{ margin-top:56px; border-top:1px solid #304640; padding-top:18px; }} a {{ color:#8ee3bf; }} dialog {{ max-width:620px; width:calc(100% - 48px); color:#e7f1ed; background:#172320; border:1px solid #668078; border-radius:14px; padding:26px; }} dialog::backdrop {{ background:#020505bb; }} .close {{ float:right; background:none; color:inherit; border:0; font-size:1.5rem; cursor:pointer; }} .tag {{ color:#9eb4ac; margin-right:8px; }} .rating {{ border-top:1px solid #304640; padding:12px 0; }} .rating strong {{ color:#8ee3bf; }}
 @media(max-width:600px) {{ body {{ padding:24px 14px; }} .map {{ height:720px; margin-left:58px; }} .axis-y {{ left:-40px; }} }}
@@ -181,7 +198,8 @@ body {{ max-width:1200px; margin:0 auto; padding:36px 24px; }} h1 {{ font-size:c
 <dialog id="detail"><button class="close" aria-label="Close">X</button><div id="content"></div></dialog>
 <script>const plots={data};const dialog=document.querySelector('#detail'),content=document.querySelector('#content');
 function show(note){{const tags=(note.tags||[]).map(t=>`<span class="tag">#${{t}}</span>`).join('');const ratings=Object.entries(note.ratings||{{}}).map(([name,r])=>`<div class="rating"><strong>${{name}}: ${{r.value}}/100</strong><br>${{r.note}}</div>`).join('');content.innerHTML=`<p class="intro">${{note.kind}}</p><h2>${{note.title}}</h2><p>${{note.summary}}</p><p>${{tags}}</p>${{ratings}}<p><a href="${{note.url}}">Read the full Markdown note on GitHub</a></p>`;dialog.showModal()}}
-document.querySelectorAll('.marker').forEach(m=>m.onclick=()=>show(plots[m.dataset.plot].find(n=>n.id===m.dataset.id)));dialog.addEventListener('click',e=>{{if(e.target===dialog)dialog.close()}});</script></body></html>'''
+function showCluster(items){{content.innerHTML=`<p class="intro">${{items.length}} notes at this position</p><h2>Select a note</h2>${{items.map((note,i)=>`<button class="picker-item" data-index="${{i}}"><strong>${{note.title}}</strong><br><small>${{note.kind}} - ${{note.summary}}</small></button>`).join('')}}`;dialog.showModal();content.querySelectorAll('.picker-item').forEach(b=>b.onclick=()=>show(items[Number(b.dataset.index)]))}}
+document.querySelectorAll('.marker').forEach(m=>m.onclick=()=>{{const items=plots[m.dataset.plot].filter(n=>n.position&&`${{n.position.x}}:${{n.position.y}}`===m.dataset.cluster?.split(':').slice(1).join(':'));m.dataset.cluster?showCluster(items):show(items.find(n=>n.id===m.dataset.id))}});dialog.addEventListener('click',e=>{{if(e.target===dialog)dialog.close()}});</script></body></html>'''
 
 
 def main() -> int:

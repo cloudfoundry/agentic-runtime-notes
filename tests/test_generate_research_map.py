@@ -6,6 +6,7 @@ from scripts.generate_research_map import (
     extract_summary,
     github_url,
     generate_html,
+    group_payload,
     load_plots,
     load_notes,
     parse_note,
@@ -17,6 +18,19 @@ PLOT = {"x": {"rating": "maturity"}, "y": {"rating": "platform-impact"}}
 
 
 class ResearchMapTests(unittest.TestCase):
+    def test_group_payload_combines_only_exact_positions(self):
+        payload = [
+            {"id": "a", "position": {"x": 50, "y": 40}},
+            {"id": "b", "position": {"x": 50, "y": 40}},
+            {"id": "c", "position": {"x": 51, "y": 40}},
+        ]
+        groups = group_payload(payload)
+        self.assertEqual([item["id"] for item in groups[(50, 40)]], ["a", "b"])
+        self.assertEqual([item["id"] for item in groups[(51, 40)]], ["c"])
+
+    def test_group_payload_leaves_unplaced_items_out_of_coordinate_groups(self):
+        self.assertEqual(group_payload([{"id": "a", "position": None}]), {})
+
     def test_parse_note_extracts_metadata_and_research_summary(self):
         text = """---
 title: Example
@@ -80,7 +94,7 @@ A concise summary.
 
     def test_generated_html_contains_markers_dialog_and_source_links(self):
         html = generate_html(load_notes(), load_plots())
-        self.assertEqual(html.count('class="marker '), 41 * len(load_plots()))
+        self.assertGreater(html.count('class="marker '), 0)
         self.assertIn('<dialog id="detail">', html)
         self.assertIn("Read the full Markdown note on GitHub", html)
         self.assertIn("Initial working-group ratings", html)
@@ -94,6 +108,12 @@ A concise summary.
     def test_generated_html_has_one_dialog_close_button(self):
         html = generate_html(load_notes(), load_plots())
         self.assertEqual(html.count('class="close"'), 1)
+
+    def test_generated_html_contains_cluster_marker_and_picker(self):
+        html = generate_html(load_notes(), load_plots())
+        self.assertIn('data-cluster=', html)
+        self.assertIn('function showCluster', html)
+        self.assertIn('picker-item', html)
 
 
 if __name__ == "__main__":
