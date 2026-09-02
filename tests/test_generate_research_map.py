@@ -429,6 +429,17 @@ A concise summary.
         self.assertIn("m.classList.toggle('related',relatedCount>0)", html)
         self.assertIn("m.classList.toggle('dimmed',Boolean(selectedPrimitive&&!relatedCount))", html)
 
+    def test_mixed_cluster_updates_and_restores_accessible_count(self):
+        notes, plots, primitives = mixed_cluster_fixture()
+
+        html = generate_html(notes, plots, primitives)
+
+        self.assertIn('aria-label="5 notes at this position"', html)
+        self.assertIn(
+            "m.setAttribute('aria-label',relatedCount?`${relatedCount} of ${noteIds.length} related notes at this position`:`${noteIds.length} notes at this position`)",
+            html,
+        )
+
     def test_mixed_cluster_picker_sorts_a_copy_related_first_and_labels_relationships(self):
         notes, plots, primitives = mixed_cluster_fixture()
 
