@@ -3,6 +3,20 @@ title: Per-session sandboxes with lifecycle states
 author: Ruben Koster (@rkoster)
 date: 2026-07-02
 tags: [runtime-lifecycle, sandboxing-isolation]
+ratings:
+  platform-impact:
+    value: 84
+    note: 'Initial review of Per-session sandboxes with lifecycle states: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+  maturity:
+    value: 38
+    note: 'Initial review of Per-session sandboxes with lifecycle states: this score reflects the amount of established external practice visible in the note.'
+  novelty:
+    value: 80
+    note: 'Initial review of Per-session sandboxes with lifecycle states: this score reflects how distinct or emerging the approach appears in the current landscape.'
+  actionability:
+    value: 76
+    note: 'Initial review of Per-session sandboxes with lifecycle states: this score reflects how readily the material could guide a focused experiment or follow-up.'
+
 ---
 
 ## The idea

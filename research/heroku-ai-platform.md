@@ -13,6 +13,20 @@ sources:
   - https://www.heroku.com/blog/code-execution-sandbox-for-agents-on-heroku/
   - https://www.heroku.com/ai/mcp-on-heroku/
   - https://github.com/heroku/mcp-code-exec-python
+ratings:
+  platform-impact:
+    value: 78
+    note: 'Initial review of Heroku AI — Managed Inference, Agents, and MCP on a Buildpack-Era PaaS: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+  maturity:
+    value: 76
+    note: 'Initial review of Heroku AI — Managed Inference, Agents, and MCP on a Buildpack-Era PaaS: this score reflects the amount of established external practice visible in the note.'
+  novelty:
+    value: 62
+    note: 'Initial review of Heroku AI — Managed Inference, Agents, and MCP on a Buildpack-Era PaaS: this score reflects how distinct or emerging the approach appears in the current landscape.'
+  actionability:
+    value: 66
+    note: 'Initial review of Heroku AI — Managed Inference, Agents, and MCP on a Buildpack-Era PaaS: this score reflects how readily the material could guide a focused experiment or follow-up.'
+
 ---
 
 ## Summary

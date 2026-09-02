@@ -14,6 +14,20 @@ sources:
   - https://firecracker-microvm.github.io/
   - https://fly.io/blog/sandboxing-and-workload-isolation/
   - https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing
+ratings:
+  platform-impact:
+    value: 70
+    note: 'Initial review of Firecracker — Hardware-Isolated microVMs for Untrusted, Ephemeral Compute: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+  maturity:
+    value: 76
+    note: 'Initial review of Firecracker — Hardware-Isolated microVMs for Untrusted, Ephemeral Compute: this score reflects the amount of established external practice visible in the note.'
+  novelty:
+    value: 62
+    note: 'Initial review of Firecracker — Hardware-Isolated microVMs for Untrusted, Ephemeral Compute: this score reflects how distinct or emerging the approach appears in the current landscape.'
+  actionability:
+    value: 66
+    note: 'Initial review of Firecracker — Hardware-Isolated microVMs for Untrusted, Ephemeral Compute: this score reflects how readily the material could guide a focused experiment or follow-up.'
+
 ---
 
 ## Summary

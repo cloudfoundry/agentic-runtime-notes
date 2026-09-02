@@ -19,6 +19,20 @@ sources:
   - https://aws.amazon.com/bedrock/agentcore/
   - https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html
   - https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.html
+ratings:
+  platform-impact:
+    value: 78
+    note: 'Initial review of AWS Strands Agents & Bedrock AgentCore — Framework and Managed Runtime: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+  maturity:
+    value: 76
+    note: 'Initial review of AWS Strands Agents & Bedrock AgentCore — Framework and Managed Runtime: this score reflects the amount of established external practice visible in the note.'
+  novelty:
+    value: 62
+    note: 'Initial review of AWS Strands Agents & Bedrock AgentCore — Framework and Managed Runtime: this score reflects how distinct or emerging the approach appears in the current landscape.'
+  actionability:
+    value: 66
+    note: 'Initial review of AWS Strands Agents & Bedrock AgentCore — Framework and Managed Runtime: this score reflects how readily the material could guide a focused experiment or follow-up.'
+
 ---
 
 ## Summary

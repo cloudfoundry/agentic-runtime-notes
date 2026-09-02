@@ -9,6 +9,20 @@ sources:
   - https://github.com/kagent-dev/kagent
   - https://kagent.dev/docs/kagent/getting-started/quickstart
   - https://kagent.dev/docs/kagent/concepts/agents
+ratings:
+  platform-impact:
+    value: 78
+    note: 'Initial review of kagent — Kubernetes-Native Framework for Operations-Focused AI Agents: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+  maturity:
+    value: 76
+    note: 'Initial review of kagent — Kubernetes-Native Framework for Operations-Focused AI Agents: this score reflects the amount of established external practice visible in the note.'
+  novelty:
+    value: 62
+    note: 'Initial review of kagent — Kubernetes-Native Framework for Operations-Focused AI Agents: this score reflects how distinct or emerging the approach appears in the current landscape.'
+  actionability:
+    value: 66
+    note: 'Initial review of kagent — Kubernetes-Native Framework for Operations-Focused AI Agents: this score reflects how readily the material could guide a focused experiment or follow-up.'
+
 ---
 
 ## Summary

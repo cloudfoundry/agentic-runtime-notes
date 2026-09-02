@@ -14,6 +14,20 @@ sources:
   - https://developers.cloudflare.com/agents/runtime/operations/observability/
   - https://developers.cloudflare.com/agents/runtime/operations/observability/tracing/
   - https://developers.cloudflare.com/durable-objects/
+ratings:
+  platform-impact:
+    value: 78
+    note: 'Initial review of Cloudflare Agents SDK — Agents as Durable Objects (V8-Isolate Isolation): its subject and tags indicate how broadly the capability could affect an agentic platform.'
+  maturity:
+    value: 76
+    note: 'Initial review of Cloudflare Agents SDK — Agents as Durable Objects (V8-Isolate Isolation): this score reflects the amount of established external practice visible in the note.'
+  novelty:
+    value: 62
+    note: 'Initial review of Cloudflare Agents SDK — Agents as Durable Objects (V8-Isolate Isolation): this score reflects how distinct or emerging the approach appears in the current landscape.'
+  actionability:
+    value: 66
+    note: 'Initial review of Cloudflare Agents SDK — Agents as Durable Objects (V8-Isolate Isolation): this score reflects how readily the material could guide a focused experiment or follow-up.'
+
 ---
 
 ## Summary

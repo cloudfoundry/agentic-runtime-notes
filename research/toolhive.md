@@ -10,6 +10,20 @@ sources:
   - https://github.com/stacklok/toolhive
   - https://docs.stacklok.com/toolhive/concepts/mcp-primer
   - https://docs.stacklok.com/toolhive/concepts/auth-framework
+ratings:
+  platform-impact:
+    value: 58
+    note: 'Initial review of ToolHive — Secure Runtime and Gateway for MCP Servers: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+  maturity:
+    value: 76
+    note: 'Initial review of ToolHive — Secure Runtime and Gateway for MCP Servers: this score reflects the amount of established external practice visible in the note.'
+  novelty:
+    value: 62
+    note: 'Initial review of ToolHive — Secure Runtime and Gateway for MCP Servers: this score reflects how distinct or emerging the approach appears in the current landscape.'
+  actionability:
+    value: 58
+    note: 'Initial review of ToolHive — Secure Runtime and Gateway for MCP Servers: this score reflects how readily the material could guide a focused experiment or follow-up.'
+
 ---
 
 ## Summary

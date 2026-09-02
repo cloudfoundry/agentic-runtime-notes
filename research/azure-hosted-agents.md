@@ -7,6 +7,20 @@ cf_areas: [diego, capi, uaa]
 status: draft
 sources:
   - https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/hosted-agents
+ratings:
+  platform-impact:
+    value: 78
+    note: 'Initial review of Azure Foundry — Hosted Agents Model: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+  maturity:
+    value: 76
+    note: 'Initial review of Azure Foundry — Hosted Agents Model: this score reflects the amount of established external practice visible in the note.'
+  novelty:
+    value: 62
+    note: 'Initial review of Azure Foundry — Hosted Agents Model: this score reflects how distinct or emerging the approach appears in the current landscape.'
+  actionability:
+    value: 66
+    note: 'Initial review of Azure Foundry — Hosted Agents Model: this score reflects how readily the material could guide a focused experiment or follow-up.'
+
 ---
 
 ## Summary

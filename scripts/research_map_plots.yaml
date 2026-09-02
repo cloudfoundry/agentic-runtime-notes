@@ -1,0 +1,12 @@
+platform-impact-maturity:
+  title: Platform Impact x Maturity
+  x:
+    rating: maturity
+    label: Maturity
+    low: Emerging
+    high: Established
+  y:
+    rating: platform-impact
+    label: Platform Impact
+    low: Local concern
+    high: Platform-wide concern

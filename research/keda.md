@@ -8,6 +8,20 @@ status: draft
 sources:
   - https://keda.sh/
   - https://github.com/kedacore/keda
+ratings:
+  platform-impact:
+    value: 78
+    note: 'Initial review of KEDA — Kubernetes Event-Driven Autoscaling: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+  maturity:
+    value: 68
+    note: 'Initial review of KEDA — Kubernetes Event-Driven Autoscaling: this score reflects the amount of established external practice visible in the note.'
+  novelty:
+    value: 70
+    note: 'Initial review of KEDA — Kubernetes Event-Driven Autoscaling: this score reflects how distinct or emerging the approach appears in the current landscape.'
+  actionability:
+    value: 66
+    note: 'Initial review of KEDA — Kubernetes Event-Driven Autoscaling: this score reflects how readily the material could guide a focused experiment or follow-up.'
+
 ---
 
 ## Summary

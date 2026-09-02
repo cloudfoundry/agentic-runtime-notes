@@ -3,6 +3,19 @@ title: <one-line idea>
 author: <Your Name> (@your-github-handle)
 date: 2026-01-01
 tags: [<optional-tag>]
+ratings:
+  platform-impact:
+    value: 50
+    note: "Explain the provisional platform-impact score."
+  maturity:
+    value: 50
+    note: "Explain the provisional maturity score."
+  novelty:
+    value: 50
+    note: "Explain the provisional novelty score."
+  actionability:
+    value: 50
+    note: "Explain the provisional actionability score."
 ---
 
 <!--
@@ -26,3 +39,9 @@ tags: [<optional-tag>]
 ## Related
 
 <!-- Optional: links to research notes or other ideas this connects to. -->
+
+## Optional map ratings
+
+Ratings are provisional working-group judgments on a 0-100 scale. Each value must have a
+short justification in its `note` field. The generator uses named ratings to position notes on
+plots, so future plots can reuse these ratings or introduce new ones.

@@ -18,6 +18,20 @@ sources:
   - https://docs.letta.com/self-hosting
   - https://docs.letta.com/reference/terminology
   - https://docs.letta.com/agent-sdk/mcp
+ratings:
+  platform-impact:
+    value: 78
+    note: 'Initial review of Letta (formerly MemGPT) — Durable, Memory-Centric Stateful Agents: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+  maturity:
+    value: 76
+    note: 'Initial review of Letta (formerly MemGPT) — Durable, Memory-Centric Stateful Agents: this score reflects the amount of established external practice visible in the note.'
+  novelty:
+    value: 62
+    note: 'Initial review of Letta (formerly MemGPT) — Durable, Memory-Centric Stateful Agents: this score reflects how distinct or emerging the approach appears in the current landscape.'
+  actionability:
+    value: 66
+    note: 'Initial review of Letta (formerly MemGPT) — Durable, Memory-Centric Stateful Agents: this score reflects how readily the material could guide a focused experiment or follow-up.'
+
 ---
 
 ## Summary

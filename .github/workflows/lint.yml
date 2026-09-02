@@ -6,6 +6,9 @@ on:
       - "research/**"
       - "ideas/**"
       - ".github/scripts/validate_notes.py"
+      - "scripts/**"
+      - "generated/**"
+      - "tests/**"
       - ".github/workflows/lint.yml"
   push:
     branches: [main]
@@ -13,6 +16,9 @@ on:
       - "research/**"
       - "ideas/**"
       - ".github/scripts/validate_notes.py"
+      - "scripts/**"
+      - "generated/**"
+      - "tests/**"
       - ".github/workflows/lint.yml"
 
 jobs:
@@ -32,3 +38,9 @@ jobs:
 
       - name: Validate notes and ideas
         run: python .github/scripts/validate_notes.py
+
+      - name: Test map generator
+        run: python -m unittest discover -s tests
+
+      - name: Check generated map
+        run: python scripts/generate_research_map.py --check

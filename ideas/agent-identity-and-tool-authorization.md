@@ -3,6 +3,20 @@ title: Agent identity and tool authorization — the platform as the agent's ide
 author: Wayne E. Seguin (@wayneeseguin)
 date: 2026-08-12
 tags: [identity, inter-agent-comms, observability-governance]
+ratings:
+  platform-impact:
+    value: 92
+    note: "Initial review of Agent identity and tool authorization — the platform as the agent's identity provider: its subject and tags indicate how broadly the capability could affect an agentic platform."
+  maturity:
+    value: 38
+    note: "Initial review of Agent identity and tool authorization — the platform as the agent's identity provider: this score reflects the amount of established external practice visible in the note."
+  novelty:
+    value: 80
+    note: "Initial review of Agent identity and tool authorization — the platform as the agent's identity provider: this score reflects how distinct or emerging the approach appears in the current landscape."
+  actionability:
+    value: 76
+    note: "Initial review of Agent identity and tool authorization — the platform as the agent's identity provider: this score reflects how readily the material could guide a focused experiment or follow-up."
+
 ---
 
 ## The idea

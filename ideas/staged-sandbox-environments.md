@@ -3,6 +3,20 @@ title: Split environment staging from workspace state for agent sandboxes
 author: Ruben Koster (@rkoster)
 date: 2026-08-24
 tags: [runtime-lifecycle, sandboxing-isolation, ecosystem-survey]
+ratings:
+  platform-impact:
+    value: 84
+    note: 'Initial review of Split environment staging from workspace state for agent sandboxes: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+  maturity:
+    value: 46
+    note: 'Initial review of Split environment staging from workspace state for agent sandboxes: this score reflects the amount of established external practice visible in the note.'
+  novelty:
+    value: 72
+    note: 'Initial review of Split environment staging from workspace state for agent sandboxes: this score reflects how distinct or emerging the approach appears in the current landscape.'
+  actionability:
+    value: 76
+    note: 'Initial review of Split environment staging from workspace state for agent sandboxes: this score reflects how readily the material could guide a focused experiment or follow-up.'
+
 ---
 
 ## The idea

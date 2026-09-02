@@ -11,6 +11,20 @@ sources:
   - https://www.cloudfoundry.org/blog/from-idea-to-production-delivering-an-ai-ready-platform-as-a-service-with-vmware-tanzu-platform/
   - https://investors.broadcom.com/news-releases/news-release-details/broadcom-announces-tanzu-platform-agent-foundations-bringing
   - https://blogs.vmware.com/tanzu/scalable-agentic-applications-with-model-context-protocol-mcp/
+ratings:
+  platform-impact:
+    value: 78
+    note: 'Initial review of VMware Tanzu Platform — GenAI Tile and Agent Foundations Built on Cloud Foundry: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+  maturity:
+    value: 76
+    note: 'Initial review of VMware Tanzu Platform — GenAI Tile and Agent Foundations Built on Cloud Foundry: this score reflects the amount of established external practice visible in the note.'
+  novelty:
+    value: 62
+    note: 'Initial review of VMware Tanzu Platform — GenAI Tile and Agent Foundations Built on Cloud Foundry: this score reflects how distinct or emerging the approach appears in the current landscape.'
+  actionability:
+    value: 66
+    note: 'Initial review of VMware Tanzu Platform — GenAI Tile and Agent Foundations Built on Cloud Foundry: this score reflects how readily the material could guide a focused experiment or follow-up.'
+
 ---
 
 ## Summary

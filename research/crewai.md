@@ -16,6 +16,20 @@ sources:
   - https://docs.crewai.com/en/observability/overview
   - https://docs.crewai.com/en/observability/tracing
   - https://docs-platform.crewai.com/platform/en/introduction
+ratings:
+  platform-impact:
+    value: 78
+    note: 'Initial review of CrewAI — Role-Based Crews and Event-Driven Flows: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+  maturity:
+    value: 76
+    note: 'Initial review of CrewAI — Role-Based Crews and Event-Driven Flows: this score reflects the amount of established external practice visible in the note.'
+  novelty:
+    value: 62
+    note: 'Initial review of CrewAI — Role-Based Crews and Event-Driven Flows: this score reflects how distinct or emerging the approach appears in the current landscape.'
+  actionability:
+    value: 66
+    note: 'Initial review of CrewAI — Role-Based Crews and Event-Driven Flows: this score reflects how readily the material could guide a focused experiment or follow-up.'
+
 ---
 
 ## Summary

@@ -8,6 +8,20 @@ status: draft
 sources:
   - https://github.com/alibaba/open-agent-auth
   - https://datatracker.ietf.org/doc/draft-liu-agent-operation-authorization/
+ratings:
+  platform-impact:
+    value: 70
+    note: 'Initial review of Open Agent Auth — IETF Agent Operation Authorization: its subject and tags indicate how broadly the capability could affect an agentic platform.'
+  maturity:
+    value: 68
+    note: 'Initial review of Open Agent Auth — IETF Agent Operation Authorization: this score reflects the amount of established external practice visible in the note.'
+  novelty:
+    value: 70
+    note: 'Initial review of Open Agent Auth — IETF Agent Operation Authorization: this score reflects how distinct or emerging the approach appears in the current landscape.'
+  actionability:
+    value: 66
+    note: 'Initial review of Open Agent Auth — IETF Agent Operation Authorization: this score reflects how readily the material could guide a focused experiment or follow-up.'
+
 ---
 
 ## Summary
