@@ -269,35 +269,76 @@ A concise summary.
                 self.assertTrue(ratings[name]["note"].strip(), note.path)
 
     def test_generated_html_contains_markers_dialog_and_source_links(self):
-        html = generate_html(load_notes(), load_plots())
+        html = generate_html(load_notes(), load_plots(), load_primitives())
         self.assertGreater(html.count('class="marker '), 0)
         self.assertIn('<dialog id="detail">', html)
         self.assertIn("Read the full Markdown note on GitHub", html)
         self.assertIn("Recalibrated working-group ratings", html)
 
     def test_generated_html_contains_one_matrix_for_each_configured_plot(self):
-        html = generate_html(load_notes(), load_plots())
+        html = generate_html(load_notes(), load_plots(), load_primitives())
         for plot in load_plots().values():
             self.assertIn(plot["title"], html)
         self.assertEqual(html.count('class="map"'), len(load_plots()))
 
+    def test_generated_html_contains_primitive_card_controls_and_details(self):
+        primitives = load_primitives()
+        html = generate_html(load_notes(), load_plots(), primitives)
+
+        self.assertEqual(html.count('class="primitive-select"'), 3)
+        self.assertEqual(html.count('aria-pressed="false"'), 3)
+        self.assertIn('class="show-all"', html)
+        self.assertIn('>Show all</button>', html)
+        for primitive in primitives:
+            self.assertIn(f'data-primitive="{primitive["id"]}"', html)
+            self.assertIn(primitive["proposition"], html)
+            self.assertIn(primitive["strategic_decision"], html)
+            self.assertIn(primitive["cf_gap"], html)
+            self.assertIn(primitive["poc"], html)
+            self.assertIn(primitive["rfc_scope"], html)
+            for path in primitive["core"] + primitive["supporting"]:
+                self.assertIn(f'href="{github_url(pathlib.Path(path))}"', html)
+
+    def test_generated_html_contains_accessible_matrix_tabs_and_panels(self):
+        plots = load_plots()
+        html = generate_html(load_notes(), plots, load_primitives())
+
+        self.assertEqual(html.count('role="tablist"'), 1)
+        self.assertEqual(html.count(' role="tab" aria-selected='), 6)
+        self.assertEqual(html.count('role="tabpanel"'), 6)
+        self.assertEqual(html.count('role="tab" aria-selected="true"'), 1)
+        self.assertEqual(html.count('role="tab" aria-selected="false"'), 5)
+        for index, plot_id in enumerate(plots):
+            selected = "true" if index == 0 else "false"
+            hidden = "" if index == 0 else " hidden"
+            self.assertIn(
+                f'id="tab-{plot_id}" role="tab" aria-selected="{selected}" '
+                f'aria-controls="panel-{plot_id}"',
+                html,
+            )
+            self.assertIn(
+                f'id="panel-{plot_id}" class="matrix" role="tabpanel" '
+                f'aria-labelledby="tab-{plot_id}"{hidden}',
+                html,
+            )
+
     def test_generated_html_has_one_dialog_close_button(self):
-        html = generate_html(load_notes(), load_plots())
+        html = generate_html(load_notes(), load_plots(), load_primitives())
         self.assertEqual(html.count('class="close"'), 1)
 
     def test_generated_html_contains_cluster_marker_and_picker(self):
-        html = generate_html(load_notes(), load_plots())
+        html = generate_html(load_notes(), load_plots(), load_primitives())
         self.assertIn('data-cluster=', html)
         self.assertIn('function showCluster', html)
         self.assertIn('picker-item', html)
 
     def test_generated_html_wires_singletons_and_close_button(self):
-        html = generate_html(load_notes(), load_plots())
+        html = generate_html(load_notes(), load_plots(), load_primitives())
         self.assertIn("show(plots[m.dataset.plot].find(n=>n.id===m.dataset.id))", html)
         self.assertIn("document.querySelector('.close').onclick=()=>dialog.close()", html)
 
     def test_generated_html_styles_note_lists_and_picker_items(self):
-        html = generate_html(load_notes(), load_plots())
+        html = generate_html(load_notes(), load_plots(), load_primitives())
         self.assertIn(".unplaced li", html)
         self.assertIn(".picker-item", html)
         self.assertIn("font:inherit", html)
@@ -306,14 +347,14 @@ A concise summary.
         notes = [next(note for note in load_notes() if note.kind == kind) for kind in ("research", "idea")]
         notes[0].metadata["ratings"].pop("maturity")
         notes[1].metadata["ratings"].pop("maturity")
-        html = generate_html(notes, load_plots())
+        html = generate_html(notes, load_plots(), load_primitives())
         self.assertIn('class="note-kind research"', html)
         self.assertIn('class="note-kind idea"', html)
         self.assertIn('class="note-type research"', html)
         self.assertIn('class="note-type idea"', html)
 
     def test_picker_items_distinguish_ideas_and_research(self):
-        html = generate_html(load_notes(), load_plots())
+        html = generate_html(load_notes(), load_plots(), load_primitives())
         self.assertIn('class="picker-kind ${note.kind}"', html)
         self.assertIn('.picker-kind.research', html)
         self.assertIn('.picker-kind.idea', html)

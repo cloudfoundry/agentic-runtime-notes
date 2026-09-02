@@ -206,11 +206,27 @@ def note_payload(note: Note, plot: dict) -> dict:
     }
 
 
-def generate_html(notes: list[Note], plots: dict) -> str:
+def generate_html(notes: list[Note], plots: dict, primitives: list[dict]) -> str:
     plot_payloads = {plot_id: [note_payload(note, plot) for note in notes] for plot_id, plot in plots.items()}
     data = json.dumps(plot_payloads, ensure_ascii=True).replace("</", "<\\/")
+    note_titles = {note.path.as_posix(): note.title for note in notes}
+    accents = ("#68d5ac", "#f1b866", "#8eb8ff")
+    cards = []
+    for primitive, accent in zip(primitives, accents):
+        primitive_id = html.escape(primitive["id"])
+        memberships = []
+        for relationship in ("core", "supporting"):
+            links = "".join(
+                f'<li><a href="{html.escape(github_url(pathlib.Path(path)))}">{html.escape(note_titles.get(path, pathlib.Path(path).stem.replace("-", " ").title()))}</a></li>'
+                for path in primitive[relationship]
+            )
+            memberships.append(f'<section><h4>{relationship.title()}</h4><ul>{links}</ul></section>')
+        cards.append(f'''<article class="primitive-card" style="--primitive-accent:{accent}">
+<button class="primitive-select" type="button" data-primitive="{primitive_id}" aria-pressed="false"><span class="primitive-title">{html.escape(primitive["title"])}</span><span>{html.escape(primitive["proposition"])}</span><span class="strategic-decision"><strong>Strategic decision:</strong> {html.escape(primitive["strategic_decision"])}</span></button>
+<details class="primitive-details"><summary>Gap, experiments, and evidence</summary><dl><dt>Current CF gap</dt><dd>{html.escape(primitive["cf_gap"])}</dd><dt>Candidate POC</dt><dd>{html.escape(primitive["poc"])}</dd><dt>Candidate RFC scope</dt><dd>{html.escape(primitive["rfc_scope"])}</dd></dl><div class="primitive-links">{''.join(memberships)}</div></details></article>''')
     matrices = []
-    for plot_id, plot in plots.items():
+    tabs = []
+    for index, (plot_id, plot) in enumerate(plots.items()):
         payload = plot_payloads[plot_id]
         markers = []
         unplaced = []
@@ -233,21 +249,26 @@ def generate_html(notes: list[Note], plots: dict) -> str:
         title = html.escape(plot["title"])
         x = plot["x"]
         y = plot["y"]
-        matrices.append(f'''<section class="matrix"><h2>{title}</h2><div class="map" aria-label="{title}">{''.join(markers)}<span class="axis-x">{html.escape(x["low"])} &lt; {html.escape(x["label"])} &gt; {html.escape(x["high"])}</span><span class="axis-y">{html.escape(y["low"])} &lt; {html.escape(y["label"])} &gt; {html.escape(y["high"])}</span></div><details class="unplaced"><summary>Unplaced notes ({len(unplaced)})</summary><ul>{''.join(unplaced) or '<li>All notes are placed.</li>'}</ul></details></section>''')
+        selected = "true" if index == 0 else "false"
+        hidden = "" if index == 0 else " hidden"
+        escaped_plot_id = html.escape(plot_id)
+        tabs.append(f'<button id="tab-{escaped_plot_id}" role="tab" aria-selected="{selected}" aria-controls="panel-{escaped_plot_id}" type="button">{title}</button>')
+        matrices.append(f'''<section id="panel-{escaped_plot_id}" class="matrix" role="tabpanel" aria-labelledby="tab-{escaped_plot_id}"{hidden}><h2>{title}</h2><div class="map" aria-label="{title}">{''.join(markers)}<span class="axis-x">{html.escape(x["low"])} &lt; {html.escape(x["label"])} &gt; {html.escape(x["high"])}</span><span class="axis-y">{html.escape(y["low"])} &lt; {html.escape(y["label"])} &gt; {html.escape(y["high"])}</span></div><details class="unplaced"><summary>Unplaced notes ({len(unplaced)})</summary><ul>{''.join(unplaced) or '<li>All notes are placed.</li>'}</ul></details></section>''')
     return f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{title}</title><style>
+<title>Research and Ideas Landscape</title><style>
 :root {{ color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; background:#101619; color:#e7f1ed; }}
 body {{ max-width:1200px; margin:0 auto; padding:36px 24px; }} h1 {{ font-size:clamp(2rem,5vw,4rem); margin:0 0 8px; }}
 .intro {{ color:#9eb4ac; max-width:760px; line-height:1.5; }} .map {{ position:relative; height:620px; margin:34px 42px 20px 90px; border-left:1px solid #668078; border-bottom:1px solid #668078; background:linear-gradient(90deg,transparent 49.9%,#243a35 50%,transparent 50.1%),linear-gradient(0deg,transparent 49.9%,#243a35 50%,transparent 50.1%); }}
-.matrix {{ margin-top:48px; }} .axis-x,.axis-y {{ position:absolute; color:#9eb4ac; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; }} .axis-x {{ left:0; right:0; bottom:-34px; text-align:center; }} .axis-y {{ writing-mode:vertical-rl; transform:rotate(180deg) translateY(50%); left:-52px; top:50%; text-align:center; white-space:nowrap; }}
+.primitive-heading {{ margin-top:44px; }} .primitive-actions {{ display:flex; justify-content:flex-end; margin-bottom:12px; }} .show-all {{ color:#bff7df; background:#1b302b; border:1px solid #46675c; border-radius:999px; padding:8px 16px; cursor:pointer; }} .show-all:hover,.show-all:focus-visible {{ border-color:#8ee3bf; background:#24433a; }} .primitive-grid {{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }} .primitive-card {{ min-width:0; background:#15211e; border:1px solid #304640; border-top:3px solid var(--primitive-accent); border-radius:12px; overflow:hidden; }} .primitive-select {{ display:flex; flex-direction:column; gap:12px; width:100%; min-height:100%; padding:20px; color:inherit; background:#172723; border:0; text-align:left; cursor:pointer; }} .primitive-select:hover,.primitive-select:focus-visible,.primitive-select[aria-pressed="true"] {{ background:#203630; box-shadow:inset 0 0 0 1px var(--primitive-accent); }} .primitive-title {{ color:var(--primitive-accent); font-size:1.15rem; font-weight:800; line-height:1.25; }} .strategic-decision {{ margin-top:auto; color:#c8d8d2; }} .primitive-details {{ border-top:1px solid #304640; padding:14px 20px 18px; }} .primitive-details summary {{ color:var(--primitive-accent); cursor:pointer; font-weight:700; }} .primitive-details dl {{ margin-bottom:0; }} .primitive-details dt {{ margin-top:14px; color:#b4c8c0; font-weight:700; }} .primitive-details dd {{ margin:4px 0 0; color:#d5e3de; line-height:1.45; }} .primitive-links {{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }} .primitive-links ul {{ margin:8px 0 0; padding-left:18px; }} .primitive-links li {{ margin:6px 0; }} .matrix-tabs {{ display:flex; gap:8px; margin-top:44px; padding:4px; overflow-x:auto; scrollbar-color:#46675c #15211e; }} .matrix-tabs [role="tab"] {{ flex:0 0 auto; color:#b4c8c0; background:#172723; border:1px solid #304640; border-radius:8px; padding:10px 14px; cursor:pointer; }} .matrix-tabs [role="tab"]:hover,.matrix-tabs [role="tab"]:focus-visible {{ color:#e7f1ed; border-color:#668078; background:#203630; }} .matrix-tabs [aria-selected="true"] {{ color:#10201b; background:#8ee3bf; border-color:#8ee3bf; font-weight:800; }} .matrix[hidden] {{ display:none; }} .matrix {{ margin-top:28px; }} .axis-x,.axis-y {{ position:absolute; color:#9eb4ac; font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; }} .axis-x {{ left:0; right:0; bottom:-34px; text-align:center; }} .axis-y {{ writing-mode:vertical-rl; transform:rotate(180deg) translateY(50%); left:-52px; top:50%; text-align:center; white-space:nowrap; }}
 .marker {{ position:absolute; transform:translate(-50%,50%); width:18px; height:18px; border:2px solid #d9fff0; cursor:pointer; }} .marker.research {{ border-radius:50%; background:#64c5a0; }} .marker.idea {{ transform:translate(-50%,50%) rotate(45deg); background:#e6a85b; }} .marker.cluster {{ transform:translate(-50%,50%); width:30px; height:30px; border-radius:50%; background:#d9fff0; color:#10201b; font-weight:800; }}
 .legend {{ display:flex; gap:22px; color:#b4c8c0; font-size:.9rem; }} .legend span::before {{ content:""; display:inline-block; width:11px; height:11px; margin-right:7px; background:#64c5a0; border-radius:50%; }} .legend .idea-key::before {{ background:#e6a85b; border-radius:0; transform:rotate(45deg); }}
 .unplaced {{ margin-top:56px; border-top:1px solid #304640; padding-top:18px; }} .unplaced summary {{ color:#9eb4ac; cursor:pointer; }} .unplaced ul {{ list-style:none; margin:14px 0 0; padding:0; display:grid; gap:8px; }} .unplaced li {{ display:flex; align-items:center; gap:10px; background:#172320; border:1px solid #304640; border-radius:8px; padding:10px 12px; }} .note-kind,.picker-kind {{ display:inline-flex; align-items:center; flex:0 0 auto; border-radius:999px; padding:3px 8px; font-size:.68rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }} .note-kind.research,.picker-kind.research {{ color:#bff7df; background:#245744; }} .note-kind.idea,.picker-kind.idea {{ color:#ffe0ad; background:#654522; }} a {{ color:#8ee3bf; }} dialog {{ max-width:620px; width:calc(100% - 48px); color:#e7f1ed; background:#172320; border:1px solid #668078; border-radius:14px; padding:26px; font:inherit; }} dialog::backdrop {{ background:#020505bb; }} button {{ font:inherit; }} .close {{ float:right; background:#243a35; color:inherit; border:1px solid #668078; border-radius:6px; padding:2px 8px; font-size:1.2rem; line-height:1.2; cursor:pointer; }} .tag {{ color:#9eb4ac; margin-right:8px; }} .rating {{ border-top:1px solid #304640; padding:12px 0; }} .rating strong {{ color:#8ee3bf; }} .picker-item {{ display:block; width:100%; margin:8px 0; padding:12px 14px; text-align:left; color:inherit; background:#20322e; border:1px solid #46675c; border-radius:8px; cursor:pointer; }} .picker-item:hover,.picker-item:focus-visible {{ background:#2c4940; border-color:#8ee3bf; }} .picker-item small {{ color:#b4c8c0; }} .picker-kind {{ margin-right:8px; }}
-@media(max-width:600px) {{ body {{ padding:24px 14px; }} .map {{ height:720px; margin-left:58px; }} .axis-y {{ left:-40px; }} }}
+@media(max-width:800px) {{ .primitive-grid {{ grid-template-columns:1fr; }} .primitive-select {{ min-height:0; }} }}
+@media(max-width:600px) {{ body {{ padding:24px 14px; }} .primitive-links {{ grid-template-columns:1fr; gap:0; }} .matrix-tabs {{ margin-left:-14px; margin-right:-14px; padding-left:14px; padding-right:14px; }} .map {{ height:720px; margin-left:58px; }} .axis-y {{ left:-40px; }} }}
 </style></head><body><main><p class="intro">Agentic Runtime Working Group - provisional workshop view</p><h1>Research and Ideas Landscape</h1>
 <p class="intro">Recalibrated working-group ratings, shown to seed discussion rather than establish a permanent taxonomy. Click a note for its summary, rating justifications, and source.</p>
-<div class="legend"><span>Research</span><span class="idea-key">Idea</span></div>{''.join(matrices)}</main>
+<div class="legend"><span>Research</span><span class="idea-key">Idea</span></div><h2 class="primitive-heading">Candidate platform primitives</h2><div class="primitive-actions"><button class="show-all" type="button">Show all</button></div><div class="primitive-grid">{''.join(cards)}</div><div class="matrix-tabs" role="tablist" aria-label="Rating matrices">{''.join(tabs)}</div>{''.join(matrices)}</main>
 <dialog id="detail"><button class="close" aria-label="Close">X</button><div id="content"></div></dialog>
 <script>const plots={data};const dialog=document.querySelector('#detail'),content=document.querySelector('#content');document.querySelector('.close').onclick=()=>dialog.close();
 function show(note){{const tags=(note.tags||[]).map(t=>`<span class="tag">#${{t}}</span>`).join('');const ratings=Object.entries(note.ratings||{{}}).map(([name,r])=>`<div class="rating"><strong>${{name}}: ${{r.value}}/100</strong><br>${{r.note}}</div>`).join('');content.innerHTML=`<p class="intro">${{note.kind}}</p><h2>${{note.title}}</h2><p>${{note.summary}}</p><p>${{tags}}</p>${{ratings}}<p><a href="${{note.url}}">Read the full Markdown note on GitHub</a></p>`;dialog.showModal()}}
@@ -260,7 +281,7 @@ def main() -> int:
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     try:
-        output = generate_html(load_notes(), load_plots())
+        output = generate_html(load_notes(), load_plots(), load_primitives())
     except (OSError, ValueError, yaml.YAMLError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
