@@ -2,6 +2,7 @@ import html as html_lib
 import json
 import pathlib
 import re
+import subprocess
 import unittest
 from types import SimpleNamespace
 
@@ -348,10 +349,11 @@ A concise summary.
         self.assertEqual(html.count('role="tab" aria-selected="false"'), 5)
         for index, plot_id in enumerate(plots):
             selected = "true" if index == 0 else "false"
+            tab_index = "0" if index == 0 else "-1"
             hidden = "" if index == 0 else " hidden"
             self.assertIn(
                 f'id="tab-{plot_id}" role="tab" aria-selected="{selected}" '
-                f'aria-controls="panel-{plot_id}"',
+                f'tabindex="{tab_index}" aria-controls="panel-{plot_id}"',
                 html,
             )
             self.assertIn(
@@ -359,6 +361,30 @@ A concise summary.
                 f'aria-labelledby="tab-{plot_id}"{hidden}',
                 html,
             )
+
+    def test_generated_html_activates_tabs_for_clicks_and_keyboard_navigation(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+
+        self.assertIn("function activateTab(index)", html)
+        self.assertIn("tab.setAttribute('aria-selected',String(selected))", html)
+        self.assertIn("tab.tabIndex=selected?0:-1", html)
+        self.assertIn("panels[i].hidden=!selected", html)
+        self.assertIn("tabs[index].focus()", html)
+        self.assertIn("tab.onclick=()=>activateTab(index)", html)
+        self.assertIn("case 'ArrowLeft':next=(index-1+tabs.length)%tabs.length;break", html)
+        self.assertIn("case 'ArrowRight':next=(index+1)%tabs.length;break", html)
+        self.assertIn("case 'Home':next=0;break", html)
+        self.assertIn("case 'End':next=tabs.length-1;break", html)
+        self.assertIn("event.preventDefault();activateTab(next)", html)
+
+    def test_tab_activation_preserves_primitive_selection_and_updates_markers(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+        activate_tab = html.split("function activateTab(index)", 1)[1].split(
+            "function handleTabKey", 1
+        )[0]
+
+        self.assertNotIn("selectedPrimitive=", activate_tab)
+        self.assertIn("updateMarkers()", activate_tab)
 
     def test_generated_html_embeds_primitive_membership_once_and_stable_control_ids(self):
         primitives = load_primitives()
@@ -378,7 +404,7 @@ A concise summary.
         self.assertIn("let selectedPrimitive=null", html)
         self.assertIn("function selectPrimitive", html)
         self.assertIn("function clearPrimitiveSelection", html)
-        self.assertIn("function refreshMarkers", html)
+        self.assertIn("function updateMarkers", html)
         self.assertIn("aria-pressed',String", html)
         self.assertIn("classList.toggle('related'", html)
         self.assertIn("classList.toggle('dimmed'", html)
@@ -455,6 +481,25 @@ A concise summary.
         html = generate_html(load_notes(), load_plots(), load_primitives())
         self.assertIn("show(plots[m.dataset.plot].find(n=>n.id===m.dataset.id))", html)
         self.assertIn("document.querySelector('.close').onclick=()=>dialog.close()", html)
+
+    def test_generated_html_retains_dialog_dismissal_interactions(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+
+        self.assertIn("if(e.target===dialog)dialog.close()", html)
+        self.assertIn("if(e.key==='Escape')dialog.close()", html)
+
+    def test_generated_javascript_has_valid_syntax(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+        script = re.search(r"<script>(.*?)</script>", html, re.DOTALL).group(1)
+
+        result = subprocess.run(
+            ["node", "--check"],
+            input=script,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_generated_html_styles_note_lists_and_picker_items(self):
         html = generate_html(load_notes(), load_plots(), load_primitives())
