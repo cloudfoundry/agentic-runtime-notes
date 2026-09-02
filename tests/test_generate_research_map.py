@@ -101,8 +101,16 @@ class ResearchMapTests(unittest.TestCase):
 
     def test_validate_primitives_preserves_core_and_supporting_order(self):
         primitive = {**PRIMITIVE, "core": ["b.md", "a.md"], "supporting": ["d.md", "c.md"]}
+        primitives = [
+            primitive,
+            {**PRIMITIVE, "id": "second"},
+            {**PRIMITIVE, "id": "third"},
+        ]
 
-        validated = validate_primitives([primitive], {"a.md", "b.md", "c.md", "d.md"})
+        validated = validate_primitives(
+            primitives,
+            {"a.md", "b.md", "c.md", "d.md", *PRIMITIVE["core"], *PRIMITIVE["supporting"]},
+        )
 
         self.assertEqual(validated[0]["core"], ["b.md", "a.md"])
         self.assertEqual(validated[0]["supporting"], ["d.md", "c.md"])
@@ -110,6 +118,13 @@ class ResearchMapTests(unittest.TestCase):
     def test_validate_primitives_rejects_non_list_configuration(self):
         with self.assertRaisesRegex(ValueError, "non-empty list"):
             validate_primitives({"primitives": [PRIMITIVE]}, set(PRIMITIVE["core"] + PRIMITIVE["supporting"]))
+
+    def test_validate_primitives_requires_exactly_three_initial_primitives(self):
+        primitives = load_primitives()[:2]
+        known_paths = {path for primitive in primitives for path in primitive["core"] + primitive["supporting"]}
+
+        with self.assertRaisesRegex(ValueError, "exactly 3"):
+            validate_primitives(primitives, known_paths)
 
     def test_validate_primitives_rejects_blank_required_fields(self):
         for field in ("id", "title", "proposition", "cf_gap", "strategic_decision", "poc", "rfc_scope"):
@@ -309,9 +324,71 @@ A concise summary.
     def test_generated_html_contains_markers_dialog_and_source_links(self):
         html = generate_html(load_notes(), load_plots(), load_primitives())
         self.assertGreater(html.count('class="marker '), 0)
-        self.assertIn('<dialog id="detail">', html)
+        self.assertIn('<dialog id="detail"', html)
         self.assertIn("Read the full Markdown note on GitHub", html)
         self.assertIn("Recalibrated working-group ratings", html)
+
+    def test_generated_html_escapes_all_dynamic_dialog_content(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+
+        self.assertIn("function escapeHtml(value)", html)
+        for expression in (
+            "escapeHtml(note.kind)",
+            "escapeHtml(note.title)",
+            "escapeHtml(note.summary)",
+            "escapeHtml(t)",
+            "escapeHtml(name)",
+            "escapeHtml(r.value)",
+            "escapeHtml(r.note)",
+            "escapeHtml(note.url)",
+        ):
+            self.assertIn(expression, html)
+
+    def test_hostile_dynamic_content_is_not_emitted_as_raw_executable_markup(self):
+        attack = '<img src=x onerror="alert(1)">'
+        note = SimpleNamespace(
+            path=pathlib.Path("research/hostile.md"),
+            kind=attack,
+            title=attack,
+            summary=attack,
+            metadata={
+                "tags": [attack],
+                "ratings": {
+                    "maturity": {"value": 50, "note": attack},
+                    "platform-impact": {"value": 50, "note": attack},
+                },
+            },
+        )
+        primitive = {
+            **PRIMITIVE,
+            "id": attack,
+            "title": attack,
+            "proposition": attack,
+            "cf_gap": attack,
+            "strategic_decision": attack,
+            "poc": attack,
+            "rfc_scope": attack,
+            "core": [note.path.as_posix()],
+            "supporting": [],
+        }
+
+        generated = generate_html([note], {"hostile": {
+            "title": "Hostile",
+            "x": {"rating": "maturity", "label": "Maturity", "low": "Low", "high": "High"},
+            "y": {"rating": "platform-impact", "label": "Impact", "low": "Low", "high": "High"},
+        }}, [primitive])
+
+        static_markup, script = generated.split("<script>", 1)
+        self.assertNotIn(attack, static_markup)
+        self.assertNotIn("${note.title}", script)
+        self.assertNotIn("${note.summary}", script)
+        self.assertNotIn("${r.note}", script)
+
+    def test_generated_dialog_has_a_stable_accessible_name_in_both_states(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+
+        self.assertIn('<dialog id="detail" aria-labelledby="dialog-title">', html)
+        self.assertEqual(html.count('<h2 id="dialog-title">'), 2)
 
     def test_generated_html_contains_one_matrix_for_each_configured_plot(self):
         html = generate_html(load_notes(), load_plots(), load_primitives())
@@ -505,7 +582,7 @@ A concise summary.
 
     def test_picker_items_distinguish_ideas_and_research(self):
         html = generate_html(load_notes(), load_plots(), load_primitives())
-        self.assertIn('class="picker-kind ${note.kind}"', html)
+        self.assertIn('class="picker-kind ${escapeHtml(note.kind)}"', html)
         self.assertIn('.picker-kind.research', html)
         self.assertIn('.picker-kind.idea', html)
 

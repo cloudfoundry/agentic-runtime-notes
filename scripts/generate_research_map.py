@@ -181,6 +181,8 @@ def validate_primitives(primitives: object, known_paths: set[str]) -> list[dict]
             if path not in known_paths:
                 raise ValueError(f"primitive '{primitive_id}' references unknown note path: {path}")
 
+    if len(primitives) != 3:
+        raise ValueError("primitive configuration must contain exactly 3 initial primitives")
     return primitives
 
 
@@ -241,7 +243,7 @@ def generate_html(notes: list[Note], plots: dict, primitives: list[dict]) -> str
             if len(group) == 1:
                 item = group[0]
                 markers.append(
-                    f'<button class="marker {item["kind"]}" style="left:{p["x"]}%;bottom:{p["y"]}%" data-plot="{html.escape(plot_id)}" data-id="{html.escape(item["id"])}" aria-label="{html.escape(item["title"])}"></button>'
+                    f'<button class="marker {html.escape(item["kind"])}" style="left:{p["x"]}%;bottom:{p["y"]}%" data-plot="{html.escape(plot_id)}" data-id="{html.escape(item["id"])}" aria-label="{html.escape(item["title"])}"></button>'
                 )
             else:
                 cluster_id = f"{plot_id}-cluster-{len(markers)}"
@@ -252,7 +254,8 @@ def generate_html(notes: list[Note], plots: dict, primitives: list[dict]) -> str
         for item in payload:
             if item["position"] is None:
                 label = "Research" if item["kind"] == "research" else "Idea"
-                unplaced.append(f'<li><span class="note-kind {item["kind"]}"><span class="note-type {item["kind"]}">{label}</span></span><a href="{html.escape(item["url"])}">{html.escape(item["title"])}</a></li>')
+                escaped_kind = html.escape(item["kind"])
+                unplaced.append(f'<li><span class="note-kind {escaped_kind}"><span class="note-type {escaped_kind}">{label}</span></span><a href="{html.escape(item["url"])}">{html.escape(item["title"])}</a></li>')
         title = html.escape(plot["title"])
         x = plot["x"]
         y = plot["y"]
@@ -277,15 +280,16 @@ body {{ max-width:1200px; margin:0 auto; padding:36px 24px; }} h1 {{ font-size:c
 </style></head><body><main><p class="intro">Agentic Runtime Working Group - provisional workshop view</p><h1>Research and Ideas Landscape</h1>
 <p class="intro">Recalibrated working-group ratings, shown to seed discussion rather than establish a permanent taxonomy. Click a note for its summary, rating justifications, and source.</p>
 <div class="legend"><span>Research</span><span class="idea-key">Idea</span></div><h2 class="primitive-heading">Candidate platform primitives</h2><div class="primitive-actions"><button class="show-all" type="button">Show all</button></div><div class="primitive-grid">{''.join(cards)}</div><div class="matrix-tabs" role="tablist" aria-label="Rating matrices">{''.join(tabs)}</div>{''.join(matrices)}</main>
-<dialog id="detail"><button class="close" aria-label="Close">X</button><div id="content"></div></dialog>
+<dialog id="detail" aria-labelledby="dialog-title"><button class="close" aria-label="Close">X</button><div id="content"></div></dialog>
 <script>const plots={data};const primitiveMemberships={membership_data};const dialog=document.querySelector('#detail'),content=document.querySelector('#content');let selectedPrimitive=null;document.querySelector('.close').onclick=()=>dialog.close();
+ function escapeHtml(value){{return String(value).replace(/[&<>"']/g,character=>({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}}[character]))}}
  function updateMarkers(){{document.querySelectorAll('.marker').forEach(m=>{{if(m.dataset.noteIds){{const noteIds=JSON.parse(m.dataset.noteIds);const relatedCount=noteIds.filter(id=>selectedPrimitive&&primitiveMemberships[id]?.[selectedPrimitive]).length;m.textContent=relatedCount?`${{relatedCount}}/${{noteIds.length}}`:String(noteIds.length);m.setAttribute('aria-label',relatedCount?`${{relatedCount}} of ${{noteIds.length}} related notes at this position`:`${{noteIds.length}} notes at this position`);m.classList.toggle('related',relatedCount>0);m.classList.toggle('dimmed',Boolean(selectedPrimitive&&!relatedCount))}}else{{const related=Boolean(selectedPrimitive&&primitiveMemberships[m.dataset.id]?.[selectedPrimitive]);m.classList.toggle('related',related);m.classList.toggle('dimmed',Boolean(selectedPrimitive&&!related))}}}})}}
  function updatePrimitiveControls(){{document.querySelectorAll('.primitive-select').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.primitive===selectedPrimitive)))}}
  function selectPrimitive(button){{selectedPrimitive=selectedPrimitive===button.dataset.primitive?null:button.dataset.primitive;if(selectedPrimitive)document.documentElement.style.setProperty('--selected-accent',button.closest('.primitive-card').style.getPropertyValue('--primitive-accent'));updatePrimitiveControls();updateMarkers()}}
  function clearPrimitiveSelection(){{selectedPrimitive=null;updatePrimitiveControls();updateMarkers()}}
 function relationshipBadge(note){{const relationship=selectedPrimitive&&primitiveMemberships[note.id]?.[selectedPrimitive];return relationship?`<span class="primitive-badge">${{relationship==='core'?'Core':'Supporting'}}</span>`:''}}
- function show(note){{const tags=(note.tags||[]).map(t=>`<span class="tag">#${{t}}</span>`).join('');const ratings=Object.entries(note.ratings||{{}}).map(([name,r])=>`<div class="rating"><strong>${{name}}: ${{r.value}}/100</strong><br>${{r.note}}</div>`).join('');content.innerHTML=`<p class="intro">${{note.kind}}${{relationshipBadge(note)}}</p><h2>${{note.title}}</h2><p>${{note.summary}}</p><p>${{tags}}</p>${{ratings}}<p><a href="${{note.url}}">Read the full Markdown note on GitHub</a></p>`;dialog.showModal()}}
- function showCluster(items){{const isRelated=note=>Boolean(primitiveMemberships[note.id]?.[selectedPrimitive]);const ordered=selectedPrimitive?[...items.filter(isRelated),...items.filter(note=>!isRelated(note))]:[...items];content.innerHTML=`<p class="intro">${{ordered.length}} notes at this position</p><h2>Select a note</h2>${{ordered.map((note,i)=>`<button class="picker-item" data-index="${{i}}"><span class="picker-kind ${{note.kind}}">${{note.kind}}</span><strong>${{note.title}}</strong>${{relationshipBadge(note)}}<br><small>${{note.summary}}</small></button>`).join('')}}`;dialog.showModal();content.querySelectorAll('.picker-item').forEach(b=>b.onclick=()=>show(ordered[Number(b.dataset.index)]))}}
+ function show(note){{const tags=(note.tags||[]).map(t=>`<span class="tag">#${{escapeHtml(t)}}</span>`).join('');const ratings=Object.entries(note.ratings||{{}}).map(([name,r])=>`<div class="rating"><strong>${{escapeHtml(name)}}: ${{escapeHtml(r.value)}}/100</strong><br>${{escapeHtml(r.note)}}</div>`).join('');content.innerHTML=`<p class="intro">${{escapeHtml(note.kind)}}${{relationshipBadge(note)}}</p><h2 id="dialog-title">${{escapeHtml(note.title)}}</h2><p>${{escapeHtml(note.summary)}}</p><p>${{tags}}</p>${{ratings}}<p><a href="${{escapeHtml(note.url)}}">Read the full Markdown note on GitHub</a></p>`;dialog.showModal()}}
+ function showCluster(items){{const isRelated=note=>Boolean(primitiveMemberships[note.id]?.[selectedPrimitive]);const ordered=selectedPrimitive?[...items.filter(isRelated),...items.filter(note=>!isRelated(note))]:[...items];content.innerHTML=`<p class="intro">${{ordered.length}} notes at this position</p><h2 id="dialog-title">Select a note</h2>${{ordered.map((note,i)=>`<button class="picker-item" data-index="${{i}}"><span class="picker-kind ${{escapeHtml(note.kind)}}">${{escapeHtml(note.kind)}}</span><strong>${{escapeHtml(note.title)}}</strong>${{relationshipBadge(note)}}<br><small>${{escapeHtml(note.summary)}}</small></button>`).join('')}}`;dialog.showModal();content.querySelectorAll('.picker-item').forEach(b=>b.onclick=()=>show(ordered[Number(b.dataset.index)]))}}
  function activateTab(index){{tabs.forEach((tab,i)=>{{const selected=i===index;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;panels[i].hidden=!selected}});tabs[index].focus();updateMarkers()}}
  function handleTabKey(event,index){{let next;switch(event.key){{case 'ArrowLeft':next=(index-1+tabs.length)%tabs.length;break;case 'ArrowRight':next=(index+1)%tabs.length;break;case 'Home':next=0;break;case 'End':next=tabs.length-1;break;default:return}}event.preventDefault();activateTab(next)}}
  const tabs=[...document.querySelectorAll('[role="tab"]')],panels=tabs.map(tab=>document.querySelector(`#${{tab.getAttribute('aria-controls')}}`));tabs.forEach((tab,index)=>{{tab.onclick=()=>activateTab(index);tab.onkeydown=event=>handleTabKey(event,index)}});document.querySelectorAll('.primitive-select').forEach(button=>button.onclick=()=>selectPrimitive(button));document.querySelector('.show-all').onclick=clearPrimitiveSelection;document.querySelectorAll('.marker').forEach(m=>m.onclick=()=>{{if(m.dataset.cluster){{const noteIds=JSON.parse(m.dataset.noteIds);const items=noteIds.map(id=>plots[m.dataset.plot].find(note=>note.id===id));showCluster(items)}}else{{show(plots[m.dataset.plot].find(n=>n.id===m.dataset.id))}}}});dialog.addEventListener('click',e=>{{if(e.target===dialog)dialog.close()}});dialog.addEventListener('keydown',e=>{{if(e.key==='Escape')dialog.close()}});</script></body></html>'''
