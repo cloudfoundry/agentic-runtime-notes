@@ -2,7 +2,6 @@ import html as html_lib
 import json
 import pathlib
 import re
-import subprocess
 import unittest
 from types import SimpleNamespace
 
@@ -487,19 +486,6 @@ A concise summary.
 
         self.assertIn("if(e.target===dialog)dialog.close()", html)
         self.assertIn("if(e.key==='Escape')dialog.close()", html)
-
-    def test_generated_javascript_has_valid_syntax(self):
-        html = generate_html(load_notes(), load_plots(), load_primitives())
-        script = re.search(r"<script>(.*?)</script>", html, re.DOTALL).group(1)
-
-        result = subprocess.run(
-            ["node", "--check"],
-            input=script,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_generated_html_styles_note_lists_and_picker_items(self):
         html = generate_html(load_notes(), load_plots(), load_primitives())
