@@ -246,6 +246,19 @@ class ResearchMapTests(unittest.TestCase):
                 PRIMITIVE_IDS,
             )
 
+    def test_validate_focus_use_cases_rejects_non_string_applicability(self):
+        known_paths = set(FOCUS_USE_CASE["core"] + FOCUS_USE_CASE["supporting"])
+        applicability = {**FOCUS_USE_CASE["primitive_applicability"], "attested-workload-authority": ["core"]}
+        with self.assertRaisesRegex(
+            ValueError,
+            "applicability for primitive 'attested-workload-authority' must be a string",
+        ):
+            validate_focus_use_cases(
+                focus_use_cases({**FOCUS_USE_CASE, "primitive_applicability": applicability}),
+                known_paths,
+                PRIMITIVE_IDS,
+            )
+
     def test_load_primitives_loads_the_three_approved_primitives(self):
         primitives = load_primitives()
 

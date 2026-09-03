@@ -258,6 +258,10 @@ def validate_focus_use_cases(
                 f"focus use case '{use_case_id}' primitive applicability must contain exactly the known primitive ids"
             )
         for primitive_id, value in applicability.items():
+            if not isinstance(value, str):
+                raise ValueError(
+                    f"focus use case '{use_case_id}' applicability for primitive '{primitive_id}' must be a string"
+                )
             if value not in allowed_applicability:
                 raise ValueError(
                     f"focus use case '{use_case_id}' has invalid applicability '{value}' for primitive '{primitive_id}'"
