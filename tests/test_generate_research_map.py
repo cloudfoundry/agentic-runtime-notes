@@ -481,7 +481,60 @@ A concise summary.
         self.assertGreater(html.count('class="marker '), 0)
         self.assertIn('<dialog id="detail"', html)
         self.assertIn("Read the full Markdown note on GitHub", html)
-        self.assertIn("Recalibrated working-group ratings", html)
+        self.assertIn("summarizes the workshop results", html)
+
+    def test_generated_html_presents_workshop_results_in_outcome_hierarchy(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+
+        self.assertIn("Workshop results", html)
+        self.assertNotIn("seed discussion", html.lower())
+        self.assertNotIn("workshop input", html.lower())
+        use_case_position = html.index('class="use-case-grid"')
+        primitive_position = html.index('class="primitive-grid"')
+        tabs_position = html.index('class="matrix-tabs"')
+        self.assertLess(use_case_position, primitive_position)
+        self.assertLess(primitive_position, tabs_position)
+        self.assertEqual(html.count('class="use-case-card"'), 2)
+        self.assertEqual(html.count('class="primitive-card"'), 3)
+
+    def test_generated_html_contains_use_case_controls_and_expandable_results(self):
+        use_cases = load_focus_use_cases()
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+
+        self.assertEqual(html.count('class="use-case-select"'), 2)
+        self.assertEqual(html.count('class="use-case-select" type="button"'), 2)
+        self.assertEqual(html.count('use-case-show-all"'), 1)
+        self.assertEqual(html.count('primitive-show-all"'), 1)
+        for use_case in use_cases:
+            self.assertIn(
+                f'data-use-case="{use_case["id"]}" aria-pressed="false"', html
+            )
+            self.assertIn(use_case["title"], html)
+            self.assertIn(html_lib.escape(use_case["workshop_outcome"]), html)
+            self.assertIn(html_lib.escape(use_case["poc"]), html)
+            for value in (
+                use_case["primary_actor"],
+                use_case["beneficiary"],
+                use_case["lifecycle"],
+                use_case["authority_boundary"],
+                use_case["failure_domain"],
+            ):
+                self.assertIn(html_lib.escape(value), html)
+            for value in use_case["unique_capabilities"] + use_case["rfc_decisions"]:
+                self.assertIn(html_lib.escape(value), html)
+            for primitive_id, applicability in use_case["primitive_applicability"].items():
+                self.assertIn(f'data-primitive-applicability="{primitive_id}"', html)
+                self.assertIn(f'>{applicability.title()}</span>', html)
+            for path in use_case["core"] + use_case["supporting"]:
+                self.assertIn(f'href="{github_url(pathlib.Path(path))}"', html)
+
+    def test_generated_html_styles_use_cases_responsively_with_dark_card_language(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+
+        self.assertIn(".use-case-grid { display:grid", html)
+        self.assertIn(".use-case-card { min-width:0; background:#15211e", html)
+        self.assertIn(".use-case-details summary", html)
+        self.assertIn("@media(max-width:800px) { .use-case-grid", html)
 
     def test_generated_html_escapes_all_dynamic_dialog_content(self):
         html = generate_html(load_notes(), load_plots(), load_primitives())
@@ -531,7 +584,23 @@ A concise summary.
             "title": "Hostile",
             "x": {"rating": "maturity", "label": "Maturity", "low": "Low", "high": "High"},
             "y": {"rating": "platform-impact", "label": "Impact", "low": "Low", "high": "High"},
-        }}, [primitive])
+        }}, [primitive], focus_use_cases({
+            **FOCUS_USE_CASE,
+            "id": attack,
+            "title": attack,
+            "workshop_outcome": attack,
+            "primary_actor": attack,
+            "beneficiary": attack,
+            "lifecycle": attack,
+            "authority_boundary": attack,
+            "unique_capabilities": [attack],
+            "failure_domain": attack,
+            "poc": attack,
+            "rfc_decisions": [attack],
+            "core": [note.path.as_posix()],
+            "supporting": [],
+            "primitive_applicability": {attack: attack},
+        }))
 
         static_markup, script = generated.split("<script>", 1)
         self.assertNotIn(attack, static_markup)
@@ -556,9 +625,12 @@ A concise summary.
         html = generate_html(load_notes(), load_plots(), primitives)
 
         self.assertEqual(html.count('class="primitive-select"'), 3)
-        self.assertEqual(html.count('aria-pressed="false"'), 3)
-        self.assertIn('class="show-all"', html)
-        self.assertIn('>Show all</button>', html)
+        self.assertEqual(
+            len(re.findall(r'class="primitive-select"[^>]+aria-pressed="false"', html)),
+            3,
+        )
+        self.assertIn('class="show-all primitive-show-all"', html)
+        self.assertIn('>Show all primitives</button>', html)
         for primitive in primitives:
             self.assertIn(f'data-primitive="{primitive["id"]}"', html)
             self.assertIn(primitive["proposition"], html)
