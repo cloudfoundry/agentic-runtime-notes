@@ -10,6 +10,7 @@ on:
       - "generated/**"
       - "tests/**"
       - ".github/workflows/lint.yml"
+      - ".github/workflows/pages.yml"
   push:
     branches: [main]
     paths:
@@ -20,6 +21,7 @@ on:
       - "generated/**"
       - "tests/**"
       - ".github/workflows/lint.yml"
+      - ".github/workflows/pages.yml"
 
 jobs:
   validate:
@@ -45,5 +47,8 @@ jobs:
       - name: Test map generator
         run: python -m unittest discover -s tests
 
-      - name: Check generated map
-        run: python scripts/generate_research_map.py --check
+      - name: Generate research map
+        run: python scripts/generate_research_map.py
+
+      - name: Verify generated map is checked in
+        run: git diff --exit-code -- generated/research-map.html
