@@ -115,9 +115,14 @@ def mixed_cluster_fixture():
     primitive = {
         **PRIMITIVE,
         "core": [paths[1].as_posix()],
-        "supporting": [paths[3].as_posix()],
+        "supporting": [paths[2].as_posix(), paths[4].as_posix()],
     }
-    return notes, {"mixed:plot": plot}, [primitive]
+    use_case = {
+        **FOCUS_USE_CASE,
+        "core": [paths[0].as_posix(), paths[2].as_posix()],
+        "supporting": [paths[4].as_posix()],
+    }
+    return notes, {"mixed:plot": plot}, [primitive], focus_use_cases(use_case)
 
 
 class ResearchMapTests(unittest.TestCase):
@@ -801,40 +806,77 @@ A concise summary.
         self.assertIn('picker-item', html)
 
     def test_mixed_cluster_embeds_ordered_note_ids_and_updates_selected_count(self):
-        notes, plots, primitives = mixed_cluster_fixture()
+        notes, plots, primitives, use_cases = mixed_cluster_fixture()
 
-        html = generate_html(notes, plots, primitives)
+        html = generate_html(notes, plots, primitives, use_cases)
 
         marker = re.search(r'<button class="marker cluster"[^>]+>5</button>', html).group(0)
         note_ids = [note.path.as_posix() for note in notes]
         encoded_ids = html_lib.escape(json.dumps(note_ids), quote=True)
         self.assertIn(f'data-note-ids="{encoded_ids}"', marker)
-        self.assertIn("const relatedCount=hasSelection?noteIds.filter(noteMatchesSelection).length:0", html)
-        self.assertIn("m.textContent=relatedCount?`${relatedCount}/${noteIds.length}`:String(noteIds.length)", html)
-        self.assertIn("m.classList.toggle('related',relatedCount>0)", html)
-        self.assertIn("m.classList.toggle('dimmed',Boolean(hasSelection&&!relatedCount))", html)
+        self.assertIn("const matchingCount=hasSelection?noteIds.filter(noteMatchesSelection).length:0", html)
+        self.assertIn("m.textContent=hasSelection?`${matchingCount}/${noteIds.length}`:String(noteIds.length)", html)
+        self.assertIn("m.classList.toggle('related',matchingCount>0)", html)
+        self.assertIn("m.classList.toggle('dimmed',Boolean(hasSelection&&!matchingCount))", html)
 
     def test_mixed_cluster_updates_and_restores_accessible_count(self):
-        notes, plots, primitives = mixed_cluster_fixture()
+        notes, plots, primitives, use_cases = mixed_cluster_fixture()
 
-        html = generate_html(notes, plots, primitives)
+        html = generate_html(notes, plots, primitives, use_cases)
 
         self.assertIn('aria-label="5 notes at this position"', html)
         self.assertIn(
-            "m.setAttribute('aria-label',relatedCount?`${relatedCount} of ${noteIds.length} related notes at this position`:`${noteIds.length} notes at this position`)",
+            "m.setAttribute('aria-label',hasSelection?`${matchingCount} of ${noteIds.length} matching notes at this position`:`${noteIds.length} notes at this position`)",
             html,
         )
 
-    def test_mixed_cluster_picker_sorts_a_copy_related_first_and_labels_relationships(self):
-        notes, plots, primitives = mixed_cluster_fixture()
+    def test_mixed_cluster_fixture_covers_each_combined_match_category(self):
+        notes, _, primitives, use_cases = mixed_cluster_fixture()
 
-        html = generate_html(notes, plots, primitives)
+        primitive_paths = set(primitives[0]["core"] + primitives[0]["supporting"])
+        use_case_paths = set(use_cases[0]["core"] + use_cases[0]["supporting"])
+        categories = []
+        for note in notes:
+            path = note.path.as_posix()
+            categories.append((path in use_case_paths, path in primitive_paths))
 
-        self.assertIn("const ordered=selectedPrimitive?[...items.filter(isRelated),...items.filter(note=>!isRelated(note))]:[...items]", html)
-        self.assertIn("${relationshipBadge(note)}", html)
+        self.assertEqual(
+            categories,
+            [(True, False), (False, True), (True, True), (False, False), (True, True)],
+        )
+
+    def test_mixed_cluster_picker_sorts_a_copy_by_combined_match_and_labels_both_relationships(self):
+        notes, plots, primitives, use_cases = mixed_cluster_fixture()
+
+        html = generate_html(notes, plots, primitives, use_cases)
+
+        self.assertIn("const ordered=hasSelection?[...items.filter(isRelated),...items.filter(note=>!isRelated(note))]:[...items]", html)
+        self.assertIn("const isRelated=note=>noteMatchesSelection(note.id)", html)
+        self.assertIn("${relationshipBadges(note)}", html)
+        self.assertIn("useCaseMemberships[note.id]?.[selectedUseCase]", html)
+        self.assertIn("primitiveMemberships[note.id]?.[selectedPrimitive]", html)
+        self.assertIn("escapeHtml(label)", html)
         self.assertIn("const noteIds=JSON.parse(m.dataset.noteIds)", html)
         self.assertIn("noteIds.map(id=>plots[m.dataset.plot].find(note=>note.id===id))", html)
         self.assertNotIn("m.dataset.cluster.split", html)
+
+    def test_combined_empty_selection_announces_exact_status_and_clear_restores_it(self):
+        notes, plots, primitives, use_cases = mixed_cluster_fixture()
+
+        html = generate_html(notes, plots, primitives, use_cases)
+
+        self.assertIn('<p id="filter-status" role="status" aria-live="polite"></p>', html)
+        self.assertIn(
+            "filterStatus.textContent=selectedUseCase&&selectedPrimitive&&!hasMatches?'No directly linked evidence for this use-case and primitive combination.':''",
+            html,
+        )
+        self.assertIn(
+            "const hasMatches=Object.values(plots).some(notes=>notes.some(note=>noteMatchesSelection(note.id)))",
+            html,
+        )
+        for function_name in ("clearUseCaseSelection", "clearPrimitiveSelection"):
+            function = html.split(f"function {function_name}", 1)[1].split("function ", 1)[0]
+            self.assertIn("updateMarkers()", function)
 
     def test_generated_html_wires_singletons_and_close_button(self):
         html = generate_html(load_notes(), load_plots(), load_primitives())
