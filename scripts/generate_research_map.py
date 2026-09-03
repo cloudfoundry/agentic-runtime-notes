@@ -16,6 +16,7 @@ import yaml
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PLOTS_PATH = ROOT / "scripts" / "research_map_plots.yaml"
 PRIMITIVES_PATH = ROOT / "scripts" / "platform_primitives.yaml"
+FOCUS_USE_CASES_PATH = ROOT / "scripts" / "focus_use_cases.yaml"
 OUTPUT_PATH = ROOT / "generated" / "research-map.html"
 GITHUB_BASE = "https://github.com/cloudfoundry/agentic-runtime-notes/blob/main"
 FRONTMATTER_RE = re.compile(r"^---\n(.*?)\n---\n", re.DOTALL)
@@ -190,6 +191,88 @@ def load_primitives() -> list[dict]:
     primitives = yaml.safe_load(PRIMITIVES_PATH.read_text(encoding="utf-8"))
     known_paths = {note.path.as_posix() for note in load_notes()}
     return validate_primitives(primitives, known_paths)
+
+
+def validate_focus_use_cases(
+    use_cases: object, known_paths: set[str], primitive_ids: set[str]
+) -> list[dict]:
+    if not isinstance(use_cases, list) or len(use_cases) != 2:
+        raise ValueError("focus use case configuration must contain exactly 2 entries")
+
+    required_ids = {
+        "cf-hosted-coding-harnesses",
+        "user-facing-agentic-applications",
+    }
+    string_fields = (
+        "id",
+        "title",
+        "workshop_outcome",
+        "primary_actor",
+        "beneficiary",
+        "lifecycle",
+        "authority_boundary",
+        "failure_domain",
+        "poc",
+    )
+    list_fields = ("unique_capabilities", "rfc_decisions")
+    allowed_applicability = {"core", "conditional", "supporting"}
+    seen_ids = set()
+    for use_case in use_cases:
+        if not isinstance(use_case, dict):
+            raise ValueError("each focus use case must be a mapping")
+        for field in string_fields:
+            if not isinstance(use_case.get(field), str) or not use_case[field].strip():
+                raise ValueError(f"focus use case requires a non-empty '{field}'")
+        for field in list_fields:
+            values = use_case.get(field)
+            if (
+                not isinstance(values, list)
+                or not values
+                or any(not isinstance(value, str) or not value.strip() for value in values)
+            ):
+                raise ValueError(f"focus use case requires a non-empty '{field}' list of strings")
+
+        use_case_id = use_case["id"]
+        if use_case_id in seen_ids:
+            raise ValueError(f"duplicate focus use case id: {use_case_id}")
+        seen_ids.add(use_case_id)
+
+        core = use_case.get("core")
+        supporting = use_case.get("supporting")
+        if not isinstance(core, list) or not core:
+            raise ValueError(f"focus use case '{use_case_id}' requires non-empty core membership")
+        if not isinstance(supporting, list):
+            raise ValueError(f"focus use case '{use_case_id}' supporting membership must be a list")
+        memberships = core + supporting
+        if any(not isinstance(path, str) or not path.strip() for path in memberships):
+            raise ValueError(f"focus use case '{use_case_id}' note paths must be non-empty strings")
+        if len(memberships) != len(set(memberships)):
+            raise ValueError(f"focus use case '{use_case_id}' has a duplicate note path")
+        for path in memberships:
+            if path not in known_paths:
+                raise ValueError(f"focus use case '{use_case_id}' references unknown note path: {path}")
+
+        applicability = use_case.get("primitive_applicability")
+        if not isinstance(applicability, dict) or set(applicability) != primitive_ids:
+            raise ValueError(
+                f"focus use case '{use_case_id}' primitive applicability must contain exactly the known primitive ids"
+            )
+        for primitive_id, value in applicability.items():
+            if value not in allowed_applicability:
+                raise ValueError(
+                    f"focus use case '{use_case_id}' has invalid applicability '{value}' for primitive '{primitive_id}'"
+                )
+
+    if seen_ids != required_ids:
+        raise ValueError("focus use case configuration must contain the approved focus use case ids")
+    return use_cases
+
+
+def load_focus_use_cases() -> list[dict]:
+    use_cases = yaml.safe_load(FOCUS_USE_CASES_PATH.read_text(encoding="utf-8"))
+    known_paths = {note.path.as_posix() for note in load_notes()}
+    primitive_ids = {primitive["id"] for primitive in load_primitives()}
+    return validate_focus_use_cases(use_cases, known_paths, primitive_ids)
 
 
 def note_payload(note: Note, plot: dict) -> dict:

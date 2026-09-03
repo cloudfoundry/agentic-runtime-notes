@@ -6,16 +6,19 @@ import unittest
 from types import SimpleNamespace
 
 from scripts.generate_research_map import (
+    FOCUS_USE_CASES_PATH,
     PRIMITIVES_PATH,
     derive_position,
     extract_summary,
     github_url,
     generate_html,
     group_payload,
+    load_focus_use_cases,
     load_primitives,
     load_plots,
     load_notes,
     parse_note,
+    validate_focus_use_cases,
     validate_primitives,
     validate_ratings,
 )
@@ -35,6 +38,38 @@ PRIMITIVE = {
     "core": ["ideas/durable-tasks-for-cf.md", "research/temporal.md"],
     "supporting": ["research/dapr-agents.md"],
 }
+PRIMITIVE_IDS = {
+    "durable-addressable-execution",
+    "attested-workload-authority",
+    "session-scoped-isolated-execution",
+}
+FOCUS_USE_CASE = {
+    "id": "cf-hosted-coding-harnesses",
+    "title": "CF-hosted coding harnesses",
+    "workshop_outcome": "Determine the minimum CF platform contract for hosted coding harnesses.",
+    "primary_actor": "A developer deploying a coding harness to Cloud Foundry.",
+    "beneficiary": "A software team using the harness to change a repository.",
+    "lifecycle": "Stage an environment, start a session, execute tools, suspend it, and resume it.",
+    "authority_boundary": "The harness delegates only scoped repository and tool access.",
+    "unique_capabilities": ["Reusable staged environments", "Resumable isolated sessions"],
+    "failure_domain": "A failed sandbox must not lose the session workspace or affect another session.",
+    "poc": "Run and resume two isolated coding sessions from one staged environment.",
+    "rfc_decisions": ["Session resource and lifecycle", "Workspace and network policy"],
+    "core": ["ideas/per-session-sandboxes.md", "research/k8s-agent-sandbox.md"],
+    "supporting": ["research/firecracker-microvm.md"],
+    "primitive_applicability": {
+        "durable-addressable-execution": "supporting",
+        "attested-workload-authority": "core",
+        "session-scoped-isolated-execution": "core",
+    },
+}
+
+
+def focus_use_cases(first=FOCUS_USE_CASE):
+    return [
+        first,
+        {**FOCUS_USE_CASE, "id": "user-facing-agentic-applications"},
+    ]
 
 
 def rating_notes(values):
@@ -86,6 +121,96 @@ def mixed_cluster_fixture():
 
 
 class ResearchMapTests(unittest.TestCase):
+    def test_load_focus_use_cases_loads_the_two_approved_use_cases(self):
+        use_cases = load_focus_use_cases()
+
+        self.assertEqual(FOCUS_USE_CASES_PATH.name, "focus_use_cases.yaml")
+        self.assertEqual(
+            [use_case["id"] for use_case in use_cases],
+            ["cf-hosted-coding-harnesses", "user-facing-agentic-applications"],
+        )
+
+    def test_validate_focus_use_cases_preserves_use_case_and_membership_order(self):
+        first = {
+            **FOCUS_USE_CASE,
+            "core": ["b.md", "a.md"],
+            "supporting": ["d.md", "c.md"],
+        }
+
+        validated = validate_focus_use_cases(
+            focus_use_cases(first),
+            {"a.md", "b.md", "c.md", "d.md", *FOCUS_USE_CASE["core"], *FOCUS_USE_CASE["supporting"]},
+            PRIMITIVE_IDS,
+        )
+
+        self.assertEqual([item["id"] for item in validated], [first["id"], "user-facing-agentic-applications"])
+        self.assertEqual(validated[0]["core"], ["b.md", "a.md"])
+        self.assertEqual(validated[0]["supporting"], ["d.md", "c.md"])
+
+    def test_validate_focus_use_cases_requires_exactly_two_approved_ids(self):
+        known_paths = set(FOCUS_USE_CASE["core"] + FOCUS_USE_CASE["supporting"])
+        with self.assertRaisesRegex(ValueError, "exactly 2"):
+            validate_focus_use_cases([FOCUS_USE_CASE], known_paths, PRIMITIVE_IDS)
+        with self.assertRaisesRegex(ValueError, "approved focus use case ids"):
+            validate_focus_use_cases(
+                focus_use_cases({**FOCUS_USE_CASE, "id": "another-use-case"}), known_paths, PRIMITIVE_IDS
+            )
+
+    def test_validate_focus_use_cases_rejects_invalid_required_fields(self):
+        known_paths = set(FOCUS_USE_CASE["core"] + FOCUS_USE_CASE["supporting"])
+        string_fields = (
+            "id", "title", "workshop_outcome", "primary_actor", "beneficiary", "lifecycle",
+            "authority_boundary", "failure_domain", "poc",
+        )
+        list_fields = ("unique_capabilities", "rfc_decisions")
+        for field in string_fields:
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, f"non-empty '{field}'"):
+                validate_focus_use_cases(focus_use_cases({**FOCUS_USE_CASE, field: "  "}), known_paths, PRIMITIVE_IDS)
+        for field in list_fields:
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, f"non-empty '{field}'"):
+                validate_focus_use_cases(focus_use_cases({**FOCUS_USE_CASE, field: []}), known_paths, PRIMITIVE_IDS)
+
+    def test_validate_focus_use_cases_rejects_duplicate_ids(self):
+        known_paths = set(FOCUS_USE_CASE["core"] + FOCUS_USE_CASE["supporting"])
+        with self.assertRaisesRegex(ValueError, "duplicate focus use case id"):
+            validate_focus_use_cases([FOCUS_USE_CASE, dict(FOCUS_USE_CASE)], known_paths, PRIMITIVE_IDS)
+
+    def test_validate_focus_use_cases_rejects_empty_core_membership(self):
+        with self.assertRaisesRegex(ValueError, "non-empty core"):
+            validate_focus_use_cases(focus_use_cases({**FOCUS_USE_CASE, "core": []}), set(FOCUS_USE_CASE["supporting"]), PRIMITIVE_IDS)
+
+    def test_validate_focus_use_cases_rejects_duplicate_membership(self):
+        use_case = {**FOCUS_USE_CASE, "supporting": [FOCUS_USE_CASE["core"][0]]}
+        with self.assertRaisesRegex(ValueError, "duplicate note path"):
+            validate_focus_use_cases(focus_use_cases(use_case), set(FOCUS_USE_CASE["core"]), PRIMITIVE_IDS)
+
+    def test_validate_focus_use_cases_rejects_unknown_note(self):
+        known_paths = {FOCUS_USE_CASE["core"][0], *FOCUS_USE_CASE["supporting"]}
+        with self.assertRaisesRegex(ValueError, "unknown note path.*research/k8s-agent-sandbox.md"):
+            validate_focus_use_cases(focus_use_cases(), known_paths, PRIMITIVE_IDS)
+
+    def test_validate_focus_use_cases_rejects_unknown_or_missing_primitive_ids(self):
+        known_paths = set(FOCUS_USE_CASE["core"] + FOCUS_USE_CASE["supporting"])
+        applicability = {**FOCUS_USE_CASE["primitive_applicability"]}
+        applicability.pop("attested-workload-authority")
+        applicability["unknown-primitive"] = "core"
+        with self.assertRaisesRegex(ValueError, "primitive applicability must contain exactly"):
+            validate_focus_use_cases(
+                focus_use_cases({**FOCUS_USE_CASE, "primitive_applicability": applicability}),
+                known_paths,
+                PRIMITIVE_IDS,
+            )
+
+    def test_validate_focus_use_cases_rejects_invalid_applicability(self):
+        known_paths = set(FOCUS_USE_CASE["core"] + FOCUS_USE_CASE["supporting"])
+        applicability = {**FOCUS_USE_CASE["primitive_applicability"], "attested-workload-authority": "optional"}
+        with self.assertRaisesRegex(ValueError, "invalid applicability.*optional"):
+            validate_focus_use_cases(
+                focus_use_cases({**FOCUS_USE_CASE, "primitive_applicability": applicability}),
+                known_paths,
+                PRIMITIVE_IDS,
+            )
+
     def test_load_primitives_loads_the_three_approved_primitives(self):
         primitives = load_primitives()
 
