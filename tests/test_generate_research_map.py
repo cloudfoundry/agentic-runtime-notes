@@ -701,10 +701,66 @@ A concise summary.
         for primitive in primitives:
             self.assertIn(f'id="primitive-{primitive["id"]}"', html)
 
+    def test_generated_html_embeds_use_case_membership_once(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+
+        self.assertEqual(html.count("const useCaseMemberships="), 1)
+        self.assertIn(
+            '"ideas/staged-sandbox-environments.md": {"cf-hosted-coding-harnesses": "core"}',
+            html,
+        )
+
+    def test_generated_html_manages_use_case_and_primitive_selection_independently(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+
+        self.assertIn("let selectedUseCase=null,selectedPrimitive=null", html)
+        for function_name in (
+            "selectUseCase",
+            "clearUseCaseSelection",
+            "selectPrimitive",
+            "clearPrimitiveSelection",
+            "updateUseCaseControls",
+            "updatePrimitiveControls",
+        ):
+            self.assertIn(f"function {function_name}", html)
+
+        select_use_case = html.split("function selectUseCase", 1)[1].split(
+            "function clearUseCaseSelection", 1
+        )[0]
+        select_primitive = html.split("function selectPrimitive", 1)[1].split(
+            "function clearPrimitiveSelection", 1
+        )[0]
+        self.assertNotIn("selectedPrimitive=", select_use_case)
+        self.assertNotIn("selectedUseCase=", select_primitive)
+        self.assertIn("button.dataset.useCase===selectedUseCase", html)
+        self.assertIn("button.dataset.primitive===selectedPrimitive", html)
+        self.assertIn("document.querySelector('.use-case-show-all').onclick=clearUseCaseSelection", html)
+        self.assertIn("document.querySelector('.primitive-show-all').onclick=clearPrimitiveSelection", html)
+
+    def test_generated_html_matches_evidence_against_both_independent_selections(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+
+        self.assertEqual(html.count("function noteMatchesSelection(noteId)"), 1)
+        predicate = html.split("function noteMatchesSelection(noteId)", 1)[1].split(
+            "function updateMarkers", 1
+        )[0]
+        self.assertIn("!selectedUseCase||useCaseMemberships[noteId]?.[selectedUseCase]", predicate)
+        self.assertIn("!selectedPrimitive||primitiveMemberships[noteId]?.[selectedPrimitive]", predicate)
+        self.assertIn("return Boolean(matchesUseCase&&matchesPrimitive)", predicate)
+        self.assertIn("const related=noteMatchesSelection(m.dataset.id)", html)
+        self.assertIn("noteIds.filter(noteMatchesSelection)", html)
+        self.assertIn("classList.toggle('related'", html)
+        self.assertIn("classList.toggle('dimmed'", html)
+        marker_buttons = re.findall(r'<button class="marker [^"]+"[^>]*>', html)
+        self.assertTrue(marker_buttons)
+        for marker in marker_buttons:
+            self.assertNotIn(" disabled", marker)
+            self.assertNotIn('tabindex="-1"', marker)
+
     def test_generated_html_persistently_refreshes_marker_highlighting(self):
         html = generate_html(load_notes(), load_plots(), load_primitives())
 
-        self.assertIn("let selectedPrimitive=null", html)
+        self.assertIn("selectedPrimitive=null", html)
         self.assertIn("function selectPrimitive", html)
         self.assertIn("function clearPrimitiveSelection", html)
         self.assertIn("function updateMarkers", html)
@@ -753,10 +809,10 @@ A concise summary.
         note_ids = [note.path.as_posix() for note in notes]
         encoded_ids = html_lib.escape(json.dumps(note_ids), quote=True)
         self.assertIn(f'data-note-ids="{encoded_ids}"', marker)
-        self.assertIn("const relatedCount=noteIds.filter", html)
+        self.assertIn("const relatedCount=hasSelection?noteIds.filter(noteMatchesSelection).length:0", html)
         self.assertIn("m.textContent=relatedCount?`${relatedCount}/${noteIds.length}`:String(noteIds.length)", html)
         self.assertIn("m.classList.toggle('related',relatedCount>0)", html)
-        self.assertIn("m.classList.toggle('dimmed',Boolean(selectedPrimitive&&!relatedCount))", html)
+        self.assertIn("m.classList.toggle('dimmed',Boolean(hasSelection&&!relatedCount))", html)
 
     def test_mixed_cluster_updates_and_restores_accessible_count(self):
         notes, plots, primitives = mixed_cluster_fixture()
