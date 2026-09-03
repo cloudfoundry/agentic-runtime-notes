@@ -16,6 +16,20 @@ sources:
   - https://docs.crewai.com/en/observability/overview
   - https://docs.crewai.com/en/observability/tracing
   - https://docs-platform.crewai.com/platform/en/introduction
+ratings:
+  platform-impact:
+    value: 52
+    note: 'CrewAI''s OSS crews, flows, MCP/A2A support, memory, and SQLite checkpoints can run inside a normal CF app; the main gap is optional platform support for durable storage, hosted tracing, deployment, and RBAC.'
+  maturity:
+    value: 78
+    note: 'The MIT-licensed package is published on PyPI with about 56.9k stars, 8.1k forks, 2,732-plus commits, broad orchestration features, and a commercial hosted platform, indicating meaningful adoption.'
+  novelty:
+    value: 46
+    note: 'Role-based LLM teams and event-driven workflows adapt familiar manager, DAG, checkpoint, and pub/sub patterns; checkpoint forking and the recommended Flow-around-Crew composition add a newer agent-specific layer.'
+  actionability:
+    value: 70
+    note: 'CF can deploy an OSS CrewAI Flow and test SQLite checkpoint resume and fork behavior, although deciding whether AMP-like tracing and RBAC belong in the platform needs additional scope.'
+
 ---
 
 ## Summary

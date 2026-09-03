@@ -8,6 +8,20 @@ status: draft
 sources:
   - https://github.com/kubernetes-sigs/agent-sandbox
   - https://agent-sandbox.sigs.k8s.io/docs
+ratings:
+  platform-impact:
+    value: 72
+    note: 'Diego and Garden provide isolated containers, but CF has no agent-sandbox API combining stable singleton identity, claims, persistent volumes, warm pools, and suspend/resume snapshots.'
+  maturity:
+    value: 40
+    note: 'The Kubernetes SIG implementation has concrete Sandbox, Claim, Template, and WarmPool CRDs, but the note presents a young agent-specific control plane with limited production evidence and GKE-specific snapshot support.'
+  novelty:
+    value: 62
+    note: 'Stable singleton sandboxes and millisecond claims from pre-running pools are an emerging agent-lifecycle combination, though they build on conventional pods, PVCs, RBAC, namespaces, and network policy.'
+  actionability:
+    value: 72
+    note: 'A bounded CF investigation can compare SandboxClaim and WarmPool semantics with Diego tasks and instance pools, then identify the smallest API needed for stable identity, persistence, and pre-warmed allocation.'
+
 ---
 
 ## Summary

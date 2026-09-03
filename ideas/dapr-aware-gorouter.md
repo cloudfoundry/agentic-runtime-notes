@@ -3,6 +3,20 @@ title: Dapr-aware GoRouter — routing to the instance where the work lives
 author: Ruben Koster (@rkoster)
 date: 2026-08-11
 tags: [inter-agent-comms, runtime-lifecycle, orchestration]
+ratings:
+  platform-impact:
+    value: 50
+    note: 'GoRouter already has instance-addressed routing, endpoint metadata, and NATS updates, but it cannot resolve an actor ID to the instance that currently owns the work.'
+  maturity:
+    value: 50
+    note: 'Dapr placement and CF routing are production-capable ingredients, but no implementation or operational evidence demonstrates actor-to-instance resolution through GoRouter or safe behavior during placement migration.'
+  novelty:
+    value: 75
+    note: 'Making a PaaS edge router consume or replace a virtual-actor placement table is an emerging combination, especially with authenticated actor-addressed routing through RFC-0055.'
+  actionability:
+    value: 75
+    note: 'The shallow design bounds an experiment to daprd placement lookup plus X-CF-APP-INSTANCE, with explicit checks for host-to-index mapping, header propagation, and migration correctness.'
+
 ---
 
 ## The idea

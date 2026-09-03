@@ -3,6 +3,20 @@ title: Credential-less agent processes
 author: Rashid Rashidov (@rrashidov)
 date: 2026-07-08
 tags: [identity, sandboxing-isolation]
+ratings:
+  platform-impact:
+    value: 50
+    note: 'CF can bind and store service credentials, but it exposes them to the app process; a platform-held credential and localhost request proxy are missing.'
+  maturity:
+    value: 75
+    note: 'Credential vaults and outbound credential proxies are production-capable patterns used by managed agent platforms, though the note leaves CF provisioning and multi-tenant bindings unresolved.'
+  novelty:
+    value: 25
+    note: 'Keeping secrets in a local proxy is an established vault-and-sidecar architecture, here applied to prompt-injection risk in agent processes.'
+  actionability:
+    value: 50
+    note: 'The standard-provider API over localhost supplies a plausible prototype boundary, but credential storage, sidecar provisioning, rotation, and per-user tenancy need design first.'
+
 ---
 
 ## The idea

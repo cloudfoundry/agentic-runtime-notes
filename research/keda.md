@@ -8,6 +8,20 @@ status: draft
 sources:
   - https://keda.sh/
   - https://github.com/kedacore/keda
+ratings:
+  platform-impact:
+    value: 68
+    note: 'CF autoscaling is primarily metric and instance based; it lacks KEDA-style queue-depth triggers, a broad scaler catalog, and reliable event-driven scale-to-zero and scale-from-zero for workers.'
+  maturity:
+    value: 92
+    note: 'KEDA is a CNCF graduated, de facto Kubernetes standard with more than 70 production-oriented scalers and an established integration with HPA rather than an experimental autoscaler.'
+  novelty:
+    value: 28
+    note: 'Queue-length and external-metric autoscaling are long-established techniques; KEDA mainly standardizes and packages them for Kubernetes with a large adapter catalog.'
+  actionability:
+    value: 88
+    note: 'A concrete CF experiment can bind a queue service, feed queue depth into autoscaling, and measure worker scale-from-zero latency and backlog recovery against KEDA behavior.'
+
 ---
 
 ## Summary

@@ -8,6 +8,20 @@ status: draft
 sources:
   - https://github.com/alibaba/open-agent-auth
   - https://datatracker.ietf.org/doc/draft-liu-agent-operation-authorization/
+ratings:
+  platform-impact:
+    value: 70
+    note: 'UAA authenticates users and applications, but CF lacks operation-specific tokens that cryptographically bind a human, agent workload, requested action, and request-level audit context.'
+  maturity:
+    value: 35
+    note: 'Alibaba provides a concrete implementation, but AOAT is only an IETF draft-02 from March 2026 and the note offers little evidence of independent adoption or production operation.'
+  novelty:
+    value: 75
+    note: 'Cryptographically binding user delegation, agent workload identity, and semantic operation details into one authorization token is emerging, despite its foundation in OIDC, OAuth PAR, and WIMSE.'
+  actionability:
+    value: 68
+    note: 'A bounded UAA investigation can issue and validate an AOAT-like token for one destructive agent tool call, though draft churn and the required workload-identity mapping remain open.'
+
 ---
 
 ## Summary

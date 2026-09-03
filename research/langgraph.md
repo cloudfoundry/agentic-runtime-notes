@@ -16,6 +16,20 @@ sources:
   - https://github.com/langchain-ai/langchain-mcp-adapters
   - https://docs.langchain.com/langsmith/deployment
   - https://docs.langchain.com/langsmith/observability
+ratings:
+  platform-impact:
+    value: 58
+    note: 'CF can host LangGraph processes but does not provide its checkpoint store, cross-thread memory, durable pause/resume, or Agent Server packaging as platform services.'
+  maturity:
+    value: 78
+    note: 'LangGraph is a production-oriented LangChain runtime with persistence, interrupts, streaming, MCP integration, and commercial LangSmith deployment options, including a standalone Agent Server.'
+  novelty:
+    value: 55
+    note: 'Applying Pregel-style supersteps, reducer-governed shared state, and boundary checkpoints to agent graphs is a substantial adaptation of established graph-processing and workflow ideas.'
+  actionability:
+    value: 72
+    note: 'The standalone Agent Server provides a bounded buildpack trial using bound Postgres and Redis, with crash recovery testing for non-idempotent nodes and explicit checkpointer/store mapping questions.'
+
 ---
 
 ## Summary

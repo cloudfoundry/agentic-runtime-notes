@@ -6,6 +6,20 @@ tags: [runtime-lifecycle, sandboxing-isolation, identity]
 status: draft
 sources:
   - https://www.anthropic.com/engineering/managed-agents
+ratings:
+  platform-impact:
+    value: 75
+    note: 'Stateless CF app processes map to the brain, but CF lacks on-demand sandbox hands, an external append-only agent session service, and credential proxies that keep secrets out of generated-code environments.'
+  maturity:
+    value: 62
+    note: 'Anthropic reports operating the architecture and measured p50 TTFT improvements of about 60% and p95 improvements over 90%, but publishes neither a specification nor an open implementation for its session interface.'
+  novelty:
+    value: 72
+    note: 'The independently scalable brain, replaceable hands, and external positional event log form an emerging decomposition, strengthened by vault-backed proxies that structurally exclude credentials from both harness and sandbox.'
+  actionability:
+    value: 78
+    note: 'CF can prototype a stateless brain app against a durable event service and on-demand sandbox, then route one service credential through a proxy instead of injecting it into the sandbox.'
+
 ---
 
 ## Summary

@@ -10,6 +10,20 @@ sources:
   - https://github.com/stacklok/toolhive
   - https://docs.stacklok.com/toolhive/concepts/mcp-primer
   - https://docs.stacklok.com/toolhive/concepts/auth-framework
+ratings:
+  platform-impact:
+    value: 62
+    note: 'Diego, UAA, and service brokers offer related primitives, but CF lacks an MCP-specific runtime and gateway combining per-server isolation, delegated credentials, Cedar authorization, registry governance, and audits.'
+  maturity:
+    value: 55
+    note: 'ToolHive ships a CLI, desktop UI, gateway, registry, and Kubernetes operator with OIDC, audit, OTel, and Prometheus support, but the note gives limited evidence of broad production adoption.'
+  novelty:
+    value: 55
+    note: 'Centralizing MCP OAuth complexity, backend credential separation, Cedar policy, and isolated server containers is a useful new package of established gateway, policy, and container techniques.'
+  actionability:
+    value: 70
+    note: 'A focused comparison can deploy one MCP server in Diego, front it with UAA and deny-by-default policy, and test whether a curated service marketplace can reproduce ToolHive registry governance.'
+
 ---
 
 ## Summary

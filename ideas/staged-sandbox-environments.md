@@ -3,6 +3,20 @@ title: Split environment staging from workspace state for agent sandboxes
 author: Ruben Koster (@rkoster)
 date: 2026-08-24
 tags: [runtime-lifecycle, sandboxing-isolation, ecosystem-survey]
+ratings:
+  platform-impact:
+    value: 50
+    note: 'CF already stages Packages into Droplets and runs Tasks, but cross-app content-addressed Droplet reuse and mounting a separate mutable workspace Package are meaningful missing integrations.'
+  maturity:
+    value: 50
+    note: 'CF staging and Tasks prove several ingredients, but cross-app content-addressed Droplet reuse, separate mutable workspace mounting, and checkpointed diffs are an unimplemented composition without operational evidence.'
+  novelty:
+    value: 50
+    note: 'Separating a globally cached environment Droplet from a per-turn workspace Package is a substantial adaptation of CF staging and Nix-style substitution to generated agent code.'
+  actionability:
+    value: 75
+    note: 'Three concrete operations map to CAPI Build, Droplet, Package, resource-match, and Task resources, with focused questions around cross-tenant reuse and extra volume mounting.'
+
 ---
 
 ## The idea

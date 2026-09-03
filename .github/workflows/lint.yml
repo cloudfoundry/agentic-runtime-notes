@@ -6,29 +6,52 @@ on:
       - "research/**"
       - "ideas/**"
       - ".github/scripts/validate_notes.py"
+      - "scripts/**"
+      - "generated/**"
+      - "tests/**"
       - ".github/workflows/lint.yml"
+      - ".github/workflows/pages.yml"
   push:
     branches: [main]
     paths:
       - "research/**"
       - "ideas/**"
       - ".github/scripts/validate_notes.py"
+      - "scripts/**"
+      - "generated/**"
+      - "tests/**"
       - ".github/workflows/lint.yml"
+      - ".github/workflows/pages.yml"
+
+permissions:
+  contents: read
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - name: Check out
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install "pyyaml>=6"
+        run: pip install "pyyaml==6.0.2"
 
       - name: Validate notes and ideas
         run: python .github/scripts/validate_notes.py
+
+      - name: Check rating distributions
+        run: python scripts/summarize_ratings.py --check
+
+      - name: Test map generator
+        run: python -m unittest discover -s tests
+
+      - name: Generate research map
+        run: python scripts/generate_research_map.py
+
+      - name: Verify generated map is checked in
+        run: git diff --exit-code -- generated/research-map.html

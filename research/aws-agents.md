@@ -19,6 +19,20 @@ sources:
   - https://aws.amazon.com/bedrock/agentcore/
   - https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html
   - https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.html
+ratings:
+  platform-impact:
+    value: 85
+    note: 'AgentCore exposes a broad CF gap spanning per-session microVMs, persistent resumable filesystems, agent identity, memory, MCP gateway and Cedar policy, registry, evaluations, and automated optimization.'
+  maturity:
+    value: 78
+    note: 'AgentCore is a documented managed service with multiple compute modes and integrations, while Apache-licensed Strands has Python and TypeScript SDKs, about 6.9k stars, governance, releases, and many deployment targets.'
+  novelty:
+    value: 58
+    note: 'MicroVM session isolation, gateways, Cedar policy, OTel, and agent loops are established ideas; their modular assembly into an observe-evaluate-optimize managed agent platform is a newer combination.'
+  actionability:
+    value: 72
+    note: 'The framework-agnostic platform raises several large design choices, but Strands provides a concrete CF prototype target for MCP/A2A deployment and for testing gateway-enforced Cedar authorization on tool calls.'
+
 ---
 
 ## Summary

@@ -18,6 +18,20 @@ sources:
   - https://docs.letta.com/self-hosting
   - https://docs.letta.com/reference/terminology
   - https://docs.letta.com/agent-sdk/mcp
+ratings:
+  platform-impact:
+    value: 65
+    note: 'CF can host the App Server and bind storage, but has no durable, addressable agent identity or managed evolving-memory service equivalent to Letta agents, shared blocks, and MemFS.'
+  maturity:
+    value: 60
+    note: 'Letta has an Apache-licensed implementation, 24k-plus stars, extensive history, self-hosting, and a hosted service, but its classic memory API is legacy while the product pivots to Letta Code and MemFS.'
+  novelty:
+    value: 78
+    note: 'The MemGPT model lets an LLM page and edit its own context like virtual memory, while durable addressable agents and git-backed MemFS make memory and identity primary runtime abstractions.'
+  actionability:
+    value: 58
+    note: 'A MemFS-backed agent-state binding and App Server isolation trial are plausible, but the ongoing V1-to-MemFS pivot and unrestricted filesystem and shell access leave substantial scoping work.'
+
 ---
 
 ## Summary

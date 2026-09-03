@@ -1,0 +1,72 @@
+platform-impact-maturity:
+  title: Platform Impact x Maturity
+  x:
+    rating: maturity
+    label: Maturity
+    low: Emerging
+    high: Established
+  y:
+    rating: platform-impact
+    label: Platform Impact
+    low: Local concern
+    high: Platform-wide concern
+platform-impact-novelty:
+  title: Platform Impact x Novelty
+  x:
+    rating: novelty
+    label: Novelty
+    low: Familiar
+    high: Emerging
+  y:
+    rating: platform-impact
+    label: Platform Impact
+    low: Local concern
+    high: Platform-wide concern
+platform-impact-actionability:
+  title: Platform Impact x Actionability
+  x:
+    rating: actionability
+    label: Actionability
+    low: Exploratory
+    high: Ready to act
+  y:
+    rating: platform-impact
+    label: Platform Impact
+    low: Local concern
+    high: Platform-wide concern
+novelty-actionability:
+  title: Novelty x Actionability
+  x:
+    rating: novelty
+    label: Novelty
+    low: Familiar
+    high: Emerging
+  y:
+    rating: actionability
+    label: Actionability
+    low: Exploratory
+    high: Ready to act
+maturity-novelty:
+  title: Maturity x Novelty
+  x:
+    rating: novelty
+    label: Novelty
+    low: Familiar
+    high: Emerging
+  y:
+    rating: maturity
+    label: Maturity
+    low: Emerging
+    high: Established
+maturity-actionability:
+  title: Maturity x Actionability
+  x:
+    rating: actionability
+    label: Actionability
+    low: Exploratory
+    high: Ready to act
+  y:
+    rating: maturity
+    label: Maturity
+    low: Emerging
+    high: Established

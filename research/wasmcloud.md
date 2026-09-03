@@ -12,6 +12,20 @@ sources:
   - https://wasmcloud.com/docs/v1/concepts/
   - https://www.cncf.io/projects/wasmcloud/
   - https://wasmcloud.com/blog/2025-01-15-running-distributed-ml-and-ai-workloads-with-wasmcloud
+ratings:
+  platform-impact:
+    value: 48
+    note: 'CF lacks deny-by-default WIT capability contracts, but its general container hosting already covers far more workloads; wasmCloud requires WASI components and is not a direct replacement for buildpack applications.'
+  maturity:
+    value: 65
+    note: 'wasmCloud is a CNCF Incubating project with multi-organization maintainers, but its v1 architecture is no longer maintained and the early-2026 v2 Kubernetes rearchitecture leaves compatibility and operational questions.'
+  novelty:
+    value: 70
+    note: 'Language-neutral WIT imports as enforceable deny-by-default capabilities and swappable in-process providers offer an unconventional alternative to container and sidecar security models.'
+  actionability:
+    value: 35
+    note: 'The document flags capability security as inspiration but finds no clear CF mapping; WASI support for Python and Node agent dependencies, v2 clustering, and a representative MCP workload all need discovery first.'
+
 ---
 
 ## Summary
