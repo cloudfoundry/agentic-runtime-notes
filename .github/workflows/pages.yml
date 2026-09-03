@@ -1,0 +1,77 @@
+name: Deploy research map to Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "research/**"
+      - "ideas/**"
+      - "scripts/**"
+      - "generated/**"
+      - "tests/**"
+      - ".github/workflows/pages.yml"
+      - ".github/workflows/lint.yml"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install "pyyaml>=6"
+
+      - name: Validate notes and ideas
+        run: python .github/scripts/validate_notes.py
+
+      - name: Check rating distributions
+        run: python scripts/summarize_ratings.py --check
+
+      - name: Test map generator
+        run: python -m unittest discover -s tests
+
+      - name: Generate research map
+        run: python scripts/generate_research_map.py
+
+      - name: Verify generated map is checked in
+        run: git diff --exit-code -- generated/research-map.html
+
+      - name: Create Pages site
+        run: mkdir _site
+
+      - name: Copy research map to site index
+        run: cp generated/research-map.html _site/index.html
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
