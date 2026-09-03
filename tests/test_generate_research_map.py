@@ -795,6 +795,61 @@ A concise summary.
         self.assertIn('class="primitive-badge"', html)
         self.assertIn("relationship==='core'?'Core':'Supporting'", html)
 
+    def test_individual_dialog_shows_only_applicable_active_relationship_badges(self):
+        html = generate_html(load_notes(), load_plots(), load_primitives())
+
+        badges = html.split("function relationshipBadges(note)", 1)[1].split(
+            "function show(note)", 1
+        )[0]
+        self.assertIn("selectedUseCase&&useCaseMemberships[note.id]?.[selectedUseCase]", badges)
+        self.assertIn("selectedPrimitive&&primitiveMemberships[note.id]?.[selectedPrimitive]", badges)
+        self.assertIn("relationshipBadge(useCaseRelationship,useCaseTitles[selectedUseCase])", badges)
+        self.assertIn("relationshipBadge(primitiveRelationship,primitiveTitles[selectedPrimitive])", badges)
+        self.assertIn("return relationship?", html)
+        self.assertIn(":''", html)
+
+    def test_individual_dialog_escapes_active_relationship_titles_and_distinguishes_relationships(self):
+        attack = '<img src=x onerror="alert(1)">'
+        note = SimpleNamespace(
+            path=pathlib.Path("research/hostile.md"),
+            kind="research",
+            title="Safe note",
+            summary="Safe summary",
+            metadata={"tags": [], "ratings": {}},
+        )
+        primitive = {
+            **PRIMITIVE,
+            "id": "hostile-primitive",
+            "title": attack,
+            "core": [note.path.as_posix()],
+            "supporting": [],
+        }
+        use_case = {
+            **FOCUS_USE_CASE,
+            "title": attack,
+            "core": [],
+            "supporting": [note.path.as_posix()],
+            "primitive_applicability": {"hostile-primitive": "core"},
+        }
+
+        generated = generate_html(
+            [note],
+            {"hostile": {
+                "title": "Hostile",
+                "x": {"rating": "maturity", "label": "Maturity", "low": "Low", "high": "High"},
+                "y": {"rating": "platform-impact", "label": "Impact", "low": "Low", "high": "High"},
+            }},
+            [primitive],
+            focus_use_cases(use_case),
+        )
+        script = generated.split("<script>", 1)[1]
+
+        self.assertIn("const primitiveTitles=", script)
+        self.assertIn("const useCaseTitles=", script)
+        self.assertIn("escapeHtml(label)", script)
+        self.assertIn("relationship==='core'?'Core':'Supporting'", script)
+        self.assertNotIn(attack, generated.split("<script>", 1)[0])
+
     def test_generated_html_has_one_dialog_close_button(self):
         html = generate_html(load_notes(), load_plots(), load_primitives())
         self.assertEqual(html.count('class="close"'), 1)
