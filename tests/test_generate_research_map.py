@@ -130,6 +130,36 @@ class ResearchMapTests(unittest.TestCase):
             ["cf-hosted-coding-harnesses", "user-facing-agentic-applications"],
         )
 
+    def test_coding_harness_use_case_covers_edit_to_trusted_deployment_lifecycle(self):
+        use_case = load_focus_use_cases()[0]
+        narrative = " ".join(
+            str(use_case[field])
+            for field in (
+                "workshop_outcome",
+                "lifecycle",
+                "authority_boundary",
+                "unique_capabilities",
+                "failure_domain",
+                "poc",
+                "rfc_decisions",
+            )
+        ).lower()
+
+        for required_phrase in (
+            "mutable edit/test",
+            "candidate artifact",
+            "trusted deployment broker",
+            "target, policy, provenance, and approval",
+            "package, build, deployment, and revision",
+            "capi, git, model, and package-registry credentials",
+            "stale-base",
+            "concurrency",
+            "rollback",
+            "audit",
+        ):
+            with self.subTest(required_phrase=required_phrase):
+                self.assertIn(required_phrase, narrative)
+
     def test_validate_focus_use_cases_preserves_use_case_and_membership_order(self):
         first = {
             **FOCUS_USE_CASE,

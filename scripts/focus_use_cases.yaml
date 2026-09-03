@@ -1,20 +1,21 @@
 - id: cf-hosted-coding-harnesses
   title: CF-hosted coding harnesses
-  workshop_outcome: Define the minimum Cloud Foundry platform contract for safely hosting coding harnesses with durable, isolated sessions.
+  workshop_outcome: Define the minimum CF contract from isolated mutable edit/test through candidate artifact submission to a narrow trusted deployment broker.
   primary_actor: A platform customer deploying a coding harness on Cloud Foundry.
   beneficiary: A developer delegating repository changes and code execution to the harness.
-  lifecycle: Stage a reusable environment, create an isolated session and workspace, execute tools, suspend idle compute, resume on replacement compute, and destroy the session.
-  authority_boundary: The harness may change only its assigned workspace and invoke explicitly authorized tools and network destinations; the platform enforces isolation and scoped credentials.
+  lifecycle: Stage a reusable environment; create an isolated mutable edit/test session; submit a candidate artifact; let the broker validate target, policy, provenance, and approval; then create conventional CF package, build, deployment, and revision resources, verify, audit, and clean up.
+  authority_boundary: The harness gets restricted Git, model, and package-registry credentials but no CAPI deployment authority; only the narrow trusted deployment broker holds restricted CAPI credentials and may promote an approved artifact to its validated target.
   unique_capabilities:
-    - Reuse an immutable staged environment across isolated sessions without sharing mutable workspace state.
-    - Suspend and resume a session while retaining its workspace and stable identity.
-    - Select stronger workload isolation and session-specific network policy for generated code.
-  failure_domain: A harness or sandbox failure must remain within one session, preserve recoverable workspace state, and never expose another session or foundation credential.
-  poc: Start two isolated coding sessions from one content-addressed staged environment, give each a separate workspace and egress policy, then suspend and resume one on fresh compute.
+    - Reuse an immutable staged environment while retaining isolated mutable workspace state across edit/test turns.
+    - Produce a provenance-bound candidate artifact without granting the harness deployment authority.
+    - Validate target, policy, provenance, and approval in a narrow broker before conventional CF deployment and revision creation.
+  failure_domain: Session failure stays isolated and recoverable; stale-base or concurrent submissions fail safely; broker failure cannot broaden authority, and deployment supports rollback and audit.
+  poc: Edit and test in an isolated session, submit a provenance-bound candidate artifact, then have a narrow broker validate target, policy, provenance, and approval and create conventional CF package, build, deployment, and revision resources with rollback and audit.
   rfc_decisions:
-    - Whether CF should expose a first-class session resource or compose package, droplet, task, volume, networking, and isolation APIs.
-    - How session identity, workspace persistence, lifecycle transitions, quotas, cleanup, and failure recovery are represented.
-    - Which isolation classes and network-policy controls operators can offer and developers can select.
+    - How session identity, mutable workspace lifecycle, isolation, networking, stale-base detection, and concurrency are represented.
+    - What candidate artifact, provenance, target, policy, and approval contract the trusted deployment broker validates.
+    - How restricted CAPI, Git, model, and package-registry credentials are issued, audited, revoked, and kept out of the wrong trust domain.
+    - How conventional CF package, build, deployment, and revision creation exposes verification, rollback, and audit outcomes.
   core:
     - ideas/per-session-sandboxes.md
     - ideas/staged-sandbox-environments.md
