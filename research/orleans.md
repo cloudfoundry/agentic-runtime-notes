@@ -20,6 +20,20 @@ sources:
   - https://www.nuget.org/packages/Microsoft.Orleans.Journaling
   - https://www.nuget.org/packages/Microsoft.Orleans.DurableJobs
   - https://github.com/managedcode/dotPilot
+ratings:
+  platform-impact:
+    value: 62
+    note: 'CF lacks a virtual-actor runtime providing stable logical identities, transparent activation, a distributed directory, per-actor persistence, streams, and cross-actor transactions.'
+  maturity:
+    value: 92
+    note: 'Orleans is a long-running .NET Foundation project proven in Halo cloud services, remains active through v10.2.x, and offers mature clustering, persistence, streaming, transactions, and versioning.'
+  novelty:
+    value: 28
+    note: 'Orleans pioneered the virtual-actor model, but transparent activation and location, actor persistence, and single-threaded grains are now established architecture inherited by systems such as Dapr.'
+  actionability:
+    value: 52
+    note: 'The note suggests comparing grains with durable agent identities, but a CF experiment must first resolve .NET-only coupling, silo membership, storage bindings, and the absence of official agent-framework integration.'
+
 ---
 
 ## Summary

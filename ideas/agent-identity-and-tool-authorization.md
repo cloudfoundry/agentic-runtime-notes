@@ -3,6 +3,20 @@ title: Agent identity and tool authorization — the platform as the agent's ide
 author: Wayne E. Seguin (@wayneeseguin)
 date: 2026-08-12
 tags: [identity, inter-agent-comms, observability-governance]
+ratings:
+  platform-impact:
+    value: 50
+    note: "Diego identity certificates, UAA, CredHub, and accepted RFC-0055 cover much of the substrate, but CF lacks workload token exchange, a per-user token vault, and runtime tool-authorization policy."
+  maturity:
+    value: 75
+    note: "Workload identity, OAuth token exchange, mTLS client authentication, and policy engines are production-proven, while the layer-3 AOAT delegation chain remains only an individual IETF draft."
+  novelty:
+    value: 50
+    note: "Exchanging CF instance certificates for scoped workload tokens combines established identity standards in a CF-specific way; user-to-agent-to-tool delegation is the newer element."
+  actionability:
+    value: 100
+    note: "Accepted RFC-0055 provides a no-new-component first step, and UAA PRs #3972 and #3968 give concrete POCs for certificate exchange and JWT-SVID issuance to evaluate."
+
 ---
 
 ## The idea

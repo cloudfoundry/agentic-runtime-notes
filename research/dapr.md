@@ -13,6 +13,20 @@ sources:
   - https://docs.dapr.io/operations/security/mtls/
   - https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-overview/
   - https://docs.dapr.io/developing-ai/dapr-agents/dapr-agents-introduction/
+ratings:
+  platform-impact:
+    value: 62
+    note: 'CF service bindings overlap Dapr''s pluggable state, pub/sub, secrets, and bindings, but CF lacks its standardized sidecar APIs, virtual actors, durable workflows, SPIFFE workload identity, and supporting placement and scheduler control planes.'
+  maturity:
+    value: 94
+    note: 'Dapr is CNCF graduated and supplies eleven stable building blocks, pluggable production backends, Kubernetes and self-hosted modes, short-lived mTLS certificates, actors, and crash-resumable workflows.'
+  novelty:
+    value: 25
+    note: 'Sidecars, service invocation, pub/sub, state stores, virtual actors, workflow engines, and workload certificates are established distributed-systems patterns assembled behind a language-neutral API.'
+  actionability:
+    value: 67
+    note: 'The note supports a concrete sidecar-on-Diego compatibility investigation, but actor placement, Sentry, scheduler footprint, and overlap with service brokers make a full CF integration broader than one bounded experiment.'
+
 ---
 
 ## Summary

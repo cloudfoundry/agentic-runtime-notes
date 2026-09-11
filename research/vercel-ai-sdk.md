@@ -14,6 +14,20 @@ sources:
   - https://ai-sdk.dev/docs/ai-sdk-core/telemetry
   - https://useworkflow.dev
   - https://www.anthropic.com/research/building-effective-agents
+ratings:
+  platform-impact:
+    value: 48
+    note: 'CF can already host the stateless TypeScript SDK; its main gap is an optional bindable session, memory, or workflow service for the state and durability the SDK intentionally leaves external.'
+  maturity:
+    value: 88
+    note: 'The Apache-licensed SDK records more than 78 million monthly downloads and supports major JavaScript frameworks, providers, agents, MCP, telemetry, and documented external memory providers.'
+  novelty:
+    value: 38
+    note: 'Provider abstraction, tool loops, stateless application code, external memory, and Anthropic-derived workflow patterns are familiar techniques assembled into an unusually popular TypeScript API.'
+  actionability:
+    value: 78
+    note: 'A Node.js buildpack sample can bind an external Memory Provider and OTel exporter, then test the shipped MCP tool-drift detector as a concrete CF security recommendation.'
+
 ---
 
 ## Summary

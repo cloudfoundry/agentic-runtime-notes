@@ -16,6 +16,20 @@ sources:
   - https://github.com/temporalio/sdk-python/tree/main/temporalio/contrib/openai_agents
   - https://temporal.io/blog/durable-flexible-multi-agent-systems
   - https://temporal.io/cloud
+ratings:
+  platform-impact:
+    value: 72
+    note: 'CF can run stateless Temporal workers but has no durable-execution service providing event histories, deterministic replay, task queues, signals, queries, and resumable agent loops.'
+  maturity:
+    value: 92
+    note: 'Temporal is a production-proven successor to Cadence with 22k-plus stars, a managed cloud, multiple persistence backends, and official durable-agent integrations for OpenAI, ADK, and LangGraph.'
+  novelty:
+    value: 45
+    note: 'Append-only event history and deterministic replay are distinctive relative to checkpoint and actor models, but they are established durable-workflow techniques rather than new agent architecture.'
+  actionability:
+    value: 78
+    note: 'A bound Temporal service with CF workers can concretely test restart recovery, Continue-As-New, namespace isolation, and mTLS, although operating the clustered persistence tier remains a significant question.'
+
 ---
 
 ## Summary

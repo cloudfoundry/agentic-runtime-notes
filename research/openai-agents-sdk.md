@@ -19,6 +19,20 @@ sources:
   - https://openai.github.io/openai-agents-python/models/
   - https://github.com/openai/openai-agents-js
   - https://github.com/openai/swarm
+ratings:
+  platform-impact:
+    value: 48
+    note: 'CF readily hosts the library-only agent loop, while the meaningful gap is optional platform support for sessions, tracing, MCP connectivity, and external durable execution rather than a missing runtime requirement.'
+  maturity:
+    value: 80
+    note: 'The MIT Python SDK is widely adopted, has a JavaScript counterpart and comprehensive tools, handoffs, guardrails, sessions, MCP, and tracing support, with Temporal and Dapr integrations for durability.'
+  novelty:
+    value: 35
+    note: 'Its small set of agents, tools, handoffs, guardrails, sessions, and tracing intentionally favors conventional composable library primitives over a novel graph or hosting architecture.'
+  actionability:
+    value: 65
+    note: 'The DaprSession bridge enables a focused CF session-store trial, but choosing whether CF should supply durability, tracing, or only ordinary bindings requires additional platform scoping.'
+
 ---
 
 ## Summary

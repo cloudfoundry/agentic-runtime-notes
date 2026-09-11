@@ -1,0 +1,78 @@
+- id: cf-hosted-coding-harnesses
+  title: CF-hosted coding harnesses
+  workshop_outcome: Define the minimum CF contract from isolated mutable edit/test through candidate artifact submission to a narrow trusted deployment broker.
+  primary_actor: A platform customer deploying a coding harness on Cloud Foundry.
+  beneficiary: A developer delegating repository changes and code execution to the harness.
+  lifecycle: Stage a reusable environment; create an isolated mutable edit/test session; submit a candidate artifact; let the broker validate target, policy, provenance, and approval; then create conventional CF package, build, deployment, and revision resources, verify, audit, and clean up.
+  authority_boundary: The harness gets restricted Git, model, and package-registry credentials but no CAPI deployment authority; only the narrow trusted deployment broker holds restricted CAPI credentials and may promote an approved artifact to its validated target.
+  unique_capabilities:
+    - Reuse an immutable staged environment while retaining isolated mutable workspace state across edit/test turns.
+    - Produce a provenance-bound candidate artifact without granting the harness deployment authority.
+    - Validate target, policy, provenance, and approval in a narrow broker before conventional CF deployment and revision creation.
+  failure_domain: Session failure stays isolated and recoverable; stale-base or concurrent submissions fail safely; broker failure cannot broaden authority, and deployment supports rollback and audit.
+  poc: Edit and test in an isolated session, submit a provenance-bound candidate artifact, then have a narrow broker validate target, policy, provenance, and approval and create conventional CF package, build, deployment, and revision resources with rollback and audit.
+  rfc_decisions:
+    - How session identity, mutable workspace lifecycle, isolation, networking, stale-base detection, and concurrency are represented.
+    - What candidate artifact, provenance, target, policy, and approval contract the trusted deployment broker validates.
+    - How restricted CAPI, Git, model, and package-registry credentials are issued, audited, revoked, and kept out of the wrong trust domain.
+    - How conventional CF package, build, deployment, and revision creation exposes verification, rollback, and audit outcomes.
+  core:
+    - ideas/per-session-sandboxes.md
+    - ideas/staged-sandbox-environments.md
+    - ideas/stronger-workload-isolation-for-agents.md
+    - ideas/localhost-only-egress-for-agents.md
+    - research/k8s-agent-sandbox.md
+    - research/firecracker-microvm.md
+  supporting:
+    - research/anthropic-managed-agents.md
+    - research/azure-hosted-agents.md
+    - research/heroku-ai-platform.md
+    - research/toolhive.md
+    - ideas/credential-less-agent-processes.md
+  primitive_applicability:
+    durable-addressable-execution: supporting
+    attested-workload-authority: core
+    session-scoped-isolated-execution: core
+
+- id: user-facing-agentic-applications
+  title: User-facing agentic applications
+  workshop_outcome: Define the platform contract for routed CF applications that run durable, authorized agent workflows on behalf of end users.
+  primary_actor: An application developer deploying a multi-tenant agentic application to Cloud Foundry.
+  beneficiary: An authenticated application user delegating a long-running task while retaining approval and audit control.
+  lifecycle: Authenticate a user, create a durable execution, invoke authorized tools, checkpoint state, pause for approval or failure, resume on replaceable compute, and complete or cancel with an audit trail.
+  authority_boundary: The application acts with both workload identity and explicitly delegated user authority; tool access is scoped, auditable, revocable, and unavailable as ambient process credentials.
+  unique_capabilities:
+    - Address and resume framework-neutral agent executions independently of an application instance.
+    - Delegate user authority to specific tools without placing durable credentials in the agent process.
+    - Pause for human approval and recover from process or provider failure without repeating committed effects.
+  failure_domain: One tenant's execution, tool failure, or compromised prompt must not leak authority or state across users, and replacement compute must resume without duplicating external effects.
+  poc: Run a routed invoice agent that checkpoints progress, pauses for user approval, survives instance replacement, and calls one tool with a short-lived user-delegated token.
+  rfc_decisions:
+    - Whether CF owns durable execution identity, events, timers, retries, suspension, and cancellation or integrates an external engine.
+    - How workload identity, user delegation, tool authorization, token exchange, audit, and revocation fit CF APIs and UAA.
+    - Which state, quota, scaling, telemetry, and optional isolated-worker contracts remain framework-neutral platform responsibilities.
+  core:
+    - ideas/durable-tasks-for-cf.md
+    - ideas/agent-failure-checkpointing.md
+    - ideas/agent-identity-and-tool-authorization.md
+    - ideas/credential-less-agent-processes.md
+    - research/temporal.md
+    - research/langgraph.md
+    - research/open-agent-auth.md
+  supporting:
+    - ideas/dapr-durable-execution-on-cf.md
+    - research/dapr-agents.md
+    - research/hatchet.md
+    - research/letta.md
+    - research/llamaindex.md
+    - research/microsoft-agent-framework.md
+    - research/openai-agents-sdk.md
+    - research/opentelemetry-genai.md
+    - research/mcp-protocol.md
+    - research/vercel-ai-sdk.md
+    - ideas/per-session-sandboxes.md
+    - research/k8s-agent-sandbox.md
+  primitive_applicability:
+    durable-addressable-execution: core
+    attested-workload-authority: core
+    session-scoped-isolated-execution: conditional

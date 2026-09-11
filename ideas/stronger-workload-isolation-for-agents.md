@@ -3,6 +3,20 @@ title: Stronger workload isolation for agent workloads
 author: Rashid Rashidov (@rrashidov)
 date: 2026-07-08
 tags: [sandboxing-isolation, runtime-lifecycle]
+ratings:
+  platform-impact:
+    value: 50
+    note: 'CF supplies container isolation but offers no gVisor- or Kata-style runtime choice to put inference-selected code behind a user-space or dedicated-kernel boundary.'
+  maturity:
+    value: 75
+    note: 'The 75 reflects production-capable gVisor, Kata, and Kubernetes RuntimeClass isolation technologies; it does not imply maturity for manifest-selectable isolation through Garden and Diego, which has no demonstrated implementation, lifecycle integration, or CF operational evidence.'
+  novelty:
+    value: 25
+    note: 'A manifest-selectable sandbox runtime is the familiar RuntimeClass pattern adapted to CF applications that execute unreviewed agent-generated instructions.'
+  actionability:
+    value: 50
+    note: 'The runtime: sandbox field and gVisor target define a plausible spike, but the Garden or Diego enforcement point, lifecycle wiring, and operator policy are still open.'
+
 ---
 
 ## The idea

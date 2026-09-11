@@ -14,6 +14,20 @@ sources:
   - https://firecracker-microvm.github.io/
   - https://fly.io/blog/sandboxing-and-workload-isolation/
   - https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing
+ratings:
+  platform-impact:
+    value: 80
+    note: 'CF''s long-lived container app instances do not provide per-session hardware isolation, 125ms-class microVM startup, or snapshot pause/resume for untrusted generated code and long-idle agent sessions.'
+  maturity:
+    value: 95
+    note: 'Firecracker has powered AWS Lambda and Fargate since its 2018 release, enforces boot and memory targets in CI, and is integrated by Fly.io, Kata Containers, and containerd.'
+  novelty:
+    value: 42
+    note: 'Its minimal five-device VMM and copy-on-write snapshots substantially optimize familiar KVM virtualization, but hardware VMs, seccomp, namespaces, cgroups, and snapshot restoration are established techniques.'
+  actionability:
+    value: 66
+    note: 'Kata-on-Firecracker offers a concrete Diego-cell spike for isolation and resume measurements, but networking, snapshot identity safety, host integration, and tenant policy require significant scoping.'
+
 ---
 
 ## Summary

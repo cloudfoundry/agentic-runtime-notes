@@ -14,6 +14,20 @@ sources:
   - https://developers.cloudflare.com/agents/runtime/operations/observability/
   - https://developers.cloudflare.com/agents/runtime/operations/observability/tracing/
   - https://developers.cloudflare.com/durable-objects/
+ratings:
+  platform-impact:
+    value: 88
+    note: 'CF has no equivalent to a cheap globally addressable compute unit that combines isolate execution, private colocated SQLite, hibernation-safe WebSockets, durable alarms, and automatic geographic placement.'
+  maturity:
+    value: 72
+    note: 'The SDK rests on production Durable Objects that scale to millions of instances and supplies state, scheduling, MCP, workflows, and tracing, but remains Cloudflare-controlled, rejects external contributions, and lightly documents A2A.'
+  novelty:
+    value: 82
+    note: 'Making every agent a single-threaded V8 isolate with its own colocated SQLite database, durable alarms, transparent hibernation, and global identity departs sharply from container, microVM, and external-state agent runtimes.'
+  actionability:
+    value: 68
+    note: 'The note defines a focused comparison of isolate trust, hibernation, and bindable per-agent state, but a CF prototype requires substantial design because Durable Objects'' routing and storage substrate is not portable.'
+
 ---
 
 ## Summary

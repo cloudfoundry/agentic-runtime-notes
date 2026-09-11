@@ -3,6 +3,20 @@ title: Durable execution as a CF-native primitive — what tasks are missing
 author: Ruben Koster (@rkoster)
 date: 2026-08-11
 tags: [runtime-lifecycle, orchestration]
+ratings:
+  platform-impact:
+    value: 100
+    note: 'Between one-shot Tasks and always-running app instances, CF has no stable execution identity, suspend/resume lifecycle, durable event wakeup, timers, scheduler, or retry primitive.'
+  maturity:
+    value: 50
+    note: 'Temporal, Dapr, and Azure Durable Task prove the component semantics, but the proposed CF execution resource, suspend/resume lifecycle, per-cell API, and framework adapters have no demonstrated implementation or operations.'
+  novelty:
+    value: 50
+    note: 'The proposal recombines established workflow identity and ephemeral compute-slice patterns into a deliberately narrow CAPI resource plus per-cell API rather than a workflow engine.'
+  actionability:
+    value: 75
+    note: 'A CAPI execution row, Diego Tasks as compute slices, bound-service state pointers, and mTLS per-cell control calls define a bounded architecture to test against framework adapters.'
+
 ---
 
 ## The idea

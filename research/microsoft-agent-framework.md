@@ -14,6 +14,20 @@ sources:
   - https://docs.diagrid.io/develop/agents/microsoft/
   - https://github.com/diagridio/dotnet-ai
   - https://github.com/diagridio/python-ai
+ratings:
+  platform-impact:
+    value: 55
+    note: 'CF can host MAF applications but offers no native agent packaging, graph checkpoint service, or interchangeable durability substrate comparable to Durable Task or the Diagrid Dapr integration.'
+  maturity:
+    value: 62
+    note: 'MAF consolidates mature AutoGen and Semantic Kernel lineage with Python and .NET implementations, but Go is public preview and durable execution lives in separate first- and third-party extensions.'
+  novelty:
+    value: 48
+    note: 'Agents, harnesses, explicit workflow graphs, MCP, A2A, and checkpointing form a broad modern combination, but each builds on familiar SDK, workflow, and protocol patterns.'
+  actionability:
+    value: 62
+    note: 'A CF trial can package a declarative MAF agent and compare Azure Durable Task with Dapr-backed durability, but the note leaves the target substrate and cross-language scope unresolved.'
+
 ---
 
 ## Summary

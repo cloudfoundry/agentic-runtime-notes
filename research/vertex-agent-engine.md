@@ -14,6 +14,20 @@ sources:
   - https://cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/tracing
   - https://cloud.google.com/gemini-enterprise-agent-platform/optimize/evaluation/agent-evaluation
   - https://cloud.google.com/gemini-enterprise-agent-platform/agents
+ratings:
+  platform-impact:
+    value: 85
+    note: 'CF lacks the integrated managed-agent lifecycle shown by Agent Runtime, Sessions, Memory Bank, separate untrusted Sandboxes, SPIFFE identity, policy gateways, tracing, evaluation, and optimization.'
+  maturity:
+    value: 78
+    note: 'Google operates a fully managed, framework-agnostic runtime supporting ADK, LangGraph, AG2, LlamaIndex, and custom templates, while A2A deployment and some surrounding capabilities remain preview or unevenly governed.'
+  novelty:
+    value: 58
+    note: 'The trusted-runtime plus separate untrusted-sandbox split and memory-to-evaluation lifecycle are a newer agent-platform combination, though containers, SPIFFE, gateways, OTel, and managed memory are known patterns.'
+  actionability:
+    value: 55
+    note: 'The note supplies a strong reference architecture, but CF must still choose among broad experiments in workload identity, sandbox separation, policy gateways, memory, and evaluation rather than one defined implementation step.'
+
 ---
 
 ## Summary

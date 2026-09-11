@@ -3,6 +3,20 @@ title: Localhost-only egress for agent workloads
 author: Rashid Rashidov (@rrashidov)
 date: 2026-07-08
 tags: [sandboxing-isolation, observability-governance]
+ratings:
+  platform-impact:
+    value: 75
+    note: 'CF lacks a platform-owned, non-bypassable outbound proxy that turns declared external bindings into enforced destinations and request-level audit logs for agent traffic.'
+  maturity:
+    value: 75
+    note: 'The 75 reflects mature, widely deployed proxy, allowlist, interception, and request-logging technologies; it does not imply maturity for the proposed non-bypassable CF integration, binding-derived policy, or ownership model, which lack implementation evidence.'
+  novelty:
+    value: 25
+    note: 'The architecture applies conventional mandatory-egress-proxy and allowlist controls to inference-selected destinations rather than creating a new networking mechanism.'
+  actionability:
+    value: 50
+    note: 'Declared bindings, a localhost endpoint, enforced forwarding, and logging give a prototype outline, but the proxy component, bypass prevention, and policy ownership remain unspecified.'
+
 ---
 
 ## The idea

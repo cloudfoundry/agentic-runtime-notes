@@ -7,6 +7,20 @@ cf_areas: [loggregator]
 status: draft
 sources:
   - https://github.com/open-telemetry/semantic-conventions-genai
+ratings:
+  platform-impact:
+    value: 58
+    note: 'CF already transports application telemetry through Loggregator, but lacks standard platform treatment for model, token, agent, tool, and MCP spans and metrics.'
+  maturity:
+    value: 48
+    note: 'The conventions cover major model vendors, agent operations, MCP, spans, events, and metrics within OpenTelemetry, but the document explicitly records Development status rather than stable standardization.'
+  novelty:
+    value: 40
+    note: 'Token usage, time-to-first-chunk, planning, and tool-call semantics adapt established tracing and metrics conventions to GenAI rather than introducing a new observability architecture.'
+  actionability:
+    value: 82
+    note: 'CF can instrument one model-and-tool request with the named gen_ai attributes and metrics, propagate its trace through platform routing, and test Loggregator export without designing a new protocol.'
+
 ---
 
 ## Summary

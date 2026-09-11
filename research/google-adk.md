@@ -19,6 +19,20 @@ sources:
   - https://google.github.io/adk-docs/agents/workflow-agents/
   - https://google.github.io/adk-docs/agents/models/
   - https://google.github.io/adk-docs/evaluate/
+ratings:
+  platform-impact:
+    value: 58
+    note: 'ADK agents can run as ordinary CF containers and bring their own graph, A2A, MCP, OTel, and evaluation libraries; CF gaps remain around durable replay, session affinity, identity, and managed behavioral evaluation.'
+  maturity:
+    value: 78
+    note: 'Google used ADK in internal products before open sourcing it; ADK 2.0 is GA, five first-party language implementations move in lockstep, Python has about 21k stars, and kagent uses ADK as its engine.'
+  novelty:
+    value: 55
+    note: 'Graph workflows, event logs, tool adapters, and evaluation harnesses are known patterns, while isolated task delegation modes and replay-oriented conformance tests are newer agent-specific adaptations.'
+  actionability:
+    value: 82
+    note: 'A bounded CF deployment can exercise ADK''s A2A endpoint, OTel traces, MCP connection recovery after instance replacement, and eval conformance tests while documenting the missing durability substrate.'
+
 ---
 
 ## Summary
