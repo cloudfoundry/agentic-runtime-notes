@@ -2,7 +2,7 @@
 title: "Agent Router: Envoy-Based Control Plane for AI Traffic"
 author: Ruben Koster (@rkoster)
 date: 2026-09-17
-tags: [routing, observability-governance, agent-runtime, ecosystem-survey]
+tags: [routing, observability-governance, ecosystem-survey]
 cf_areas: [capi, diego, loggregator]
 status: draft
 ratings:
