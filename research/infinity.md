@@ -2,7 +2,7 @@
 title: "Reactive Agents: Infinity/RAP and MCP Asynchronous Extensions"
 author: Ruben Koster (@rkoster)
 date: 2026-09-17
-tags: [orchestration, durable-execution, inter-agent-comms, event-driven, ecosystem-survey]
+tags: [orchestration, durable-execution, inter-agent-comms, event-driven, runtime-lifecycle, ecosystem-survey]
 cf_areas: [capi, diego, loggregator]
 status: draft
 ratings:
@@ -13,8 +13,8 @@ ratings:
     value: 58
     note: "Infinity has a concrete runtime and RAP specification, MCP Tasks has a stable schema snapshot, while MCP Triggers & Events remains explicitly experimental."
   novelty:
-    value: 88
-    note: "The execution-slice model treats waiting, callbacks, subscriptions, and hibernation as protocol and runtime primitives rather than application-specific polling patterns."
+    value: 65
+    note: "The execution-slice model composes established hibernation and wake-up patterns with protocol-level callbacks, subscriptions, and durable task state rather than inventing those lifecycle patterns."
   actionability:
     value: 76
     note: "The patterns identify concrete CF integration points around queues, state, callbacks, ordering, and observability, even though no direct CF integration is documented."
