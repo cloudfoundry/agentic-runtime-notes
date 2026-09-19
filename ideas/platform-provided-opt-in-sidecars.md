@@ -3,6 +3,19 @@ title: Platform-provided opt-in application sidecars
 author: Ruben Koster (@rkoster)
 date: 2026-09-19
 tags: [runtime-lifecycle, identity, observability-governance]
+ratings:
+  platform-impact:
+    value: 80
+    note: 'CF has system-provided processes such as Envoy but no general per-app opt-in mechanism for operator-packaged helper processes with managed lifecycle and credentials.'
+  maturity:
+    value: 35
+    note: 'Diego already injects BOSH-packaged Envoy, but generalizing that special case into a supported CAPI and Diego capability model requires substantial design and implementation.'
+  novelty:
+    value: 55
+    note: 'Platform-injected helpers are established, but making BOSH-packaged processes a declarative per-app capability would be a new CF extensibility surface.'
+  actionability:
+    value: 40
+    note: 'Envoy provides implementation precedent and motivating consumers exist, but the declaration, packaging, policy, lifecycle, and resource-accounting contracts are intentionally unresolved.'
 ---
 
 # Platform-provided opt-in application sidecars

@@ -3,6 +3,19 @@ title: OpenSandbox-compatible application sidecar
 author: Ruben Koster (@rkoster)
 date: 2026-09-19
 tags: [sandboxing-isolation, runtime-lifecycle, identity]
+ratings:
+  platform-impact:
+    value: 75
+    note: 'CF does not provide an OpenSandbox-compatible localhost API, so existing clients cannot use CF-native sandbox resources without learning CAPI authentication, ownership, and routing.'
+  maturity:
+    value: 50
+    note: 'Local compatibility proxies, OpenAPI adapters, workload certificates, and OpenSandbox clients exist, but the combined stateless CF facade and CAPI sandbox API have not been implemented.'
+  novelty:
+    value: 50
+    note: 'The idea combines established sidecar and compatibility-adapter patterns to preserve a portable sandbox client API over CF-specific control and data planes.'
+  actionability:
+    value: 65
+    note: 'The localhost boundary, CAPI source of truth, identity flow, and execd proxy path define a focused prototype, while the compatibility profile and upstream APIs remain open.'
 ---
 
 # OpenSandbox-compatible application sidecar

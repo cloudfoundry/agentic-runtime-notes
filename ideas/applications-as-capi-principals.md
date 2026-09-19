@@ -3,6 +3,19 @@ title: Applications as CAPI principals
 author: Ruben Koster (@rkoster)
 date: 2026-09-19
 tags: [identity, runtime-lifecycle]
+ratings:
+  platform-impact:
+    value: 85
+    note: 'CAPI currently authorizes users and clients rather than app workload identities, limiting least-privilege app-driven creation of sandboxes and subordinate workloads.'
+  maturity:
+    value: 55
+    note: 'CF instance certificates already carry app, space, and org identity and UAA PR #3972 demonstrates JWT exchange, while CAPI principal and role semantics remain undesigned.'
+  novelty:
+    value: 60
+    note: 'Workload principals and short-lived identity tokens are established patterns, but first-class app role assignments in CAPI would be a new authorization model for CF.'
+  actionability:
+    value: 50
+    note: 'The certificate-to-JWT path provides a concrete starting point, but principal representation, role assignment, revocation, and policy enforcement need an RFC.'
 ---
 
 # Applications as CAPI principals

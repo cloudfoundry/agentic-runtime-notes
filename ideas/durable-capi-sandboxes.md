@@ -3,6 +3,19 @@ title: Durable app-owned sandboxes in CAPI
 author: Ruben Koster (@rkoster)
 date: 2026-09-19
 tags: [sandboxing-isolation, runtime-lifecycle]
+ratings:
+  platform-impact:
+    value: 95
+    note: 'CF lacks an app-owned, addressable sandbox resource with durable identity, explicit suspend/restore, quotas, routing, and cell-evacuation semantics.'
+  maturity:
+    value: 40
+    note: 'CAPI desired state, Diego placement, blobstores, and external sandbox systems provide relevant primitives, but no integrated CF sandbox resource or portable snapshot contract exists.'
+  novelty:
+    value: 60
+    note: 'Durable sandbox resources exist elsewhere, while combining app ownership, CAPI lifecycle, Diego realization, and evacuation snapshots is new for CF.'
+  actionability:
+    value: 45
+    note: 'The ownership model, lifecycle sketch, and snapshot alternatives establish research tracks, but storage format, consistency, runtime integration, and failure semantics remain open.'
 ---
 
 # Durable app-owned sandboxes in CAPI
