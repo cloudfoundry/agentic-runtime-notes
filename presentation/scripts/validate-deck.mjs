@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { access } from 'node:fs/promises';
 
 const source = await readFile(new URL('../slides.md', import.meta.url), 'utf8');
 const slides = source.split(/^---$/m).filter((part) => part.includes('\n#'));
@@ -38,4 +39,19 @@ for (const banned of ['#18a999', '#0f7c90', '#ef8354']) {
 }
 if (!theme.includes('#0c9ed5')) throw new Error('theme is missing the Cloud Foundry primary blue');
 
-console.log(`validated ${slides.length} slides, ${required.length} required claims, speaker notes and palette`);
+// Every referenced image must exist next to the deck, and must also be copied
+// into build/ — Marp resolves image URLs relative to the *output* file.
+const images = [...source.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map((m) => m[1]);
+if (images.length === 0) throw new Error('expected at least one image in the deck');
+for (const image of images) {
+  for (const base of ['..', '../build']) {
+    const target = new URL(`${base}/${image}`, import.meta.url);
+    try {
+      await access(target);
+    } catch {
+      throw new Error(`image "${image}" missing from ${base === '..' ? 'source' : 'build output'}`);
+    }
+  }
+}
+
+console.log(`validated ${slides.length} slides, ${required.length} required claims, ${images.length} images, speaker notes and palette`);
