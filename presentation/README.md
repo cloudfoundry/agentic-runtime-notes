@@ -11,7 +11,11 @@ npm install
 npm run slides
 ```
 
-The Marp server prints a local preview URL. Export deliverables with:
+`npm run slides` rebuilds on every save and opens a live-reloading preview
+window. If you have no GUI browser available, use `npm run slides:watch`
+instead — it watches and rebuilds `build/preview.html` without opening anything.
+
+Export deliverables with:
 
 ```bash
 cd presentation

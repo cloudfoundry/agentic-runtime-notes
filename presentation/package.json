@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "test": "node scripts/validate-deck.mjs",
-    "slides": "marp --theme-set theme --server --html slides.md",
+    "slides": "mkdir -p build && marp --theme-set theme --html -w -p -o build/preview.html slides.md",
+    "slides:watch": "mkdir -p build && marp --theme-set theme --html -w -o build/preview.html slides.md",
     "slides:pdf": "mkdir -p build && marp --theme-set theme --pdf --allow-local-files -o build/agentic-runtime-summit.pdf slides.md",
     "slides:html": "mkdir -p build && marp --theme-set theme --html --allow-local-files -o build/agentic-runtime-summit.html slides.md"
   },
