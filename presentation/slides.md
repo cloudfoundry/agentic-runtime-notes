@@ -218,24 +218,21 @@ not presented here as an adopted AAIF project or as our chosen architecture.
 
 # Demo placeholder
 
-![w:1000](assets/developer-journey.svg)
+![w:840](assets/cf-herdr-architecture.svg)
 
-<div class="source">Developer journey from the CF Herdr POC — one implementation under discussion, not an adopted architecture.</div>
-
-<p class="subtitle">The point of the demo: make the execution boundary tangible.</p>
+<div class="source">CF Herdr POC architecture — one implementation under discussion, not an adopted architecture.</div>
 
 <!--
 This slide is intentionally a placeholder. We will choose the scenario with
 the other leads. //
 
-What the demo should show is the developer experience, not an architecture.
-Choose the work. Start an agent in its own workspace.
-Steer it from anywhere — observe, prompt, review.
-Then ship the result through Cloud Foundry like any other change. //
+This is the CF Herdr POC. A manager app reconciles sandbox lifecycle through
+the CF API. Each agent runs in its own sandbox app, where Herdr owns the
+process tree: the OpenCode agent and shell sessions beside it. The developer
+reaches it through Gorouter, or through the SSH proxy with cf ssh. //
 
-This journey is taken from the CF Herdr POC. It is one implementation,
-shown to make the boundary tangible. It is not a working group decision,
-and the scenario itself is still open.
+It is one implementation, shown to make the boundary tangible. It is not a
+working group decision, and the demo scenario itself is still open.
 -->
 
 ---
