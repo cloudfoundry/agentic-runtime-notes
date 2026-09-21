@@ -105,8 +105,14 @@ and feeds the result back into the next prompt. //
 Many of those tools are remote too — MCP over HTTP, or a plain API.
 Also a binding. //
 
-So look at the picture. Model: binding. Remote tools: binding.
-Loop: a process. //
+The loop also has to remember. Conversation history, checkpoints,
+enough state to resume a run that was interrupted.
+Some harnesses are starting to keep that in a database
+instead of in memory or on local disk.
+When they do, that is a binding as well. //
+
+So look at the picture. Model: binding. Session state: binding.
+Remote tools: binding. Loop: a process. //
 
 Everything is a network call to a bound service.
 Except the box on the bottom right.
@@ -122,12 +128,13 @@ Except the box on the bottom right.
 | --- | --- | --- |
 | Backing service | the LLM endpoint | service binding |
 | Backing service | remote MCP tools | binding or route |
+| Backing service | session and run state | database binding |
 | Config | model, keys, limits | env and `VCAP_SERVICES` |
 | Processes | the agent loop | an ordinary app process |
 | Disposability | resume or retry a run | restart, scale, health checks |
 | Execution | local tools: shell, files, code | no primitive yet |
 
-<p class="subtitle">Five of these we already know how to run. The sixth is why the group started with sandboxing.</p>
+<p class="subtitle">Six of these we already know how to run. The seventh is why the group started with sandboxing.</p>
 
 <!--
 So let's be concrete about that claim. //
@@ -136,11 +143,12 @@ Take the twelve-factor checklist we already apply to every app on this platform.
 
 The model endpoint is a backing service. We bind to it.
 Remote MCP tools are backing services. We bind to those too.
+Session and run state belongs in a database, which is another binding.
 Model choice, keys and limits are config, from the environment.
 The agent loop is just a process.
 And a run that can be retried or resumed is ordinary disposability. //
 
-Five out of six are solved problems. We have been doing them for a decade. //
+Six out of seven are solved problems. We have been doing them for a decade. //
 
 The last row is the one with nothing in the right-hand column.
 Local execution. Shell, files, generated code.
