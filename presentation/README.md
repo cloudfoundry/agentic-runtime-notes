@@ -19,10 +19,15 @@ npm run slides:pdf
 npm run slides:html
 ```
 
-PDF export needs a Chromium-compatible browser. On NixOS, run the commands in
-the repository's Devbox environment (the reference presentation uses the
-`chromium` package) or set `CHROME_PATH` to a Nix-compatible browser. Generated
-files are written to `build/`, which is intentionally local output.
+PDF export needs a Chromium-compatible browser.
+
+- **Linux:** Chromium is provided by Devbox. Nothing to install.
+- **macOS:** Devbox excludes Chromium on Darwin, because the Nix package does
+  not evaluate on Apple Silicon. Marp uses a locally installed Chrome, Edge, or
+  Firefox instead — install one if you don't already have it, or point
+  `CHROME_PATH` at an existing browser binary.
+
+Generated files are written to `build/`, which is intentionally local output.
 
 ## Talk shape
 
