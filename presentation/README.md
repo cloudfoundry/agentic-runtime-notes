@@ -6,6 +6,7 @@ sandboxing POCs**.
 ## Run locally
 
 ```bash
+cd presentation
 npm install
 npm run slides
 ```
@@ -13,6 +14,7 @@ npm run slides
 The Marp server prints a local preview URL. Export deliverables with:
 
 ```bash
+cd presentation
 npm run slides:pdf
 npm run slides:html
 ```
