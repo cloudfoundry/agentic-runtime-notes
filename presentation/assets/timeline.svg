@@ -1,40 +1,40 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 440" width="1200" height="440" font-family="'Avenir Next','Segoe UI',Helvetica,Arial,sans-serif">
   <defs>
-    <linearGradient id="barTeal" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#18a999"/>
-      <stop offset="100%" stop-color="#0f7c90"/>
+    <linearGradient id="barBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#40b7eb"/>
+      <stop offset="100%" stop-color="#0c9ed5"/>
     </linearGradient>
-    <linearGradient id="barCoral" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#f4a07a"/>
-      <stop offset="100%" stop-color="#ef8354"/>
+    <linearGradient id="barGold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffc82b"/>
+      <stop offset="100%" stop-color="#e0aa16"/>
     </linearGradient>
   </defs>
 
   <!-- activity chart -->
-  <text x="70" y="26" fill="#627d98" font-size="15" font-weight="700" letter-spacing="1.6">PULL REQUESTS PER MONTH</text>
+  <text x="70" y="26" fill="#325a6f" font-size="15" font-weight="700" letter-spacing="1.6">PULL REQUESTS PER MONTH</text>
 
-  <rect x="142" y="225" width="120" height="5"   rx="2.5" fill="url(#barTeal)"/>
-  <rect x="407" y="171" width="120" height="59"  rx="4"   fill="url(#barTeal)"/>
-  <rect x="672" y="75"  width="120" height="155" rx="4"   fill="url(#barTeal)"/>
-  <rect x="937" y="112" width="120" height="118" rx="4"   fill="url(#barCoral)"/>
+  <rect x="142" y="225" width="120" height="5"   rx="2.5" fill="url(#barBlue)"/>
+  <rect x="407" y="171" width="120" height="59"  rx="4"   fill="url(#barBlue)"/>
+  <rect x="672" y="75"  width="120" height="155" rx="4"   fill="url(#barBlue)"/>
+  <rect x="937" y="112" width="120" height="118" rx="4"   fill="url(#barGold)"/>
 
-  <text x="202"  y="213" text-anchor="middle" fill="#102a43" font-size="26" font-weight="700">1</text>
-  <text x="467"  y="159" text-anchor="middle" fill="#102a43" font-size="26" font-weight="700">11</text>
-  <text x="732"  y="63"  text-anchor="middle" fill="#102a43" font-size="26" font-weight="700">29</text>
-  <text x="997"  y="100" text-anchor="middle" fill="#102a43" font-size="26" font-weight="700">22</text>
+  <text x="202"  y="213" text-anchor="middle" fill="#1b3b51" font-size="26" font-weight="700">1</text>
+  <text x="467"  y="159" text-anchor="middle" fill="#1b3b51" font-size="26" font-weight="700">11</text>
+  <text x="732"  y="63"  text-anchor="middle" fill="#1b3b51" font-size="26" font-weight="700">29</text>
+  <text x="997"  y="100" text-anchor="middle" fill="#1b3b51" font-size="26" font-weight="700">22</text>
 
-  <line x1="70" y1="230" x2="1130" y2="230" stroke="#c9d9dc" stroke-width="2"/>
+  <line x1="70" y1="230" x2="1130" y2="230" stroke="#cfe4ee" stroke-width="2"/>
 
-  <text x="202" y="256" text-anchor="middle" fill="#243b53" font-size="19" font-weight="600">Jun</text>
-  <text x="467" y="256" text-anchor="middle" fill="#243b53" font-size="19" font-weight="600">Jul</text>
-  <text x="732" y="256" text-anchor="middle" fill="#243b53" font-size="19" font-weight="600">Aug</text>
-  <text x="997" y="256" text-anchor="middle" fill="#243b53" font-size="19" font-weight="600">Sep</text>
-  <text x="997" y="274" text-anchor="middle" fill="#627d98" font-size="13">to 19 Sep</text>
+  <text x="202" y="256" text-anchor="middle" fill="#3a3a3a" font-size="19" font-weight="600">Jun</text>
+  <text x="467" y="256" text-anchor="middle" fill="#3a3a3a" font-size="19" font-weight="600">Jul</text>
+  <text x="732" y="256" text-anchor="middle" fill="#3a3a3a" font-size="19" font-weight="600">Aug</text>
+  <text x="997" y="256" text-anchor="middle" fill="#3a3a3a" font-size="19" font-weight="600">Sep</text>
+  <text x="997" y="274" text-anchor="middle" fill="#325a6f" font-size="13">to 19 Sep</text>
 
   <!-- milestone track -->
-  <line x1="130" y1="350" x2="1070" y2="350" stroke="#c9d9dc" stroke-width="4" stroke-linecap="round"/>
+  <line x1="130" y1="350" x2="1070" y2="350" stroke="#cfe4ee" stroke-width="4" stroke-linecap="round"/>
 
-  <g fill="#0f7c90" font-size="17" font-weight="700" letter-spacing="1.1" text-anchor="middle">
+  <g fill="#09749b" font-size="17" font-weight="700" letter-spacing="1.1" text-anchor="middle">
     <text x="130"  y="322">25 JUN</text>
     <text x="365"  y="322">JUL – AUG</text>
     <text x="600"  y="322">3 SEP</text>
@@ -42,15 +42,15 @@
     <text x="1070" y="322">17–19 SEP</text>
   </g>
 
-  <g fill="#ef8354" stroke="#f8fbfb" stroke-width="4">
-    <circle cx="130"  cy="350" r="11"/>
-    <circle cx="365"  cy="350" r="11"/>
-    <circle cx="600"  cy="350" r="11"/>
-    <circle cx="835"  cy="350" r="11"/>
-    <circle cx="1070" cy="350" r="11"/>
+  <g stroke="#ffffff" stroke-width="4">
+    <circle cx="130"  cy="350" r="11" fill="#0c9ed5"/>
+    <circle cx="365"  cy="350" r="11" fill="#0c9ed5"/>
+    <circle cx="600"  cy="350" r="11" fill="#0c9ed5"/>
+    <circle cx="835"  cy="350" r="11" fill="#0c9ed5"/>
+    <circle cx="1070" cy="350" r="11" fill="#ffc82b"/>
   </g>
 
-  <g fill="#102a43" font-size="17" text-anchor="middle">
+  <g fill="#1b3b51" font-size="17" text-anchor="middle">
     <text x="130"  y="386">Research process<tspan x="130" dy="22">bootstrapped (PR #1)</tspan></text>
     <text x="365"  y="386">40 pull requests<tspan x="365" dy="22">merged</tspan></text>
     <text x="600"  y="386">Workshop prioritizes<tspan x="600" dy="22">sandboxing</tspan></text>

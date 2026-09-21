@@ -13,14 +13,29 @@ const required = [
 ];
 
 if (slides.length !== 10) throw new Error(`expected 10 slides, found ${slides.length}`);
+
 for (const text of required) {
   if (!source.includes(text)) throw new Error(`missing required text: ${text}`);
 }
-if ((source.match(/<!--/g) ?? []).length !== 11) {
-  throw new Error('expected speaker notes on all 10 slides plus the title directive');
+
+// Every slide needs a speaker note: an HTML comment that is not a Marp directive.
+const withoutNotes = slides
+  .map((slide, index) => ({ slide, index }))
+  .filter(({ slide }) => !/<!--(?!\s*_)/.test(slide))
+  .map(({ index }) => index + 1);
+if (withoutNotes.length > 0) {
+  throw new Error(`slides missing speaker notes: ${withoutNotes.join(', ')}`);
 }
+
 if (/rabobank|TODO|TBD|FIXME/i.test(source)) {
   throw new Error('forbidden branding or unresolved placeholder found');
 }
 
-console.log(`validated ${slides.length} slides and ${required.length} required claims`);
+// The theme must stay on the cloudfoundry.org palette, not Pivotal teal.
+const theme = await readFile(new URL('../theme/cloud-foundry.css', import.meta.url), 'utf8');
+for (const banned of ['#18a999', '#0f7c90', '#ef8354']) {
+  if (theme.includes(banned)) throw new Error(`off-brand colour in theme: ${banned}`);
+}
+if (!theme.includes('#0c9ed5')) throw new Error('theme is missing the Cloud Foundry primary blue');
+
+console.log(`validated ${slides.length} slides, ${required.length} required claims, speaker notes and palette`);
