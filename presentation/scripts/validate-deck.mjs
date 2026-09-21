@@ -10,10 +10,10 @@ const required = [
   '20 open',
   'AAIF project proposal #26',
   'not an adopted architecture',
-  'Demo placeholder',
+  'one implementation under discussion',
 ];
 
-if (slides.length !== 10) throw new Error(`expected 10 slides, found ${slides.length}`);
+if (slides.length !== 11) throw new Error(`expected 11 slides, found ${slides.length}`);
 
 for (const text of required) {
   if (!source.includes(text)) throw new Error(`missing required text: ${text}`);

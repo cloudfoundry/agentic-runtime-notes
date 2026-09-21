@@ -214,25 +214,49 @@ not presented here as an adopted AAIF project or as our chosen architecture.
 
 ---
 
-<div class="eyebrow">A conversation with the POC leads</div>
+<div class="eyebrow">A possible developer experience</div>
 
-# Demo placeholder
+# Iterating on an app, with agents
 
 ![w:840](assets/cf-herdr-architecture.svg)
 
 <div class="source">CF Herdr POC architecture — one implementation under discussion, not an adopted architecture.</div>
 
 <!--
-This slide is intentionally a placeholder. We will choose the scenario with
-the other leads. //
+This is one picture of how an app developer might work with agents
+a year from now. //
 
-This is the CF Herdr POC. A manager app reconciles sandbox lifecycle through
-the CF API. Each agent runs in its own sandbox app, where Herdr owns the
-process tree: the OpenCode agent and shell sessions beside it. The developer
-reaches it through Gorouter, or through the SSH proxy with cf ssh. //
+You are iterating on an app. You start an agent, and it gets its own
+sandbox app right next to yours. Herdr owns the process tree inside it:
+the agent, and the shells it works in. //
 
-It is one implementation, shown to make the boundary tangible. It is not a
-working group decision, and the demo scenario itself is still open.
+You steer it from the browser through Gorouter, or you drop into it
+with cf ssh through the SSH proxy. It edits code, runs tests, and pushes
+the next revision through the same CF API you already use. //
+
+The manager app reconciles the sandbox lifecycle. Everything here is an
+ordinary Cloud Foundry application. //
+
+This is the CF Herdr POC. It is one implementation, not a working group
+decision, and not an adopted architecture.
+-->
+
+---
+
+<div class="eyebrow">Live</div>
+
+# Demo
+
+<p class="subtitle">Watch two things: where the agent actually runs, and what it is allowed to touch.</p>
+
+<!--
+Switch to the demo here. //
+
+Keep pointing at the two things that matter for this working group:
+where the agent process actually runs, and what that process is allowed
+to reach. That is the boundary we are trying to give the platform. //
+
+If the demo fails, the previous slide is enough to carry the point.
 -->
 
 ---
