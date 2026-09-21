@@ -85,48 +85,68 @@ claim that the platform has seven final feature areas.
 
 # What is an agentic workload?
 
-<div class="loop">
-  <div class="loop-node">Goal</div><div class="loop-arrow">→</div>
-  <div class="loop-node">Agent</div><div class="loop-arrow">→</div>
-  <div class="loop-node highlight">LLM</div><div class="loop-arrow">→</div>
-  <div class="loop-node highlight">Tool</div><div class="loop-arrow">→</div>
-  <div class="loop-node">Result</div>
-</div>
+![w:960](assets/agent-loop.svg)
 
-<p class="callout">An app answers a request. An agent can <strong>choose an action, observe the result, and continue the loop</strong>.</p>
+<p class="callout">Every arrow here is a network call to a bound service — <em>except the bottom right one</em>.</p>
 
 <!--
-An agent is not just an immature application. The useful distinction is the
-loop: a goal, an LLM helping choose the next action, a tool, an observed result,
-and another turn. That loop makes the runtime boundary more important.
+Mechanically an agent is not exotic. //
+
+There is one process running a loop.
+It builds a prompt, and sends it to a model.
+The model is reached over the network, with credentials.
+That is a service binding. //
+
+The model cannot do anything by itself.
+It answers with text that says: please call this tool.
+The agent loop is what actually executes that call,
+and feeds the result back into the next prompt. //
+
+Many of those tools are remote too — MCP over HTTP, or a plain API.
+Also a binding. //
+
+So look at the picture. Model: binding. Remote tools: binding.
+Loop: a process. //
+
+Everything is a network call to a bound service.
+Except the box on the bottom right.
 -->
 
 ---
 
-<div class="eyebrow">The awkward tool</div>
+<div class="eyebrow">The bridge</div>
 
-# Some tools are not APIs
+# Agents are 12-factor apps
 
-<div class="boundary">
-  <div class="boundary-remote">
-    <h3>Remote service</h3>
-    <p>Call an API. Send credentials. Receive a result. A familiar cloud-native boundary.</p>
-    <code>agent → service → result</code>
-  </div>
-  <div class="boundary-local">
-    <h3>Local execution</h3>
-    <p>Run commands, edit files, execute generated code, or drive a browser.</p>
-    <code>agent → process + files + network</code>
-  </div>
-</div>
+| Twelve-factor concern | In an agent | On Cloud Foundry today |
+| --- | --- | --- |
+| Backing service | the LLM endpoint | service binding |
+| Backing service | remote MCP tools | binding or route |
+| Config | model, keys, limits | env and `VCAP_SERVICES` |
+| Processes | the agent loop | an ordinary app process |
+| Disposability | resume or retry a run | restart, scale, health checks |
+| Execution | local tools: shell, files, code | no primitive yet |
 
-<p class="subtitle">Many agent tools grew up close to a developer's desktop. That is useful, but it is not yet a managed runtime boundary.</p>
+<p class="subtitle">Five of these we already know how to run. The sixth is why the group started with sandboxing.</p>
 
 <!--
-Tools such as a database API are easy to make remote. Other tools need an
-execution environment: a shell, files, generated code, or browser automation.
-Those patterns often started as local desktop tools. The challenge is not that
-agents are simply immature; it is that local execution carries a lot of state.
+So let's be concrete about that claim. //
+
+Take the twelve-factor checklist we already apply to every app on this platform.
+
+The model endpoint is a backing service. We bind to it.
+Remote MCP tools are backing services. We bind to those too.
+Model choice, keys and limits are config, from the environment.
+The agent loop is just a process.
+And a run that can be retried or resumed is ordinary disposability. //
+
+Five out of six are solved problems. We have been doing them for a decade. //
+
+The last row is the one with nothing in the right-hand column.
+Local execution. Shell, files, generated code.
+There is no platform primitive for it. //
+
+That single gap is the whole reason sandboxing came first.
 -->
 
 ---

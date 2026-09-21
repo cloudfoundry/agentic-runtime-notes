@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" width="1200" height="500" font-family="'Avenir Next','Segoe UI',Helvetica,Arial,sans-serif">
+  <defs>
+    <marker id="aNavy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#1b3b51"/>
+    </marker>
+  </defs>
+
+  <!-- LLM: a bound service -->
+  <rect x="390" y="18" width="420" height="88" rx="10" fill="#e9f6fb" stroke="#0c9ed5" stroke-width="2.5"/>
+  <text x="600" y="53" text-anchor="middle" fill="#1b3b51" font-size="27" font-weight="700">LLM</text>
+  <text x="600" y="81" text-anchor="middle" fill="#325a6f" font-size="15">a bound service · credentials from the platform</text>
+
+  <!-- agent <-> LLM -->
+  <line x1="505" y1="188" x2="505" y2="112" stroke="#1b3b51" stroke-width="2.5" marker-end="url(#aNavy)"/>
+  <line x1="695" y1="112" x2="695" y2="188" stroke="#1b3b51" stroke-width="2.5" marker-end="url(#aNavy)"/>
+  <text x="493" y="155" text-anchor="end"   fill="#325a6f" font-size="15">prompt + tool definitions</text>
+  <text x="707" y="155" text-anchor="start" fill="#325a6f" font-size="15">response asks for a tool call</text>
+
+  <!-- the loop itself -->
+  <rect x="330" y="192" width="540" height="112" rx="12" fill="#ffffff" stroke="#1b3b51" stroke-width="3"/>
+  <text x="600" y="237" text-anchor="middle" fill="#1b3b51" font-size="30" font-weight="700">Agent loop</text>
+  <text x="600" y="268" text-anchor="middle" fill="#325a6f" font-size="16">build prompt → read response → execute tool → repeat</text>
+  <text x="600" y="292" text-anchor="middle" fill="#0c9ed5" font-size="14" font-weight="600">one ordinary process on Cloud Foundry</text>
+
+  <!-- agent <-> tools -->
+  <line x1="400" y1="308" x2="400" y2="366" stroke="#1b3b51" stroke-width="2.5" marker-start="url(#aNavy)" marker-end="url(#aNavy)"/>
+  <line x1="800" y1="308" x2="800" y2="366" stroke="#1b3b51" stroke-width="2.5" marker-start="url(#aNavy)" marker-end="url(#aNavy)"/>
+
+  <!-- remote tools -->
+  <rect x="210" y="370" width="380" height="118" rx="10" fill="#e9f6fb" stroke="#0c9ed5" stroke-width="2.5"/>
+  <text x="400" y="405" text-anchor="middle" fill="#09749b" font-size="23" font-weight="700">Remote tools</text>
+  <text x="400" y="433" text-anchor="middle" fill="#3a3a3a" font-size="16">MCP over HTTP · service APIs</text>
+  <text x="400" y="464" text-anchor="middle" fill="#0c9ed5" font-size="15" font-weight="600">just another bound service</text>
+
+  <!-- local tools -->
+  <rect x="610" y="370" width="380" height="118" rx="10" fill="#fff7e0" stroke="#ffc82b" stroke-width="2.5"/>
+  <text x="800" y="405" text-anchor="middle" fill="#806614" font-size="23" font-weight="700">Local tools</text>
+  <text x="800" y="433" text-anchor="middle" fill="#3a3a3a" font-size="16">shell · files · generated code · browser</text>
+  <text x="800" y="464" text-anchor="middle" fill="#806614" font-size="15" font-weight="600">no platform primitive yet</text>
+</svg>
