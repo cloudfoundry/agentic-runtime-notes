@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="50 112 1420 292" width="1420" height="292" role="img" aria-labelledby="journey-title journey-desc">
+  <title id="journey-title">CF Herdr developer journey</title>
+  <desc id="journey-desc">Four steps a developer takes when running an agent on Cloud Foundry: choose the work, start an agent, steer from anywhere, and ship through CF.</desc>
+
+  <style>
+    svg { font-family: 'Avenir Next','Segoe UI',Helvetica,Arial,sans-serif; }
+    .section-label { fill:#09749b; font-size:13px; font-weight:800; letter-spacing:.14em; }
+    .journey-line  { fill:none; stroke:#cfe4ee; stroke-width:4; }
+    .journey-step circle { fill:#e9f6fb; stroke:#0c9ed5; stroke-width:4; }
+    .journey-step > text:first-of-type { fill:#09749b; font-size:31px; font-weight:850; }
+    .node-title { fill:#1b3b51; font-size:21px; font-weight:750; }
+    .node-copy  { fill:#325a6f; font-size:16px; }
+  </style>
+
+  <text class="section-label" x="80" y="150">DEVELOPER JOURNEY</text>
+  <path class="journey-line" d="M240 255H1360"/>
+
+  <g class="journey-step" transform="translate(220 255)">
+    <circle r="52"/>
+    <text text-anchor="middle" y="9">1</text>
+    <text class="node-title" text-anchor="middle" y="92">Choose the work</text>
+    <text class="node-copy" text-anchor="middle" y="120">App + repository</text>
+  </g>
+  <g class="journey-step" transform="translate(600 255)">
+    <circle r="52"/>
+    <text text-anchor="middle" y="9">2</text>
+    <text class="node-title" text-anchor="middle" y="92">Start an agent</text>
+    <text class="node-copy" text-anchor="middle" y="120">Isolated workspace</text>
+  </g>
+  <g class="journey-step" transform="translate(980 255)">
+    <circle r="52"/>
+    <text text-anchor="middle" y="9">3</text>
+    <text class="node-title" text-anchor="middle" y="92">Steer from anywhere</text>
+    <text class="node-copy" text-anchor="middle" y="120">Observe · prompt · review</text>
+  </g>
+  <g class="journey-step" transform="translate(1360 255)">
+    <circle r="52"/>
+    <text text-anchor="middle" y="9">4</text>
+    <text class="node-title" text-anchor="middle" y="92">Ship through CF</text>
+    <text class="node-copy" text-anchor="middle" y="120">Test + cf push</text>
+  </g>
+</svg>

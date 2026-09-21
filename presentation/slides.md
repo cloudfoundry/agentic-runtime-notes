@@ -218,16 +218,24 @@ not presented here as an adopted AAIF project or as our chosen architecture.
 
 # Demo placeholder
 
-<div class="demo-placeholder">
-  <div><strong>Sandboxed agent execution</strong><span>Final scenario to be selected with the POC leads.</span></div>
-</div>
+![w:1000](assets/developer-journey.svg)
+
+<div class="source">Developer journey from the CF Herdr POC — one implementation under discussion, not an adopted architecture.</div>
 
 <p class="subtitle">The point of the demo: make the execution boundary tangible.</p>
 
 <!--
 This slide is intentionally a placeholder. We will choose the scenario with
-the other leads. Whatever we show should make the boundary tangible, not imply
-that the working group has already settled the architecture.
+the other leads. //
+
+What the demo should show is the developer experience, not an architecture.
+Choose the work. Start an agent in its own workspace.
+Steer it from anywhere — observe, prompt, review.
+Then ship the result through Cloud Foundry like any other change. //
+
+This journey is taken from the CF Herdr POC. It is one implementation,
+shown to make the boundary tangible. It is not a working group decision,
+and the scenario itself is still open.
 -->
 
 ---
