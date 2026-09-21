@@ -106,14 +106,7 @@ section.compact h2 { margin-bottom: .2em; }
 .metric b { color: var(--navy); display: block; font-size: 1.65em; }
 .metric span { color: var(--muted); font-size: .65em; }
 
-.timeline { margin-top: 1.1em; position: relative; }
-.timeline-track { background: var(--line); height: 5px; left: 3%; position: absolute; right: 3%; top: 34px; }
-.timeline-events { display: grid; gap: 10px; grid-template-columns: repeat(5, 1fr); position: relative; }
-.timeline-event { text-align: center; }
-.timeline-dot { background: var(--coral); border: 5px solid var(--paper); border-radius: 50%; box-shadow: 0 0 0 2px var(--coral); height: 18px; margin: 20px auto 18px; position: relative; width: 18px; }
-.timeline-date { color: var(--blue); font-size: .67em; font-weight: 700; }
-.timeline-label { color: var(--navy); font-size: .68em; line-height: 1.15; }
-.activity-ribbon { background: var(--mist); border-radius: 6px; color: var(--blue); font-size: .66em; margin-top: 1.2em; padding: .65em 1em; text-align: center; }
+.timeline { margin-top: 1.1em; }
 
 .loop { align-items: center; display: flex; gap: 10px; justify-content: center; margin: 1.1em 0; }
 .loop-node { background: white; border: 3px solid var(--teal); border-radius: 12px; color: var(--navy); min-width: 125px; padding: 20px 12px; text-align: center; }

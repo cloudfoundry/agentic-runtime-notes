@@ -43,19 +43,9 @@ ecosystem, and let the themes emerge from what people contribute.
 
 # Research to POCs
 
-<div class="timeline">
-  <div class="timeline-track"></div>
-  <div class="timeline-events">
-    <div class="timeline-event"><div class="timeline-date">25 JUN</div><div class="timeline-dot"></div><div class="timeline-label">Process bootstrapped<br>PR #1</div></div>
-    <div class="timeline-event"><div class="timeline-date">JUL–AUG</div><div class="timeline-dot"></div><div class="timeline-label">Research accelerates<br>40 merged PRs</div></div>
-    <div class="timeline-event"><div class="timeline-date">03 SEP</div><div class="timeline-dot"></div><div class="timeline-label">Workshop prioritizes<br>sandboxing</div></div>
-    <div class="timeline-event"><div class="timeline-date">12–13 SEP</div><div class="timeline-dot"></div><div class="timeline-label">AgntCON / MCPcon<br>Amsterdam</div></div>
-    <div class="timeline-event"><div class="timeline-date">17–19 SEP</div><div class="timeline-dot"></div><div class="timeline-label">Focused research<br>and POC preparation</div></div>
-  </div>
-</div>
+![w:1060](assets/timeline.svg)
 
-<div class="activity-ribbon">Repository snapshot · 63 PRs total · 43 merged · 20 open · 3 open issues</div>
-<div class="source">Sources: github.com/cloudfoundry/agentic-runtime-notes · workshops/02-09-2026-workshop-minutes.md</div>
+<div class="source">Repository snapshot, 20 Sep 2026 · 63 PRs total · 43 merged · 20 open · 3 open issues · github.com/cloudfoundry/agentic-runtime-notes</div>
 
 <!--
 The shape is the story. One pull request in June became eleven in July,
