@@ -265,19 +265,28 @@ If the demo fails, the previous slide is enough to carry the point.
 
 # Bring a question. Test a boundary.
 
-<ul>
-  <li>Help test and shape the sandboxing POCs.</li>
-  <li>Add research or an idea for the next clusters.</li>
-  <li>Connect the work across Cloud Foundry, MCP, and AAIF communities.</li>
-</ul>
-
-<blockquote>Build the concrete thing early. Keep the answer open long enough for the community to improve it.</blockquote>
-
-<p><strong>cloudfoundry.github.io/agentic-runtime-notes</strong></p>
+<div class="closing-action">
+  <div>
+    <ul>
+      <li>Help test and shape the sandboxing POCs.</li>
+      <li>Add research or an idea for the next clusters.</li>
+      <li>Connect the work across Cloud Foundry, MCP, and AAIF communities.</li>
+    </ul>
+    <blockquote>Build the concrete thing early. Keep the answer open long enough for the community to improve it.</blockquote>
+    <p><strong>https://cloudfoundry.github.io/agentic-runtime-notes/</strong></p>
+  </div>
+  <div class="closing-qr">
+    <img src="assets/agentic-runtime-notes-qr.svg" width="190" alt="QR code for https://cloudfoundry.github.io/agentic-runtime-notes/">
+    <div class="eyebrow">Scan to join the work</div>
+  </div>
+</div>
 
 <!--
 The ask is participation: help us test the sandboxing POCs, add research for
 the next clusters, and continue the cross-foundation conversation. We have
 enough momentum to make the question concrete, but not enough certainty to
 pretend the answer is settled.
+
+The QR code goes to the notes site, where attendees can follow and contribute
+after the session.
 -->

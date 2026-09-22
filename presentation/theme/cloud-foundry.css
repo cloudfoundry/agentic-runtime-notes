@@ -152,3 +152,9 @@ section.compact h2 { margin-bottom: .2em; }
 .demo-placeholder span { color: #d4e8f2; display: block; font-size: .75em; margin-top: .5em; }
 
 .callout { background: var(--mist); border-radius: 8px; color: var(--navy-2); padding: 18px 22px; }
+
+.closing-action { align-items: center; display: grid; gap: 44px; grid-template-columns: 1fr 210px; }
+.closing-action ul { margin-top: 0; }
+.closing-qr { align-items: center; display: flex; flex-direction: column; }
+.closing-qr img { background: #ffffff; border: 1px solid var(--line); margin: 0; padding: 10px; }
+.closing-qr .eyebrow { font-size: .44em; margin-top: 10px; text-align: center; }
