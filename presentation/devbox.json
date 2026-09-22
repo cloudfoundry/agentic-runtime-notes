@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.17.2/.schema/devbox.schema.json",
+  "packages": {
+    "nodejs": "latest",
+    "marp-cli": "latest",
+    "poppler_utils": "latest",
+    "chromium": {
+      "version": "latest",
+      "excluded_platforms": ["aarch64-darwin", "x86_64-darwin"]
+    }
+  },
+  "shell": {
+    "init_hook": [
+      "echo 'Agentic Runtime Summit deck environment ready.'"
+    ]
+  }
+}
