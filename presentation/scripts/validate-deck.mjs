@@ -11,6 +11,7 @@ const required = [
   'AAIF project proposal #26',
   'not an adopted architecture',
   'one implementation under discussion',
+  'https://cloudfoundry.github.io/agentic-runtime-notes/',
 ];
 
 if (slides.length !== 11) throw new Error(`expected 11 slides, found ${slides.length}`);
@@ -41,7 +42,10 @@ if (!theme.includes('#0c9ed5')) throw new Error('theme is missing the Cloud Foun
 
 // Every referenced image must exist next to the deck, and must also be copied
 // into build/ — Marp resolves image URLs relative to the *output* file.
-const images = [...source.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map((m) => m[1]);
+const images = [
+  ...source.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g),
+  ...source.matchAll(/<img\b[^>]*\bsrc="([^"]+)"[^>]*>/g),
+].map((m) => m[1]);
 if (images.length === 0) throw new Error('expected at least one image in the deck');
 for (const image of images) {
   for (const base of ['..', '../build']) {
