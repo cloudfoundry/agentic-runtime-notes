@@ -1,0 +1,15 @@
+{
+  "name": "agentic-runtime-summit-deck",
+  "private": true,
+  "scripts": {
+    "test": "node scripts/validate-deck.mjs",
+    "build-dir": "mkdir -p build/assets && cp -R assets/. build/assets/",
+    "slides": "npm run build-dir && marp --theme-set theme --html -w -p -o build/preview.html slides.md",
+    "slides:watch": "npm run build-dir && marp --theme-set theme --html -w -o build/preview.html slides.md",
+    "slides:pdf": "npm run build-dir && marp --theme-set theme --pdf --allow-local-files -o build/agentic-runtime-summit.pdf slides.md",
+    "slides:html": "npm run build-dir && marp --theme-set theme --html --allow-local-files -o build/agentic-runtime-summit.html slides.md"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "^4.2.3"
+  }
+}
