@@ -1,7 +1,7 @@
 ---
 title: "SCITT and Agent Action Capsule: Verifiable Agent-Action Provenance"
 author: Ruben Koster (@rkoster)
-date: 2026-09-17
+date: 2026-11-03
 tags: [observability-governance, authorization, identity, ecosystem-survey]
 cf_areas: [uaa, capi, diego, loggregator]
 status: draft
@@ -19,107 +19,120 @@ ratings:
     value: 73
     note: "CF can prototype provenance at gateways and policy decisions, but identity mapping, privacy, retention, and transparency-service operations remain design work."
 sources:
-  - https://github.com/ietf-scitt
-  - https://datatracker.ietf.org/wg/scitt/about/
+  - https://datatracker.ietf.org/doc/draft-mih-scitt-agent-action-capsule/
+  - https://www.ietf.org/archive/id/draft-mih-scitt-agent-action-capsule-05.html
   - https://www.rfc-editor.org/rfc/rfc9943
   - https://www.rfc-editor.org/rfc/rfc9942
-  - https://github.com/action-state-group/agent-action-capsule
-  - https://raw.githubusercontent.com/action-state-group/agent-action-capsule/main/README.md
-  - https://datatracker.ietf.org/doc/draft-mih-scitt-agent-action-capsule/
-  - https://github.com/action-state-group/agent-action-capsule/blob/main/spec/REGISTRY.md
 ---
 
 ## Summary
 
-SCITT, Supply Chain Integrity, Transparency, and Trust, defines an architecture for registering
-statements and obtaining verifiable evidence about their inclusion and history in a
-transparency service. Agent Action Capsule is an individual Internet-Draft profile that applies
-that model to recording what an AI agent did, including authorization verdicts and refusals.
-Together they suggest a way for Cloud Foundry to produce independently verifiable provenance
-for agent actions, provided that workload identity, policy context, privacy, and receipt
-handling are designed explicitly.
+Agent Action Capsule is a proposed SCITT statement profile for recording what an AI agent
+actually did, including refusals, errors, timeouts, and the evidence supporting a reported
+effect. This note examines revision `-05`, published 26 September 2026: an individual
+Internet-Draft and work in progress, not an adopted SCITT Working Group document or an RFC.
+Its separation of content identity, producer authentication, and optional transparency receipts
+could help Cloud Foundry produce independently verifiable action records, with explicit limits
+on what those records establish about runtime honesty and external outcomes.
 
 ## Key findings
 
-- **SCITT supplies a transparency boundary, not an agent runtime.** The initiative addresses
-  end-to-end integrity and trust for statements and artifacts. A transparency service can
-  register signed statements and provide receipts that allow later verification of inclusion
-  and history without requiring every verifier to trust the original application database.
-- **Agent Action Capsule is a statement profile.** It defines a digest-committed JSON record of
-  an agent action with signer-independent identity. The profile uses RFC 8785 JSON Canonicalization
-  Scheme and a `capsule_id` derived from the capsule content; changing the signature does not
-  change the capsule identity.
-- **Producer authentication is separate from capsule identity.** One or more independent
-  COSE_Sign1 Producer Envelopes can authenticate the raw capsule ID. This allows verifiers to
-  reason separately about what was recorded and which producer attested to it.
-- **Verdicts include refusals.** The profile records a capsule for every verdict, including a
-  blocked or denied action. A refusal therefore becomes affirmative evidence that a policy gate
-  evaluated and rejected an action rather than an absence of evidence.
-- **Verification has layers.** Capsule Class-1 verification can recompute the content digest
-  from capsule bytes without keys, network access, or a clock. Per-envelope cryptographic
-  verification and caller-defined signer authorization are separate steps, while optional SCITT
-  receipt verification proves transparency-service registration. Merkle data structures belong
-  behind the SCITT registration boundary rather than inside capsule construction.
-- **The standards status must be stated precisely.** The project README identifies SCITT
-  architecture and COSE Receipts as RFC 9943 and RFC 9942. Agent Action Capsule is explicitly
-  described as an individual IETF Internet-Draft, not an adopted SCITT Working Group document
-  and not an RFC.
-- **A capsule can connect authorization to outcome.** A useful action record can include the
-  agent subject, requested action, resource, policy decision, inputs or evidence references,
-  resulting outcome, and links in a chain of related actions. The exact profile vocabulary and
-  registry status remain subject to the draft.
-- **CF identity needs an integration boundary.** A proposed CF design would have a gateway or
-  policy service verify an instance identity certificate, map the verified workload to a stable
-  subject, and include that identity in the capsule. Neither SCITT nor Agent Action Capsule
-  should be assumed to validate CF certificates or know CAPI/Diego identity semantics.
-- **Platform events can enrich provenance.** CAPI and Diego events could correlate application,
-  process, space, binding, deployment, and instance lifecycle with an agent action. Loggregator
-  could provide operational correlation, while the capsule/transparency path supplies a durable
-  verification record. These systems would need clear ownership to avoid conflicting event IDs
-  and incomplete provenance.
-- **Privacy is a first-class constraint.** Agent actions may contain prompts, tool arguments,
-  credentials, personal data, or sensitive results. A capsule should prefer digests and typed
-  references over raw secrets, define redaction and retention policy, and make verifier access
-  tenant-aware.
+- **The profile records “did,” rather than granting “may.”** Authorization records precede
+  execution; capsules capture the resulting disposition and evaluated deterministic constraints.
+  A conforming producer records every verdict, including blocked, denied, errored, and timed-out
+  actions. Refusals become positive evidence of a gate firing rather than disappearing from a
+  success-only audit trail ([§1][draft-intro], [§5.5.3][draft-every-verdict]).
+- **Content identity survives signing-key rotation.** The `capsule_id` is SHA-256 over RFC 8785
+  JSON Canonicalization Scheme bytes, excluding the ID itself. Separate COSE_Sign1 Producer
+  Envelopes authenticate the raw capsule ID, so a new signature need not change the record's
+  identity. An authenticated key still needs an external authorization rule; signature validity
+  alone does not establish authority to speak for a workload ([§3][draft-identity],
+  [§5.1][draft-parties],
+  [§13][draft-security]).
+- **Dispatch and confirmation are distinct.** A confirmed effect requires a well-formed
+  `response_digest`. Verdict reason and effect mode are independent: a timeout before dispatch
+  has `not_applicable` effect mode, while one after dispatch has `dispatched_unconfirmed`.
+  This preserves uncertainty about side effects instead of treating every timeout as a safe
+  failure ([§5.3][draft-effect], [§5.5.2][draft-verdict]).
+- **Human handoff is not human approval or execution.** A `hitl_dispatched` verdict is
+  non-executing; an executing closure is an `executed` capsule linked with `supersedes` to the
+  deferral. A non-executing closure uses `resolved`. These distinctions keep a review request
+  from being mistaken for a completed action ([§5.5.2–§5.5.4][draft-verdict]).
+- **Payload verification has two classes.** Class 1 checks structure, digest identity,
+  registry vocabularies, effect/attestation validity, chain semantics, and assurance claims
+  without a constraint manifest. Class 2 additionally checks evidence schemas and thresholds
+  against the producer's manifest and private evidence. Producer Envelope and receipt results
+  remain independent of payload Class 1 ([§6–§8.2][draft-verification]).
+- **Transparency is a separate, optional layer.** SCITT architecture ([RFC 9943][scitt]) and
+  COSE Receipts ([RFC 9942][receipts]) are Proposed Standards. The capsule profile separately
+  registers its ID through a SCITT registration statement; the Producer Envelope is not that
+  registration statement. Receipts provide evidence of registration, while capsule verification
+  supplies the agent-specific checks ([§3.3][draft-registration]).
+- **Tamper evidence is not runtime honesty.** A `confirmed` effect proves that the producer
+  bound an observed response, not that the external world reached the claimed state. Spoofed
+  upstream responses and dishonest producers remain trust concerns. Likewise, a receipt for a
+  submitted record cannot establish that every real-world action was recorded
+  ([§13][draft-security]).
+- **Privacy rules are stricter than “hash sensitive fields.”** The draft separates clear-safe
+  opaque correlation handles, digest-only payload content retained under deployment controls,
+  and data that never enters a capsule. End-user identifiers and credentials must be excluded
+  both in clear and as digests; low-entropy identifiers are recoverable by dictionary attack.
+  Pairwise or encrypted correlation identifiers are recommended where subject correlation is
+  genuinely required ([§14.1][draft-privacy]).
+- **Vocabulary remains provisional.** The draft proposes registries, but names the source
+  repository's `REGISTRY.md` as the interim registry of record until RFC publication. A prototype
+  should pin the draft and registry version rather than assume stable IANA assignments
+  ([§12.1][draft-iana]).
 
 ## CF relevance
 
-Cloud Foundry could emit Agent Action Capsules at policy gateways, agent runtimes, tool brokers,
-or platform API boundaries. For example, a gateway could verify a CF instance identity
-certificate, authenticate the workload as `agent_instance:<id>`, evaluate whether it may invoke
-a tool or mutate a resource, and record an allow or refusal capsule containing the subject,
-resource, policy reference, and outcome. A transparency service could then provide a receipt for
-later audit or independent verification.
+A possible CF integration is a tool gateway that authenticates a workload using its instance
+identity certificate, evaluates policy, and records the disposition together with effect evidence.
+A denied request would produce a refusal capsule; a dispatched request that times out would remain
+unconfirmed; an observed response could be bound by digest. This is an integration hypothesis:
+the draft defines neither CF certificate validation nor CAPI/Diego identity mapping.
 
-This would complement rather than replace Loggregator. Loggregator is useful for operational
-streaming, correlation, and alerting; a SCITT-backed record would be designed for durable,
-cryptographically verifiable provenance. CAPI and Diego events could supply lifecycle context,
-but the system would need to define which component is authoritative for the identity and policy
-facts included in a capsule. Service bindings, tool gateways, and agent controllers could all
-be capsule producers, but their signatures and authorization scopes must be distinguishable.
+The gateway would need its own producer-key authorization policy and a privacy-reviewed mapping
+from workload context to capsule fields. UAA user IDs, bearer tokens, and session identifiers
+should not be copied or hashed into capsules. CAPI/Diego lifecycle events and Loggregator traces
+could be joined through admitted opaque handles, with sensitive content and identity mappings
+kept in separately controlled stores. Operational logs would remain useful alongside durable,
+verifiable action records.
 
-The design also changes incident-response and compliance workflows. A denied tool invocation
-could be shown as an explicit policy decision, while a successful action could be checked against
-the agent identity, authorization state, and transparency receipt. This is valuable only if
-certificate rotation, revocation, signer authorization, clock/context claims, privacy, and
-retention are handled consistently. CF should avoid recording raw prompts or credentials merely
-to obtain auditability.
+A bounded prototype could exercise denial, confirmed response, post-dispatch timeout, and human
+handoff, checking that a verifier distinguishes payload validity, producer authenticity, signer
+authority, and transparency receipt status. Useful measurements would include capture overhead,
+crash/retry gaps, and receipt backlog recovery. This could inform governance and incident response
+without implying that capsules provide authorization enforcement, sandboxing, or proof of an
+external business outcome.
 
 ## Open questions
 
-- What stable subject should a CF capsule use: app, process instance, instance identity
-  certificate, agent deployment, or a composite identity?
-- Which component verifies instance identity certificates, and how are rotation, revocation,
-  process replacement, and delegated authority represented in the capsule chain?
-- Which authorization policy inputs and evidence references are necessary to make an allow or
-  refusal independently meaningful without storing sensitive request content?
-- Should every tool and platform API action produce a capsule, or should policy gateways emit
-  capsules only for sensitive, delegated, or cross-tenant operations?
-- How should a CF foundation operate or consume a transparency service, and what receipt
-  availability and recovery guarantees are required?
-- How should signer authorization work when multiple gateways, runtimes, and platform services
-  can produce statements for the same agent?
-- How should capsule privacy, retention, deletion requests, tenant isolation, and verifier
-  access interact with immutable transparency records?
-- What is the right relationship between capsule chains, Loggregator correlation IDs, CAPI/Diego
-  event IDs, and distributed traces?
+- Which component can reliably observe both policy decisions and tool effects, including refusals
+  and crashes, and how would CF detect actions bypassing that capture boundary?
+- How should app, task, process, and instance identities map to producer authority and opaque
+  correlation handles without admitting end-user identity or credentials?
+- How are certificate/key rotation, revocation, delegated authority, and configuration epochs
+  related across producers and verifiers?
+- Who retains constraint manifests and detached evidence, and which tenant-aware access controls
+  let a later auditor perform Class 2 verification after an application has disappeared?
+- How should retries and human handoffs form capsule chains without implying exactly-once effects
+  or equating an observed response with independently confirmed external state?
+- Should a foundation operate a transparency service or consume one, and what happens to action
+  processing when registration is unavailable or receipt delivery is delayed?
+- How do retention/deletion requirements for detached evidence and identity mappings interact with
+  immutable digest commitments and the ability to verify historical records?
+
+[draft-intro]: https://www.ietf.org/archive/id/draft-mih-scitt-agent-action-capsule-05.html#section-1
+[draft-identity]: https://www.ietf.org/archive/id/draft-mih-scitt-agent-action-capsule-05.html#section-3
+[draft-registration]: https://www.ietf.org/archive/id/draft-mih-scitt-agent-action-capsule-05.html#section-3.3
+[draft-parties]: https://www.ietf.org/archive/id/draft-mih-scitt-agent-action-capsule-05.html#section-5.1
+[draft-effect]: https://www.ietf.org/archive/id/draft-mih-scitt-agent-action-capsule-05.html#section-5.3
+[draft-verdict]: https://www.ietf.org/archive/id/draft-mih-scitt-agent-action-capsule-05.html#section-5.5.2
+[draft-every-verdict]: https://www.ietf.org/archive/id/draft-mih-scitt-agent-action-capsule-05.html#section-5.5.3
+[draft-verification]: https://www.ietf.org/archive/id/draft-mih-scitt-agent-action-capsule-05.html#section-6
+[draft-iana]: https://www.ietf.org/archive/id/draft-mih-scitt-agent-action-capsule-05.html#section-12.1
+[draft-security]: https://www.ietf.org/archive/id/draft-mih-scitt-agent-action-capsule-05.html#section-13
+[draft-privacy]: https://www.ietf.org/archive/id/draft-mih-scitt-agent-action-capsule-05.html#section-14.1
+[scitt]: https://www.rfc-editor.org/rfc/rfc9943
+[receipts]: https://www.rfc-editor.org/rfc/rfc9942
